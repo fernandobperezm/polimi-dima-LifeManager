@@ -1,5 +1,6 @@
 package fernandoperez.lifemanager.activities;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -13,7 +14,6 @@ public class SettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
     }
-
 
     /**
      * This method is implemented as the callback for the Backup Button when it's clicked.
@@ -31,6 +31,7 @@ public class SettingsActivity extends AppCompatActivity {
      * @param view The current view clicked
      */
     public void startAboutUs(View view) {
-        //TODO: Implement this function.
+        Intent intent = new Intent(this, AboutUsActivity.class);
+        startActivity(intent);
     }
 }
