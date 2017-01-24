@@ -27,6 +27,10 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.CompoundButton;
+import android.widget.RelativeLayout;
+import android.widget.Switch;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -47,6 +51,8 @@ import fernandoperez.lifemanager.R;
  */
 public class BackUpActivity extends AppCompatActivity implements ConnectionCallbacks,
         OnConnectionFailedListener {
+
+    static boolean isBackupON = true;
 
     private static final String TAG = "LifeManager";
     private static final int REQUEST_CODE_CAPTURE_IMAGE = 1;
@@ -71,6 +77,33 @@ public class BackUpActivity extends AppCompatActivity implements ConnectionCallb
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .build();
+
+        manageSwitchButton();
+
+    }
+
+    private void manageSwitchButton(){
+        // We need to have the relative layout we want to turn on with the switch. It must be final
+        // in order to be visible inside the onCheckecChanged Method.
+        final RelativeLayout backupONlayout = (RelativeLayout)
+                findViewById(R.id.relativelayout_settings_backup_backupONlayout);
+
+        // This is the switch for turning on/off the backup.
+        // The method setOnCheckedChangeListener implements a listener object that checks if the
+        // switch is activated or not, when it gets activated we turn on the visibility of the backup
+        // config, otherwise, we turn it off.
+        Switch backupSwitch = (Switch) findViewById(R.id.switch_settings_backup_switchbackup);
+        backupSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    backupONlayout.setVisibility(View.VISIBLE);
+                    isBackupON = true;
+                } else {
+                    backupONlayout.setVisibility(View.GONE);
+                    isBackupON = false;
+                }
+            }
+        });
     }
 
     @Override
