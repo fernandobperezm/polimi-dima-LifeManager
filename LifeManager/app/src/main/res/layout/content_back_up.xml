@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="fernandoperez.lifemanager.activities.BackUpActivity"
+    tools:showIn="@layout/activity_back_up">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/textview_settings_backup_switchbackup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/textview_settings_backup_switchbackup"
+            android:textSize="20sp"
+            />
+
+        <Switch
+            android:id="@+id/toggle_settings_backup_switchbackup"
+            android:layout_alignRight="@+id/textview_settings_backup_switchbackup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+
+
+        <TextView
+            android:id="@+id/textview_settings_backup_frequency"
+            android:layout_below="@+id/toggle_settings_backup_switchbackup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/textview_settings_backup_frequency"
+            android:textSize="20sp"
+            />
+
+        <Spinner
+            android:id="@+id/spinner_settings_backup_frequency"
+            android:layout_below="@id/textview_settings_backup_frequency"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+        </Spinner>
+
+        <TextView
+            android:id="@+id/textview_settings_backup_backupfolder"
+            android:layout_below="@id/spinner_settings_backup_frequency"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/textview_settings_backup_backupfolder"
+            android:textSize="20sp"
+            />
+
+        <EditText
+            android:id="@+id/edittext_settings_backup_backupfolder"
+            android:layout_below="@id/textview_settings_backup_backupfolder"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/edittext_settings_backup_backupfolder"
+            >
+        </EditText>
+
+        <Button
+            android:id="@+id/button_settings_backup_backupnow"
+            android:layout_below="@+id/edittext_settings_backup_backupfolder"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/button_settings_backup_backupnow"
+            />
+
+    </RelativeLayout>
+</android.support.v4.widget.NestedScrollView>

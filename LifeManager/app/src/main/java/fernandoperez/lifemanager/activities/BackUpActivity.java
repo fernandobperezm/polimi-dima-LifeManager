@@ -25,6 +25,7 @@ import android.content.IntentSender.SendIntentException;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -37,12 +38,14 @@ import com.google.android.gms.drive.Drive;
 import com.google.android.gms.drive.DriveApi.DriveContentsResult;
 import com.google.android.gms.drive.MetadataChangeSet;
 
+import fernandoperez.lifemanager.R;
+
 /**
  * Android Drive Quickstart activity. This activity takes a photo and saves it
  * in Google Drive. The user is prompted with a pre-made dialog which allows
  * them to choose the file location.
  */
-public class BackUpActivity extends Activity implements ConnectionCallbacks,
+public class BackUpActivity extends AppCompatActivity implements ConnectionCallbacks,
         OnConnectionFailedListener {
 
     private static final String TAG = "LifeManager";
@@ -58,6 +61,9 @@ public class BackUpActivity extends Activity implements ConnectionCallbacks,
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_back_up);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(Drive.API)
@@ -201,13 +207,13 @@ public class BackUpActivity extends Activity implements ConnectionCallbacks,
 
     @Override
     public void onConnected(Bundle connectionHint) {
-        Log.i(TAG, "API client connected.");
-        if (mBitmapToSave == null) {
-            // This activity has no UI of its own. Just start the camera.
-            startActivityForResult(new Intent(MediaStore.ACTION_IMAGE_CAPTURE),
-                    REQUEST_CODE_CAPTURE_IMAGE);
-            return;
-        }
+//        Log.i(TAG, "API client connected.");
+//        if (mBitmapToSave == null) {
+//            // This activity has no UI of its own. Just start the camera.
+//            startActivityForResult(new Intent(MediaStore.ACTION_IMAGE_CAPTURE),
+//                    REQUEST_CODE_CAPTURE_IMAGE);
+//            return;
+//        }
 //        saveFileToDrive();
     }
 
