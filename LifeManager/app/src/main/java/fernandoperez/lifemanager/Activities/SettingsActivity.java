@@ -22,7 +22,8 @@ public class SettingsActivity extends AppCompatActivity {
      * @param view The current view clicked
      */
     public void askForBackup(View view) {
-        //TODO: Implement this function.
+        Intent intent = new Intent(this, BackUpActivity.class);
+        startActivity(intent);
     }
 
     /**
