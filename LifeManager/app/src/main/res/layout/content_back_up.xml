@@ -16,30 +16,30 @@
         >
 
         <TextView
-            android:id="@+id/textview_settings_backup_switchbackup"
+            android:id="@+id/textview_settings_backup_googledriveswitchbackup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/textview_settings_backup_switchbackup"
+            android:text="@string/textview_settings_backup_googledriveswitchbackup"
             android:textSize="20sp"
             />
 
         <Switch
-            android:id="@+id/switch_settings_backup_switchbackup"
-            android:layout_alignRight="@+id/textview_settings_backup_switchbackup"
+            android:id="@+id/switch_settings_backup_googledriveswitchbackup"
+            android:layout_alignRight="@id/textview_settings_backup_googledriveswitchbackup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             />
 
         <RelativeLayout
-            android:id="@+id/relativelayout_settings_backup_backupONlayout"
+            android:id="@+id/relativelayout_settings_backup_googledrivebackupONlayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/switch_settings_backup_switchbackup"
+            android:layout_below="@id/switch_settings_backup_googledriveswitchbackup"
             android:animateLayoutChanges="true"
             android:visibility="gone">
 
             <TextView
-                android:id="@+id/textview_settings_backup_frequency"
+                android:id="@+id/textview_settings_backup_googledrivefrequency"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/textview_settings_backup_frequency"
@@ -47,16 +47,16 @@
                 />
 
             <Spinner
-                android:id="@+id/spinner_settings_backup_frequency"
-                android:layout_below="@id/textview_settings_backup_frequency"
+                android:id="@+id/spinner_settings_backup_googledrivefrequency"
+                android:layout_below="@id/textview_settings_backup_googledrivefrequency"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 >
             </Spinner>
 
             <TextView
-                android:id="@+id/textview_settings_backup_backupfolder"
-                android:layout_below="@id/spinner_settings_backup_frequency"
+                android:id="@+id/textview_settings_backup_googledrivebackupfolder"
+                android:layout_below="@id/spinner_settings_backup_googledrivefrequency"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/textview_settings_backup_backupfolder"
@@ -64,23 +64,85 @@
                 />
 
             <EditText
-                android:id="@+id/edittext_settings_backup_backupfolder"
-                android:layout_below="@id/textview_settings_backup_backupfolder"
+                android:id="@+id/edittext_settings_backup_googledrivebackupfolder"
+                android:layout_below="@id/textview_settings_backup_googledrivebackupfolder"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/edittext_settings_backup_backupfolder"
+                android:onClick="getBackupFolderFromGoogleDrive"
                 >
             </EditText>
 
-            <Button
-                android:id="@+id/button_settings_backup_backupnow"
-                android:layout_below="@+id/edittext_settings_backup_backupfolder"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="@string/button_settings_backup_backupnow"
-                />
-
         </RelativeLayout>
+
+        <TextView
+            android:id="@+id/textview_settings_backup_localswitchbackup"
+            android:layout_below="@id/relativelayout_settings_backup_googledrivebackupONlayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/textview_settings_backup_localswitchbackup"
+            android:textSize="20sp"
+            />
+
+        <Switch
+            android:id="@+id/switch_settings_backup_localswitchbackup"
+            android:layout_below="@id/relativelayout_settings_backup_googledrivebackupONlayout"
+            android:layout_alignRight="@id/textview_settings_backup_localswitchbackup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+
+        <!--<RelativeLayout-->
+            <!--android:id="@+id/relativelayout_settings_backup_localbackupONlayout"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_below="@id/switch_settings_backup_googledriveswitchbackup"-->
+            <!--android:animateLayoutChanges="true"-->
+            <!--android:visibility="gone">-->
+
+            <!--<TextView-->
+                <!--android:id="@+id/textview_settings_backup_localfrequency"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="@string/textview_settings_backup_frequency"-->
+                <!--android:textSize="20sp"-->
+                <!--/>-->
+
+            <!--<Spinner-->
+                <!--android:id="@+id/spinner_settings_backup_localfrequency"-->
+                <!--android:layout_below="@id/textview_settings_backup_localfrequency"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--&gt;-->
+            <!--</Spinner>-->
+
+            <!--<TextView-->
+                <!--android:id="@+id/textview_settings_backup_localbackupfolder"-->
+                <!--android:layout_below="@id/spinner_settings_backup_localfrequency"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="@string/textview_settings_backup_backupfolder"-->
+                <!--android:textSize="20sp"-->
+                <!--/>-->
+
+            <!--<EditText-->
+                <!--android:id="@+id/edittext_settings_backup_localbackupfolder"-->
+                <!--android:layout_below="@id/textview_settings_backup_localbackupfolder"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:hint="@string/edittext_settings_backup_backupfolder"-->
+                <!--android:onClick="getBackupFolderFromGoogleDrive"-->
+                <!--&gt;-->
+            <!--</EditText>-->
+        <!--</RelativeLayout>-->
+
+        <!--<Button-->
+            <!--android:id="@+id/button_settings_backup_backupnow"-->
+            <!--android:layout_below="@+id/relativelayout_settings_backup_localbackupONlayout"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:text="@string/button_settings_backup_backupnow"-->
+            <!--/>-->
 
     </RelativeLayout>
 </android.support.v4.widget.NestedScrollView>

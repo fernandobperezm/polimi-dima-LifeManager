@@ -9,10 +9,15 @@
     <string name="title_activity_about_us">About us</string>
     <string name="title_activity_back_up">Backup Settings</string>
 
-    <string name="textview_settings_backup_switchbackup">Turn ON/OFF Backups</string>
+    <!-- fernandoperez.Lifemanager.res.content_back_up-->
+    <string name="textview_settings_backup_googledriveswitchbackup">Google Drive Backups</string>
+    <string name="textview_settings_backup_localswitchbackup">Local Backups</string>
     <string name="textview_settings_backup_frequency">Frequency</string>
     <string name="textview_settings_backup_backupfolder">Backup Folder</string>
     <string name="edittext_settings_backup_backupfolder">Folder path</string>
+
+
+
     <string name="button_settings_backup_backupnow">Backup Now</string>
 
 

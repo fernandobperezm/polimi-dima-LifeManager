@@ -45,9 +45,7 @@ import com.google.android.gms.drive.MetadataChangeSet;
 import fernandoperez.lifemanager.R;
 
 /**
- * Android Drive Quickstart activity. This activity takes a photo and saves it
- * in Google Drive. The user is prompted with a pre-made dialog which allows
- * them to choose the file location.
+ * BackUpActivity holds the preferences of the user for backing up the data of the app.
  */
 public class BackUpActivity extends AppCompatActivity implements ConnectionCallbacks,
         OnConnectionFailedListener {
@@ -82,28 +80,37 @@ public class BackUpActivity extends AppCompatActivity implements ConnectionCallb
 
     }
 
+    /**
+     * manageSwitchButton is a method that handles the backup ON/OFF switches.
+     */
     private void manageSwitchButton(){
         // We need to have the relative layout we want to turn on with the switch. It must be final
         // in order to be visible inside the onCheckecChanged Method.
-        final RelativeLayout backupONlayout = (RelativeLayout)
-                findViewById(R.id.relativelayout_settings_backup_backupONlayout);
+        final RelativeLayout googleDriveBackupLayout = (RelativeLayout)
+                findViewById(R.id.relativelayout_settings_backup_googledrivebackupONlayout);
 
         // This is the switch for turning on/off the backup.
         // The method setOnCheckedChangeListener implements a listener object that checks if the
         // switch is activated or not, when it gets activated we turn on the visibility of the backup
         // config, otherwise, we turn it off.
-        Switch backupSwitch = (Switch) findViewById(R.id.switch_settings_backup_switchbackup);
-        backupSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        Switch googleDriveBackupSwitch = (Switch) findViewById(R.id.switch_settings_backup_googledriveswitchbackup);
+        googleDriveBackupSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    backupONlayout.setVisibility(View.VISIBLE);
+                    googleDriveBackupLayout.setVisibility(View.VISIBLE);
                     isBackupON = true;
                 } else {
-                    backupONlayout.setVisibility(View.GONE);
+                    googleDriveBackupLayout.setVisibility(View.GONE);
                     isBackupON = false;
                 }
             }
         });
+    }
+
+    /**
+     *
+     */
+    public void getBackupFolderFromGoogleDrive() {
     }
 
     @Override
