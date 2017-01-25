@@ -50,7 +50,8 @@ import fernandoperez.lifemanager.R;
 public class BackUpActivity extends AppCompatActivity implements ConnectionCallbacks,
         OnConnectionFailedListener {
 
-    static boolean isBackupON = true;
+    static boolean isGoogleDriveBackupOn = true;
+    static boolean isLocalBackupON = true;
 
     private static final String TAG = "LifeManager";
     private static final int REQUEST_CODE_CAPTURE_IMAGE = 1;
@@ -89,7 +90,10 @@ public class BackUpActivity extends AppCompatActivity implements ConnectionCallb
         final RelativeLayout googleDriveBackupLayout = (RelativeLayout)
                 findViewById(R.id.relativelayout_settings_backup_googledrivebackupONlayout);
 
-        // This is the switch for turning on/off the backup.
+        final RelativeLayout localBackupLayout = (RelativeLayout)
+                findViewById(R.id.relativelayout_settings_backup_localbackupONlayout);
+
+        // This is the switch for turning on/off the backup for both local and google drive.
         // The method setOnCheckedChangeListener implements a listener object that checks if the
         // switch is activated or not, when it gets activated we turn on the visibility of the backup
         // config, otherwise, we turn it off.
@@ -98,10 +102,23 @@ public class BackUpActivity extends AppCompatActivity implements ConnectionCallb
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     googleDriveBackupLayout.setVisibility(View.VISIBLE);
-                    isBackupON = true;
+                    isGoogleDriveBackupOn = true;
                 } else {
                     googleDriveBackupLayout.setVisibility(View.GONE);
-                    isBackupON = false;
+                    isGoogleDriveBackupOn = false;
+                }
+            }
+        });
+
+        Switch localBackupSwitch = (Switch) findViewById(R.id.switch_settings_backup_localswitchbackup);
+        localBackupSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    localBackupLayout.setVisibility(View.VISIBLE);
+                    isLocalBackupON = true;
+                } else {
+                    localBackupLayout.setVisibility(View.GONE);
+                    isLocalBackupON = false;
                 }
             }
         });
