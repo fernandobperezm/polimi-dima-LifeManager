@@ -56,6 +56,20 @@
 
         </activity>
 
+        <activity
+            android:name=".googleapi.CreateFileInAppFolderActivity"
+            android:parentActivityName=".activities.BackUpActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="fernandoperez.lifemanager.activities.BackUpActivity" />
+
+        </activity>
+
+
+
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="0099823a69ebd0f6b2ab8b41f7db95d7d121b889" />
     </application>
 
 </manifest>

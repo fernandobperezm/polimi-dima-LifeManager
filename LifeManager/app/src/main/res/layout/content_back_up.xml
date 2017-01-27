@@ -2,6 +2,7 @@
 <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/scrollview_settings_backup"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
@@ -10,6 +11,7 @@
     android:animateLayoutChanges="true">
 
     <RelativeLayout
+        android:id="@+id/relativelayout_settings_backup"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:animateLayoutChanges="true"
@@ -63,15 +65,15 @@
                 android:textSize="20sp"
                 />
 
-            <EditText
-                android:id="@+id/edittext_settings_backup_googledrivebackupfolder"
+            <Button
+                android:id="@+id/button_settings_backup_googledrivebackupfolder"
                 android:layout_below="@id/textview_settings_backup_googledrivebackupfolder"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/edittext_settings_backup_backupfolder"
-                android:onClick="getBackupFolderFromGoogleDrive"
+                android:hint="@string/button_settings_backup_backupfolder"
+                android:onClick="pickGoogleDriveFolder"
                 >
-            </EditText>
+            </Button>
         </RelativeLayout>
 
 
@@ -125,24 +127,25 @@
                 android:textSize="20sp"
                 />
 
-            <EditText
-                android:id="@+id/edittext_settings_backup_localbackupfolder"
+            <Button
+                android:id="@+id/button_settings_backup_localbackupfolder"
                 android:layout_below="@id/textview_settings_backup_localbackupfolder"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/edittext_settings_backup_backupfolder"
+                android:hint="@string/button_settings_backup_backupfolder"
                 android:onClick="getBackupFolderFromGoogleDrive"
                 >
-            </EditText>
+            </Button>
         </RelativeLayout>
 
-        <!--<Button-->
-            <!--android:id="@+id/button_settings_backup_backupnow"-->
-            <!--android:layout_below="@+id/relativelayout_settings_backup_localbackupONlayout"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:text="@string/button_settings_backup_backupnow"-->
-            <!--/>-->
+        <Button
+            android:id="@+id/button_settings_backup_backupnow"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/button_settings_backup_backupnow"
+            android:layout_below="@id/relativelayout_settings_backup_localbackupONlayout"
+            android:onClick="makeBackUpNow"
+            />
 
     </RelativeLayout>
 </android.support.v4.widget.NestedScrollView>
