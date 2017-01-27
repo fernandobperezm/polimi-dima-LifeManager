@@ -6,29 +6,30 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.twitter.sdk.android.Twitter;
 import com.twitter.sdk.android.core.*;
 import com.twitter.sdk.android.core.identity.*;
 
+import fernandoperez.lifemanager.twitterapi.EmbeddedTimelineActivity;
 import fernandoperez.lifemanager.R;
-import io.fabric.sdk.android.Fabric;
 
 
 public class TwitterLoginActivity extends AppCompatActivity {
     private TwitterLoginButton loginButton;
-
-//    // Note: Your consumer key and secret should be obfuscated in your source code before shipping.
-//    private static final String TWITTER_KEY = "TTgmuM3YsUmFekOEu8ACrj5qZ";
-//    private static final String TWITTER_SECRET = "sFGLKbi3Yd1kaxCjD2H4RfagmANUIprUxEjlIwUcXHfTJHtMvq";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_twitter_login);
 
-//        TwitterAuthConfig authConfig = new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET);
-//        Fabric.with(this, new Twitter(authConfig));
+        createLoginButton();
 
+    }
+
+    /**
+     * The createLoginButton method finds the twitter login button and creates a callback for it,
+     * this callback manages the action of the button after a login attempt is successful or not.
+     */
+    protected void createLoginButton(){
         loginButton = (TwitterLoginButton) findViewById(R.id.twitter_login_button);
         loginButton.setCallback(new Callback<TwitterSession>() {
             @Override
@@ -40,13 +41,15 @@ public class TwitterLoginActivity extends AppCompatActivity {
                 // with your app's user model
                 String msg = "@" + session.getUserName() + " logged in! (#" + session.getUserId() + ")";
                 Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
+
+                Intent intent = new Intent(TwitterLoginActivity.this, EmbeddedTimelineActivity.class);
+                startActivity(intent);
             }
             @Override
             public void failure(TwitterException exception) {
                 Log.d("TwitterKit", "Login with Twitter failure", exception);
             }
         });
-
     }
 
     @Override

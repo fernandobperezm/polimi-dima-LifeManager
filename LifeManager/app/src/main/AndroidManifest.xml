@@ -52,7 +52,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="fernandoperez.lifemanager.activities.SettingsActivity" />
         </activity>
-
         <activity
             android:name=".googleapi.CreateFileInAppFolderActivity"
             android:parentActivityName=".activities.BackUpActivity">
@@ -60,12 +59,13 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="fernandoperez.lifemanager.activities.BackUpActivity" />
         </activity>
-
-        <activity android:name=".twitterapi.TwitterLoginActivity"></activity>
+        <activity android:name=".twitterapi.TwitterLoginActivity" />
 
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="0099823a69ebd0f6b2ab8b41f7db95d7d121b889" />
+
+        <activity android:name=".twitterapi.EmbeddedTimelineActivity"></activity>
     </application>
 
 </manifest>
