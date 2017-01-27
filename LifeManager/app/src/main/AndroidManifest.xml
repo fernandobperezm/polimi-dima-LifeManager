@@ -1,15 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="fernandoperez.lifemanager">
+    package="fernandoperez.lifemanager"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission android:name="android.permission.INTERNET"/>
+
+    <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/app_id"/>
 
     <application
+        android:name=".activities.MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity
-            android:name=".MainActivity"
+            android:name=".activities.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -18,6 +25,51 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".activities.SettingsActivity"
+            android:label="@string/bar_title_settings"
+            android:parentActivityName=".activities.MainActivity">
+
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.MainActivity" />
+        </activity>
+
+        <activity
+            android:name=".activities.AboutUsActivity"
+            android:label="@string/title_activity_about_us"
+            android:parentActivityName=".activities.SettingsActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="fernandoperez.lifemanager.activities.SettingsActivity" />
+        </activity>
+
+        <activity
+            android:name=".activities.BackUpActivity"
+            android:label="@string/title_activity_back_up"
+            android:parentActivityName=".activities.SettingsActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="fernandoperez.lifemanager.activities.SettingsActivity" />
+
+        </activity>
+
+        <activity
+            android:name=".googleapi.CreateFileInAppFolderActivity"
+            android:parentActivityName=".activities.BackUpActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="fernandoperez.lifemanager.activities.BackUpActivity" />
+
+        </activity>
+
+
+
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="0099823a69ebd0f6b2ab8b41f7db95d7d121b889" />
     </application>
 
 </manifest>
