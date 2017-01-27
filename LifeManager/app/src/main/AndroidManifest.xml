@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="fernandoperez.lifemanager"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="fernandoperez.lifemanager">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
-    <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/app_id"/>
+    <meta-data
+        android:name="com.facebook.sdk.ApplicationId"
+        android:value="@string/app_id" />
 
     <application
         android:name=".activities.MyApplication"
@@ -14,7 +16,6 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <activity
             android:name=".activities.MainActivity"
             android:label="@string/app_name"
@@ -25,7 +26,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".activities.SettingsActivity"
             android:label="@string/bar_title_settings"
@@ -36,7 +36,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.MainActivity" />
         </activity>
-
         <activity
             android:name=".activities.AboutUsActivity"
             android:label="@string/title_activity_about_us"
@@ -45,7 +44,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="fernandoperez.lifemanager.activities.SettingsActivity" />
         </activity>
-
         <activity
             android:name=".activities.BackUpActivity"
             android:label="@string/title_activity_back_up"
@@ -53,7 +51,6 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="fernandoperez.lifemanager.activities.SettingsActivity" />
-
         </activity>
 
         <activity
@@ -62,10 +59,9 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="fernandoperez.lifemanager.activities.BackUpActivity" />
-
         </activity>
 
-
+        <activity android:name=".twitterapi.TwitterLoginActivity"></activity>
 
         <meta-data
             android:name="io.fabric.ApiKey"
