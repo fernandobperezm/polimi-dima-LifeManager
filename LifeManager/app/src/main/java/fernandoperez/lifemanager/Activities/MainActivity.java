@@ -10,9 +10,18 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.twitter.sdk.android.Twitter;
+import com.twitter.sdk.android.core.TwitterAuthConfig;
+
 import fernandoperez.lifemanager.R;
+import fernandoperez.lifemanager.twitterapi.TwitterLoginActivity;
+import io.fabric.sdk.android.Fabric;
 
 public class MainActivity extends AppCompatActivity {
+
+    // Note: Your consumer key and secret should be obfuscated in your source code before shipping.
+    private static final String TWITTER_KEY = "TTgmuM3YsUmFekOEu8ACrj5qZ";
+    private static final String TWITTER_SECRET = "sFGLKbi3Yd1kaxCjD2H4RfagmANUIprUxEjlIwUcXHfTJHtMvq";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,14 +54,32 @@ public class MainActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            Intent intent = new Intent(this, SettingsActivity.class);
-            startActivity(intent);
+        Intent intent;
+        switch (id) {
+            case R.id.action_settings:
+                intent = new Intent(this, SettingsActivity.class);
+                startActivity(intent);
 
-            return true;
+                return true;
+
+            case R.id.action_twitter_login:
+                intent = new Intent(this, TwitterLoginActivity.class);
+                startActivity(intent);
+
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
         }
 
-        return super.onOptionsItemSelected(item);
+//        //noinspection SimplifiableIfStatement
+//        if (id == R.id.action_settings) {
+//            Intent intent = new Intent(this, SettingsActivity.class);
+//            startActivity(intent);
+//
+//            return true;
+//        }
+//
+//        return super.onOptionsItemSelected(item);
     }
 }
