@@ -24,8 +24,9 @@ public class EmbeddedTimelineActivity extends ListActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_embedded_timeline);
 
+        // TODO: Handle the session better, if there's no active session we should make the user
+        // to login.
         TwitterSession session = Twitter.getSessionManager().getActiveSession();
-
 
         Twitter.getApiClient()
                 .getStatusesService()
