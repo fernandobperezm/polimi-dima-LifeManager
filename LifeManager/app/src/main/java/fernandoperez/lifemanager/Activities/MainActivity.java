@@ -10,12 +10,9 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.twitter.sdk.android.Twitter;
-import com.twitter.sdk.android.core.TwitterAuthConfig;
-
 import fernandoperez.lifemanager.R;
+import fernandoperez.lifemanager.spotifyapi.SpotifyLoginActivity;
 import fernandoperez.lifemanager.twitterapi.TwitterLoginActivity;
-import io.fabric.sdk.android.Fabric;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -64,6 +61,12 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.action_twitter_login:
                 intent = new Intent(this, TwitterLoginActivity.class);
+                startActivity(intent);
+
+                return true;
+
+            case R.id.action_spotify_login:
+                intent = new Intent(this, SpotifyLoginActivity.class);
                 startActivity(intent);
 
                 return true;
