@@ -62,6 +62,5 @@ dependencies {
     // Spotify API.
     compile 'com.github.kaaes:spotify-web-api-android:0.4.1'
     compile(name: 'spotify-android-auth-1.0.0', ext: 'aar')
-//    compile 'com.spotify.sdk:spotify-player-24-noconnect-2.20b@aar'
     compile 'com.google.guava:guava:18.0'
 }

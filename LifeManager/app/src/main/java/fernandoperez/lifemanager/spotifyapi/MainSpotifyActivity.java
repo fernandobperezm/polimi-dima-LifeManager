@@ -1,8 +1,11 @@
 package fernandoperez.lifemanager.spotifyapi;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,7 +15,18 @@ import android.widget.SearchView;
 import java.util.List;
 
 import fernandoperez.lifemanager.R;
+import kaaes.spotify.webapi.android.SpotifyApi;
+import kaaes.spotify.webapi.android.SpotifyService;
+import kaaes.spotify.webapi.android.models.Pager;
+import kaaes.spotify.webapi.android.models.Playlist;
+import kaaes.spotify.webapi.android.models.PlaylistSimple;
 import kaaes.spotify.webapi.android.models.Track;
+
+import retrofit.Callback;
+import retrofit.RequestInterceptor;
+import retrofit.RestAdapter;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 public class MainSpotifyActivity extends AppCompatActivity implements Search.View {
 
@@ -25,6 +39,19 @@ public class MainSpotifyActivity extends AppCompatActivity implements Search.Vie
     private ScrollListener mScrollListener = new ScrollListener(mLayoutManager);
     private SearchResultsAdapter mAdapter;
 
+    private Player mPlayer;
+
+    private ServiceConnection mServiceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            mPlayer = ((PlayerService.PlayerBinder) service).getService();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            mPlayer = null;
+        }
+    };
 
     private class ScrollListener extends ResultListScrollListener {
 
@@ -49,6 +76,10 @@ public class MainSpotifyActivity extends AppCompatActivity implements Search.Vie
 
         Intent intent = getIntent();
         String token = intent.getStringExtra(EXTRA_TOKEN);
+
+        SpotifyService spotify = setWebApiEndpoint(token);
+
+//        getPlaylistFromUser(spotify, "kametoo", "3ILN4nBKp4BpslP7ZsnO2l");
 
         mActionListener = new SearchPresenter(this, this);
         mActionListener.init(token);
@@ -128,4 +159,67 @@ public class MainSpotifyActivity extends AppCompatActivity implements Search.Vie
         super.onDestroy();
     }
 
+    /**
+     * This function sets all the necessary endpoints to the spotify Web API and return
+     * @param authToken Is the token that spotify gave to authorized users.
+     * @return We return the spotify service build, ready to use with the API.
+     */
+    private SpotifyService setWebApiEndpoint(String authToken) {
+        final String accessToken = authToken;
+
+        RestAdapter restAdapter = new RestAdapter.Builder()
+                .setEndpoint(SpotifyApi.SPOTIFY_WEB_API_ENDPOINT)
+                .setRequestInterceptor(new RequestInterceptor() {
+                    @Override
+                    public void intercept(RequestFacade request) {
+                        request.addHeader("Authorization", "Bearer " + accessToken);
+                    }
+                })
+                .build();
+
+        return restAdapter.create(SpotifyService.class);
+    }
+
+    /**
+     * This method get' all the playlists of the user.
+     * @param spotifyService the spotify build in order to access all the API services.
+     */
+    private void getAllMyPlaylists(SpotifyService spotifyService) {
+        // TODO: Handle the failure when retrieving the playlist.
+
+        spotifyService.getMyPlaylists(new Callback<Pager<PlaylistSimple>>() {
+            @Override
+            public void success(Pager<PlaylistSimple> playlistSimplePager, Response response) {
+                // Get all the playlists.
+                List<PlaylistSimple> playlists = playlistSimplePager.items;
+
+
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                System.out.println(error);
+            }
+        });
+    }
+
+    /**
+     * This method get' all the playlists of the user.
+     * @param spotifyService the spotify build in order to access all the API services.
+     */
+    private void getPlaylistFromUser(SpotifyService spotifyService, String userId, String playlistId) {
+        // TODO: Handle the failure when retrieving the playlist.
+        // TODO: Initizalize the player in this context (activity).
+        spotifyService.getPlaylist(userId, playlistId, new Callback<Playlist>() {
+            @Override
+            public void success(Playlist playlist, Response response) {
+                mPlayer.play(playlist.tracks.items.get(1).track.preview_url);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                System.out.println("error");
+            }
+        });
+    }
 }
