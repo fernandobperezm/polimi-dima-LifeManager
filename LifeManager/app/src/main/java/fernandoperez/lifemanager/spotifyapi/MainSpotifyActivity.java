@@ -1,11 +1,8 @@
 package fernandoperez.lifemanager.spotifyapi;
 
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -39,19 +36,7 @@ public class MainSpotifyActivity extends AppCompatActivity implements Search.Vie
     private ScrollListener mScrollListener = new ScrollListener(mLayoutManager);
     private SearchResultsAdapter mAdapter;
 
-    private Player mPlayer;
-
-    private ServiceConnection mServiceConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            mPlayer = ((PlayerService.PlayerBinder) service).getService();
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            mPlayer = null;
-        }
-    };
+    private PreviewPlayer mPreviewPlayer = null;
 
     private class ScrollListener extends ResultListScrollListener {
 
@@ -79,10 +64,11 @@ public class MainSpotifyActivity extends AppCompatActivity implements Search.Vie
 
         SpotifyService spotify = setWebApiEndpoint(token);
 
-//        getPlaylistFromUser(spotify, "kametoo", "3ILN4nBKp4BpslP7ZsnO2l");
-
         mActionListener = new SearchPresenter(this, this);
         mActionListener.init(token);
+
+        mPreviewPlayer = new PreviewPlayer();
+        getPlaylistFromUser(spotify, "kametoo", "3ILN4nBKp4BpslP7ZsnO2l");
 
         // Setup search field
         final SearchView searchView = (SearchView) findViewById(R.id.search_view);
@@ -156,6 +142,7 @@ public class MainSpotifyActivity extends AppCompatActivity implements Search.Vie
     @Override
     protected void onDestroy() {
         mActionListener.destroy();
+        mPreviewPlayer.release();
         super.onDestroy();
     }
 
@@ -192,8 +179,7 @@ public class MainSpotifyActivity extends AppCompatActivity implements Search.Vie
             public void success(Pager<PlaylistSimple> playlistSimplePager, Response response) {
                 // Get all the playlists.
                 List<PlaylistSimple> playlists = playlistSimplePager.items;
-
-
+                mPreviewPlayer.play(playlists.get(0).uri);
             }
 
             @Override
@@ -209,11 +195,10 @@ public class MainSpotifyActivity extends AppCompatActivity implements Search.Vie
      */
     private void getPlaylistFromUser(SpotifyService spotifyService, String userId, String playlistId) {
         // TODO: Handle the failure when retrieving the playlist.
-        // TODO: Initizalize the player in this context (activity).
         spotifyService.getPlaylist(userId, playlistId, new Callback<Playlist>() {
             @Override
             public void success(Playlist playlist, Response response) {
-                mPlayer.play(playlist.tracks.items.get(1).track.preview_url);
+                mPreviewPlayer.playPlaylist(playlist);
             }
 
             @Override

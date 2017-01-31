@@ -6,6 +6,11 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import java.io.IOException;
+import java.util.Iterator;
+
+import kaaes.spotify.webapi.android.models.Playlist;
+import kaaes.spotify.webapi.android.models.PlaylistTrack;
+import kaaes.spotify.webapi.android.models.Track;
 
 public class PreviewPlayer implements Player, MediaPlayer.OnCompletionListener {
 
@@ -13,6 +18,8 @@ public class PreviewPlayer implements Player, MediaPlayer.OnCompletionListener {
 
     private MediaPlayer mMediaPlayer;
     private String mCurrentTrack;
+    private Playlist mPlaylist = null;
+    private Iterator<PlaylistTrack> mPlaylistIterator = null;
 
     private class OnPreparedListener implements MediaPlayer.OnPreparedListener {
 
@@ -31,7 +38,9 @@ public class PreviewPlayer implements Player, MediaPlayer.OnCompletionListener {
 
     @Override
     public void onCompletion(MediaPlayer mp) {
-        release();
+       if (!playNextSongOfPlaylist()) {
+           release();
+       }
     }
 
     @Override
@@ -46,6 +55,28 @@ public class PreviewPlayer implements Player, MediaPlayer.OnCompletionListener {
         } catch (IOException e) {
             Log.e(TAG, "Could not play: " + url, e);
         }
+    }
+
+    private boolean playNextSongOfPlaylist() {
+        if (mPlaylistIterator.hasNext()) {
+            Track track = mPlaylistIterator.next().track;
+            if (track.preview_url != null){
+                System.out.println(track.name);
+                play(track.preview_url);
+                return true;
+            } else {
+                return playNextSongOfPlaylist();
+            }
+
+        }
+
+        return false;
+    }
+
+    public void playPlaylist(Playlist playlist) {
+        mPlaylist = playlist;
+        mPlaylistIterator = mPlaylist.tracks.items.iterator();
+        playNextSongOfPlaylist();
     }
 
     @Override
