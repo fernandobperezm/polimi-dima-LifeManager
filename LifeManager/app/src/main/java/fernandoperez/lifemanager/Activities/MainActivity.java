@@ -11,7 +11,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import fernandoperez.lifemanager.R;
-import fernandoperez.lifemanager.spotifyapi.SpotifyLoginActivity;
+import fernandoperez.lifemanager.constants.constants;
+import fernandoperez.lifemanager.spotifyapi.SpotifyMainActivity;
 import fernandoperez.lifemanager.twitterapi.TwitterLoginActivity;
 
 public class MainActivity extends AppCompatActivity {
@@ -66,7 +67,8 @@ public class MainActivity extends AppCompatActivity {
                 return true;
 
             case R.id.action_spotify_login:
-                intent = new Intent(this, SpotifyLoginActivity.class);
+                intent = new Intent(this, SpotifyMainActivity.class);
+                intent.putExtra(constants.SPOTIFIY_INDEX_INTENT,2);
                 startActivity(intent);
 
                 return true;
@@ -74,15 +76,5 @@ public class MainActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
-
-//        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_settings) {
-//            Intent intent = new Intent(this, SettingsActivity.class);
-//            startActivity(intent);
-//
-//            return true;
-//        }
-//
-//        return super.onOptionsItemSelected(item);
     }
 }
