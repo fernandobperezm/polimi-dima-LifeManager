@@ -52,6 +52,8 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="fernandoperez.lifemanager.activities.SettingsActivity" />
         </activity>
+
+        <!-- GOOGLE API -->
         <activity
             android:name=".googleapi.CreateFileInAppFolderActivity"
             android:parentActivityName=".activities.BackUpActivity">
@@ -59,13 +61,22 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="fernandoperez.lifemanager.activities.BackUpActivity" />
         </activity>
+
+        <!-- TWIITER API -->
         <activity android:name=".twitterapi.TwitterLoginActivity" />
 
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="0099823a69ebd0f6b2ab8b41f7db95d7d121b889" />
 
-        <activity android:name=".twitterapi.EmbeddedTimelineActivity"></activity>
+        <activity android:name=".twitterapi.EmbeddedTimelineActivity" />
+
+        <!-- SPOTIFY API -->
+        <!-- Needed for LoginActivity to work -->
+        <activity
+            android:name="com.spotify.sdk.android.authentication.LoginActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+        <activity android:name=".spotifyapi.SpotifyMainActivity"></activity>
     </application>
 
 </manifest>

@@ -10,12 +10,10 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.twitter.sdk.android.Twitter;
-import com.twitter.sdk.android.core.TwitterAuthConfig;
-
 import fernandoperez.lifemanager.R;
+import fernandoperez.lifemanager.constants.constants;
+import fernandoperez.lifemanager.spotifyapi.SpotifyMainActivity;
 import fernandoperez.lifemanager.twitterapi.TwitterLoginActivity;
-import io.fabric.sdk.android.Fabric;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -68,18 +66,15 @@ public class MainActivity extends AppCompatActivity {
 
                 return true;
 
+            case R.id.action_spotify_login:
+                intent = new Intent(this, SpotifyMainActivity.class);
+                intent.putExtra(constants.SPOTIFIY_INDEX_INTENT,2);
+                startActivity(intent);
+
+                return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
-
-//        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_settings) {
-//            Intent intent = new Intent(this, SettingsActivity.class);
-//            startActivity(intent);
-//
-//            return true;
-//        }
-//
-//        return super.onOptionsItemSelected(item);
     }
 }

@@ -9,8 +9,10 @@ public abstract class constants {
 
     // INTENT CODES.
     public final static String TWITTER_ID_INTENT = "TWITTER_ID_INTENT";
+    public final static String SPOTIFIY_INDEX_INTENT = "SPOTIFIY_INDEX_INTENT";
     public final static long DEFAULT_TWITTER_USER_ID = -1;
     public final static int TWITTER_MAX_HOME_TIMELINE_TWEETS = 50;
+
 
 
     // Call codes.
@@ -21,5 +23,6 @@ public abstract class constants {
     // Names.
     public final static String GOOGLE_DRIVE_FOLDER_NAME = "GOOGLE_DRIVE_FOLDER_NAME";
 
-
+    // DEFAULT VALUES.
+    public final static int SPOTIFY_DEFAULT_INDEX_PLAYLIST = 0;
 }

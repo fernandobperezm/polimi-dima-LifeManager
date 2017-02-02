@@ -32,6 +32,11 @@ android {
 repositories {
     mavenCentral()
     maven { url 'https://maven.fabric.io/public' }
+    maven { url "https://jitpack.io" }
+
+    flatDir {
+        dirs 'libs'
+    }
 }
 
 dependencies {
@@ -48,7 +53,15 @@ dependencies {
 
     // Facebook SDK.
     compile 'com.facebook.android:facebook-android-sdk:4.+'
+
+    // Twitter SDK managed by Fabric.
     compile('com.twitter.sdk.android:twitter:2.3.1@aar') {
         transitive = true;
     }
+
+    // Spotify API.
+    compile 'com.github.kaaes:spotify-web-api-android:0.4.1'
+    compile(name: 'spotify-android-auth-1.0.0', ext: 'aar')
+    compile(name: 'spotify-player-24-noconnect-2.20b', ext: 'aar')
+    compile 'com.google.guava:guava:18.0'
 }
