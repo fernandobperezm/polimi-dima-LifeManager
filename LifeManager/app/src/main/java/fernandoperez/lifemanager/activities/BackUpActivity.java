@@ -9,8 +9,7 @@ import android.widget.RelativeLayout;
 import android.widget.Switch;
 
 import fernandoperez.lifemanager.R;
-import fernandoperez.lifemanager.constants.constants;
-import fernandoperez.lifemanager.googleapi.CreateFileInAppFolderActivity;
+import fernandoperez.lifemanager.utils.constants;
 
 /**
  * BackUpActivity holds the preferences of the user for backing up the data of the app.

@@ -64,4 +64,8 @@ dependencies {
     compile(name: 'spotify-android-auth-1.0.0', ext: 'aar')
     compile(name: 'spotify-player-24-noconnect-2.20b', ext: 'aar')
     compile 'com.google.guava:guava:18.0'
+
+    // Cards and recycler adapter.
+    compile 'com.android.support:cardview-v7:25.1.1'
+    compile 'com.android.support:recyclerview-v7:25.1.1'
 }

@@ -22,7 +22,7 @@ import com.spotify.sdk.android.player.SpotifyPlayer;
 import java.util.List;
 
 import fernandoperez.lifemanager.R;
-import fernandoperez.lifemanager.constants.constants;
+import fernandoperez.lifemanager.utils.constants;
 import kaaes.spotify.webapi.android.SpotifyApi;
 import kaaes.spotify.webapi.android.SpotifyService;
 import kaaes.spotify.webapi.android.models.Pager;

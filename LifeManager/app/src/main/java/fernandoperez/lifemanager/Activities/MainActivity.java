@@ -11,15 +11,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import fernandoperez.lifemanager.R;
-import fernandoperez.lifemanager.constants.constants;
+import fernandoperez.lifemanager.utils.constants;
 import fernandoperez.lifemanager.spotifyapi.SpotifyMainActivity;
 import fernandoperez.lifemanager.twitterapi.TwitterLoginActivity;
 
 public class MainActivity extends AppCompatActivity {
-
-    // Note: Your consumer key and secret should be obfuscated in your source code before shipping.
-    private static final String TWITTER_KEY = "TTgmuM3YsUmFekOEu8ACrj5qZ";
-    private static final String TWITTER_SECRET = "sFGLKbi3Yd1kaxCjD2H4RfagmANUIprUxEjlIwUcXHfTJHtMvq";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,8 +69,14 @@ public class MainActivity extends AppCompatActivity {
 
                 return true;
 
+            case R.id.action_current_settings:
+                intent = new Intent(this, CurrentConfigActivity.class);
+                startActivity(intent);
+
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
+
+
 }

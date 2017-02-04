@@ -75,8 +75,12 @@
         <!-- Needed for LoginActivity to work -->
         <activity
             android:name="com.spotify.sdk.android.authentication.LoginActivity"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
-        <activity android:name=".spotifyapi.SpotifyMainActivity"></activity>
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <activity android:name=".spotifyapi.SpotifyMainActivity" />
+        <activity
+            android:name=".activities.CurrentConfigActivity"
+            android:label="@string/title_activity_current_config"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

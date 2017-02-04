@@ -11,7 +11,7 @@ import com.twitter.sdk.android.tweetui.TweetTimelineListAdapter;
 
 import java.util.List;
 import fernandoperez.lifemanager.R;
-import fernandoperez.lifemanager.constants.constants;
+import fernandoperez.lifemanager.utils.constants;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;

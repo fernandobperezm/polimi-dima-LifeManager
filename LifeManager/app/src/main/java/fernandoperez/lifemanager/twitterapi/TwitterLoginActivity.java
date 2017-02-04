@@ -1,18 +1,14 @@
 package fernandoperez.lifemanager.twitterapi;
 
 import android.content.Intent;
-import android.os.Parcelable;
-import android.provider.SyncStateContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.twitter.sdk.android.core.*;
 import com.twitter.sdk.android.core.identity.*;
 
 import fernandoperez.lifemanager.R;
-import fernandoperez.lifemanager.constants.constants;
 
 
 public class TwitterLoginActivity extends AppCompatActivity {

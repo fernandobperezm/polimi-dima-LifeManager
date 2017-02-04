@@ -1,4 +1,4 @@
-package fernandoperez.lifemanager.constants;
+package fernandoperez.lifemanager.utils;
 
 /**
  * Created by fernandoperez on 1/26/17.
