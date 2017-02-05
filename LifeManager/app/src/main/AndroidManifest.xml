@@ -81,6 +81,7 @@
             android:name=".activities.CurrentConfigActivity"
             android:label="@string/title_activity_current_config"
             android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity android:name=".activities.ScreenSlideActivity"></activity>
     </application>
 
 </manifest>

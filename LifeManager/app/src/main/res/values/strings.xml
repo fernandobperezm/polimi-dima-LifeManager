@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:xliff="http://schemas.android.com/tools">
     <string name="app_name">LifeManager</string>
 
     <string name="bar_title_settings">Settings</string>
@@ -114,4 +114,8 @@
         "when a user tries to pick up one of cards.\n\n"
     </string>
     <string name="title_activity_current_config">CurrentConfigActivity</string>
+
+
+    <string name="title_template_step">Step <xliff:g id="step_number">%1$d</xliff:g>: Lorem
+        Ipsum</string>
 </resources>

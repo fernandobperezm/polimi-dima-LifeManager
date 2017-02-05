@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
                 return true;
 
             case R.id.action_current_settings:
-                intent = new Intent(this, CurrentConfigActivity.class);
+                intent = new Intent(this, ScreenSlideActivity.class);
                 startActivity(intent);
 
             default:
