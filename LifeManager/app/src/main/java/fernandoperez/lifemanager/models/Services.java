@@ -3,6 +3,7 @@ package fernandoperez.lifemanager.models;
 import android.support.v4.app.Fragment;
 
 import fernandoperez.lifemanager.fragments.SpotifySlidePageFragment;
+import fernandoperez.lifemanager.fragments.TwitterSlidePageFragment;
 import fernandoperez.lifemanager.utils.constants.SERVICES_LIST;
 
 /**
@@ -35,6 +36,10 @@ public class Services implements Comparable<Services>{
         switch (mServiceEnum) {
             case SPOTIFY:
                 return SpotifySlidePageFragment.create();
+
+            case TWITTER:
+                return TwitterSlidePageFragment.create();
+
             default:
                 return SpotifySlidePageFragment.create();
         }

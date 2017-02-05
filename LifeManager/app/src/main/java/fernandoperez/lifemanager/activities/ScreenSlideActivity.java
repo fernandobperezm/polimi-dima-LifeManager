@@ -77,10 +77,10 @@ public class ScreenSlideActivity extends FragmentActivity {
         // TODO: mListServices should be retrieved from the config.
         List<Services> servicesList = new ArrayList<Services>();
         servicesList.add(new Services("Spotify","Spotify Inc.", constants.SERVICES_LIST.SPOTIFY));
-        servicesList.add(new Services("Twitter", "Twitter Inc.", constants.SERVICES_LIST.SPOTIFY));
+        servicesList.add(new Services("Twitter", "Twitter Inc.", constants.SERVICES_LIST.TWITTER));
         servicesList.add(new Services("Wifi","Spotify Inc.", constants.SERVICES_LIST.SPOTIFY));
-        servicesList.add(new Services("GPS", "Twitter Inc.", constants.SERVICES_LIST.SPOTIFY));
-        servicesList.add(new Services("Weather","Spotify Inc.", constants.SERVICES_LIST.SPOTIFY));
+        servicesList.add(new Services("GPS", "Twitter Inc.", constants.SERVICES_LIST.TWITTER));
+        servicesList.add(new Services("Weather","Spotify Inc.", constants.SERVICES_LIST.TWITTER));
         servicesList.add(new Services("Facebook", "Twitter Inc.", constants.SERVICES_LIST.SPOTIFY));
 
         mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager(), servicesList);
