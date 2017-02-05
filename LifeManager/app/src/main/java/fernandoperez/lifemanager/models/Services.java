@@ -32,18 +32,7 @@ public class Services implements Comparable<Services>{
         return mCompany;
     }
 
-    public Fragment createFragment() {
-        switch (mServiceEnum) {
-            case SPOTIFY:
-                return SpotifySlidePageFragment.create();
-
-            case TWITTER:
-                return TwitterSlidePageFragment.create();
-
-            default:
-                return SpotifySlidePageFragment.create();
-        }
-    }
+    public SERVICES_LIST getEnum() {return mServiceEnum; }
 
     @Override
     public int compareTo(Services services) {

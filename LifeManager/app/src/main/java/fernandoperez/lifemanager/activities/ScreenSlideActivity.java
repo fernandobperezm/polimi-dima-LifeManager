@@ -1,28 +1,10 @@
-/*
- * Copyright 2012 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package fernandoperez.lifemanager.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.app.NavUtils;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
@@ -34,6 +16,7 @@ import java.util.List;
 import fernandoperez.lifemanager.R;
 import fernandoperez.lifemanager.fragments.ScreenSlidePageFragment;
 import fernandoperez.lifemanager.fragments.SpotifySlidePageFragment;
+import fernandoperez.lifemanager.fragments.TwitterSlidePageFragment;
 import fernandoperez.lifemanager.models.Services;
 import fernandoperez.lifemanager.utils.constants;
 
@@ -53,7 +36,7 @@ public class ScreenSlideActivity extends FragmentActivity {
     /**
      * The number of pages (wizard steps) to show in this demo.
      */
-    private static final int NUM_PAGES = 5;
+    private static final int NUM_PAGES = constants.MAX_SERVICES;
 
     /**
      * The pager widget, which handles animation and allows swiping horizontally to access previous
@@ -121,16 +104,6 @@ public class ScreenSlideActivity extends FragmentActivity {
 
             }
         });
-//        mPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
-//            @Override
-//            public void onPageSelected(int position) {
-//                // When changing pages, reset the action bar actions since they are dependent
-//                // on which page is currently active. An alternative approach is to have each
-//                // fragment expose actions itself (rather than the activity exposing actions),
-//                // but for simplicity, the activity provides the actions in this sample.
-//                invalidateOptionsMenu();
-//            }
-//        });
     }
 
     @Override
@@ -169,7 +142,16 @@ public class ScreenSlideActivity extends FragmentActivity {
 
         @Override
         public Fragment getItem(int position) {
-            return this.mServicesList.get(position).createFragment();
+            switch (mServicesList.get(position).getEnum()) {
+                case SPOTIFY:
+                    return SpotifySlidePageFragment.create();
+
+                case TWITTER:
+                    return TwitterSlidePageFragment.create();
+
+                default:
+                    return SpotifySlidePageFragment.create();
+            }
         }
 
         @Override

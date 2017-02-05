@@ -30,4 +30,7 @@ public abstract class constants {
     public enum SERVICES_LIST {
         SPOTIFY, TWITTER, WIFI, LOCATION
     }
+
+    //
+    public final static int MAX_SERVICES = 6;
 }
