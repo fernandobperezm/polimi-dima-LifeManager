@@ -25,4 +25,9 @@ public abstract class constants {
 
     // DEFAULT VALUES.
     public final static int SPOTIFY_DEFAULT_INDEX_PLAYLIST = 0;
+
+    // Enumarable.
+    public enum SERVICES_LIST {
+        SPOTIFY, TWITTER, WIFI, LOCATION
+    }
 }

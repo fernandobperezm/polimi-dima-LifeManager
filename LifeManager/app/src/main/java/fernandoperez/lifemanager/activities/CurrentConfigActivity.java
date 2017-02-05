@@ -56,15 +56,15 @@ public class CurrentConfigActivity extends AppCompatActivity {
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 
         // Some testing services
-        List<Services> servicesList = new ArrayList<Services>();
-        servicesList.add(new Services("Spotify","Spotify Inc."));
-        servicesList.add(new Services("Twitter", "Twitter Inc."));
-        servicesList.add(new Services("Wifi","Spotify Inc."));
-        servicesList.add(new Services("GPS", "Twitter Inc."));
-        servicesList.add(new Services("Weather","Spotify Inc."));
-        servicesList.add(new Services("Facebook", "Twitter Inc."));
+//        List<Services> servicesList = new ArrayList<Services>();
+//        servicesList.add(new Services("Spotify","Spotify Inc."));
+//        servicesList.add(new Services("Twitter", "Twitter Inc."));
+//        servicesList.add(new Services("Wifi","Spotify Inc."));
+//        servicesList.add(new Services("GPS", "Twitter Inc."));
+//        servicesList.add(new Services("Weather","Spotify Inc."));
+//        servicesList.add(new Services("Facebook", "Twitter Inc."));
 
-        loadRecyclerView(servicesList);
+//        loadRecyclerView(servicesList);
         progressDialog.dismiss();
     }
 

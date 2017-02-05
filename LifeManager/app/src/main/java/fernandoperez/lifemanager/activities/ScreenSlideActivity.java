@@ -28,8 +28,14 @@ import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import fernandoperez.lifemanager.R;
 import fernandoperez.lifemanager.fragments.ScreenSlidePageFragment;
+import fernandoperez.lifemanager.fragments.SpotifySlidePageFragment;
+import fernandoperez.lifemanager.models.Services;
+import fernandoperez.lifemanager.utils.constants;
 
 /**
  * Demonstrates a "screen-slide" animation using a {@link ViewPager}. Because {@link ViewPager}
@@ -43,6 +49,7 @@ import fernandoperez.lifemanager.fragments.ScreenSlidePageFragment;
  * @see ScreenSlidePageFragment
  */
 public class ScreenSlideActivity extends FragmentActivity {
+
     /**
      * The number of pages (wizard steps) to show in this demo.
      */
@@ -66,7 +73,17 @@ public class ScreenSlideActivity extends FragmentActivity {
 
         // Instantiate a ViewPager and a PagerAdapter.
         mPager = (ViewPager) findViewById(R.id.pager);
-        mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
+
+        // TODO: mListServices should be retrieved from the config.
+        List<Services> servicesList = new ArrayList<Services>();
+        servicesList.add(new Services("Spotify","Spotify Inc.", constants.SERVICES_LIST.SPOTIFY));
+        servicesList.add(new Services("Twitter", "Twitter Inc.", constants.SERVICES_LIST.SPOTIFY));
+        servicesList.add(new Services("Wifi","Spotify Inc.", constants.SERVICES_LIST.SPOTIFY));
+        servicesList.add(new Services("GPS", "Twitter Inc.", constants.SERVICES_LIST.SPOTIFY));
+        servicesList.add(new Services("Weather","Spotify Inc.", constants.SERVICES_LIST.SPOTIFY));
+        servicesList.add(new Services("Facebook", "Twitter Inc.", constants.SERVICES_LIST.SPOTIFY));
+
+        mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager(), servicesList);
         mPager.setAdapter(mPagerAdapter);
         mPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -118,18 +135,9 @@ public class ScreenSlideActivity extends FragmentActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-//        super.onCreateOptionsMenu(menu);
-//        getMenuInflater().inflate(R.menu.activity_screen_slide, menu);
-//
-//        menu.findItem(R.id.action_previous).setEnabled(mPager.getCurrentItem() > 0);
-//
-//        // Add either a "next" or "finish" button to the action bar, depending on which page
-//        // is currently selected.
-//        MenuItem item = menu.add(Menu.NONE, R.id.action_next, Menu.NONE,
-//                (mPager.getCurrentItem() == mPagerAdapter.getCount() - 1)
-//                        ? R.string.action_finish
-//                        : R.string.action_next);
-//        item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+
         return true;
     }
 
@@ -142,17 +150,6 @@ public class ScreenSlideActivity extends FragmentActivity {
 //                NavUtils.navigateUpTo(this, new Intent(this, MainActivity.class));
 //                return true;
 //
-//            case R.id.action_previous:
-//                // Go to the previous step in the wizard. If there is no previous step,
-//                // setCurrentItem will do nothing.
-//                mPager.setCurrentItem(mPager.getCurrentItem() - 1);
-//                return true;
-//
-//            case R.id.action_next:
-//                // Advance to the next step in the wizard. If there is no next step, setCurrentItem
-//                // will do nothing.
-//                mPager.setCurrentItem(mPager.getCurrentItem() + 1);
-//                return true;
 //        }
 
         return super.onOptionsItemSelected(item);
@@ -163,13 +160,16 @@ public class ScreenSlideActivity extends FragmentActivity {
      * sequence.
      */
     private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
-        public ScreenSlidePagerAdapter(FragmentManager fm) {
+        List<Services> mServicesList;
+
+        public ScreenSlidePagerAdapter(FragmentManager fm, List<Services> servicesList) {
             super(fm);
+            this.mServicesList = servicesList;
         }
 
         @Override
         public Fragment getItem(int position) {
-            return ScreenSlidePageFragment.create(position);
+            return this.mServicesList.get(position).createFragment();
         }
 
         @Override
