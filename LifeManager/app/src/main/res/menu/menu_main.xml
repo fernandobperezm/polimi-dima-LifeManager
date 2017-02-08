@@ -20,4 +20,10 @@
         android:title="Spotify"
         app:showAsAction="never" />
 
+    <item
+        android:id="@+id/action_current_settings"
+        android:orderInCategory="100"
+        android:title="CurrentSettings"
+        app:showAsAction="never" />
+
 </menu>

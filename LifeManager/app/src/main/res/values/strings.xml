@@ -1,4 +1,6 @@
-<resources>
+<resources xmlns:xliff="http://schemas.android.com/tools">
+    <string name="tag_fragment_twitter_login">tag_fragment_twitter_login</string>
+
     <string name="app_name">LifeManager</string>
 
     <string name="bar_title_settings">Settings</string>
@@ -22,6 +24,13 @@
 
     <!-- Google APi -->
 
+    <!-- Twitter -->
+    <string name="textview_twitter_fragment_login">Log in with Twitter to see your timeline.</string>
+
+    <!-- Spotify -->
+    <string name="textview_spotify_title">Spotify</string>
+    <string name="textview_spotify_currentlyplaying">Currently playing:</string>
+    <string name="textview_spotify_song">Play a song</string>
 
     <string name="app_id">1274777432582668</string>
     <string name="large_text">
@@ -113,4 +122,10 @@
         "For example, position the FAB to one side of stream of a cards so the FAB won’t interfere "
         "when a user tries to pick up one of cards.\n\n"
     </string>
+    <string name="title_activity_current_config">CurrentConfigActivity</string>
+
+
+    <string name="title_template_step">Step <xliff:g id="step_number">%1$d</xliff:g>: Lorem
+        Ipsum</string>
+    <string name="title_activity_twitter_main">TwitterMainActivity</string>
 </resources>

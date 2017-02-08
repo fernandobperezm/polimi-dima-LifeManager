@@ -1,12 +1,15 @@
 // TutorialApp
 // Created by Spotify on 25/02/14.
 // Copyright (c) 2014 Spotify. All rights reserved.
-package fernandoperez.lifemanager.spotifyapi;
+package fernandoperez.lifemanager.spotifyapi.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import com.spotify.sdk.android.authentication.AuthenticationClient;
 import com.spotify.sdk.android.authentication.AuthenticationRequest;
@@ -22,7 +25,7 @@ import com.spotify.sdk.android.player.SpotifyPlayer;
 import java.util.List;
 
 import fernandoperez.lifemanager.R;
-import fernandoperez.lifemanager.constants.constants;
+import fernandoperez.lifemanager.utils.constants;
 import kaaes.spotify.webapi.android.SpotifyApi;
 import kaaes.spotify.webapi.android.SpotifyService;
 import kaaes.spotify.webapi.android.models.Pager;
@@ -33,13 +36,10 @@ import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class SpotifyMainActivity extends AppCompatActivity implements
+public class SpotifyPlaybackFragment extends Fragment implements
         SpotifyPlayer.NotificationCallback, ConnectionStateCallback
 {
-
-    // TODO: Replace with your client ID
     private static final String CLIENT_ID = "7499847a03c440caa753f45305762a56";
-    // TODO: Replace with your redirect URI
     private static final String REDIRECT_URI = "lifemanager-login://callback";
 
     // Request code that will be used to verify if the result comes from correct activity
@@ -52,14 +52,26 @@ public class SpotifyMainActivity extends AppCompatActivity implements
     private String selectedPlaylistUri;
     private int selectedPlaylistIndex;
 
+    public static SpotifyPlaybackFragment create() {
+        SpotifyPlaybackFragment fragment = new SpotifyPlaybackFragment();
+        return fragment;
+    }
+
+    public SpotifyPlaybackFragment() {}
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_spotify_main);
+    }
 
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout containing a title and body text.
+        ViewGroup rootView = (ViewGroup) inflater
+                .inflate(R.layout.fragment_spotify_main_playback, container, false);
 
-        // TODO: The index should be accessed in another way.
-        selectedPlaylistIndex = getIntent().getIntExtra(constants.SPOTIFIY_INDEX_INTENT, 0);
+        selectedPlaylistIndex = constants.SPOTIFY_DEFAULT_INDEX_PLAYLIST;
 
         AuthenticationRequest.Builder builder = new AuthenticationRequest.Builder(CLIENT_ID,
                 AuthenticationResponse.Type.TOKEN,
@@ -67,11 +79,14 @@ public class SpotifyMainActivity extends AppCompatActivity implements
         builder.setScopes(new String[]{"user-read-private", "streaming"});
         AuthenticationRequest request = builder.build();
 
-        AuthenticationClient.openLoginActivity(this, REQUEST_CODE, request);
+        Intent intent = AuthenticationClient.createLoginActivityIntent(getActivity(), request);
+        startActivityForResult(intent, REQUEST_CODE);
+
+        return rootView;
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
 
         // Check if result comes from the correct activity
@@ -81,13 +96,13 @@ public class SpotifyMainActivity extends AppCompatActivity implements
 
                 final String accessToken = response.getAccessToken();
 
-                Config playerConfig = new Config(this, response.getAccessToken(), CLIENT_ID);
+                Config playerConfig = new Config(getContext(), response.getAccessToken(), CLIENT_ID);
                 Spotify.getPlayer(playerConfig, this, new SpotifyPlayer.InitializationObserver() {
                     @Override
                     public void onInitialized(SpotifyPlayer spotifyPlayer) {
                         mPlayer = spotifyPlayer;
-                        mPlayer.addConnectionStateCallback(SpotifyMainActivity.this);
-                        mPlayer.addNotificationCallback(SpotifyMainActivity.this);
+                        mPlayer.addConnectionStateCallback(SpotifyPlaybackFragment.this);
+                        mPlayer.addNotificationCallback(SpotifyPlaybackFragment.this);
 
                         SpotifyService spotifyService = setWebApiEndpoint(accessToken);
                         spotifyService.getMyPlaylists(new SimplePlaylistCallback());
@@ -95,7 +110,7 @@ public class SpotifyMainActivity extends AppCompatActivity implements
 
                     @Override
                     public void onError(Throwable throwable) {
-                        Log.e("SpotifyMainActivity", "Could not initialize player: " + throwable.getMessage());
+                        Log.e("SpotifyPlaybackFragment", "Could not initialize player: " + throwable.getMessage());
                     }
                 });
 
@@ -105,7 +120,7 @@ public class SpotifyMainActivity extends AppCompatActivity implements
     }
 
     @Override
-    protected void onDestroy() {
+    public void onDestroy() {
         // VERY IMPORTANT! This must always be called or else you will leak resources
         Spotify.destroyPlayer(this);
         super.onDestroy();
@@ -113,7 +128,7 @@ public class SpotifyMainActivity extends AppCompatActivity implements
 
     @Override
     public void onPlaybackEvent(PlayerEvent playerEvent) {
-        Log.d("SpotifyMainActivity", "Playback event received: " + playerEvent.name());
+        Log.d("SpotifyPlaybackFragment", "Playback event received: " + playerEvent.name());
         switch (playerEvent) {
             // Handle event type as necessary
             default:
@@ -123,7 +138,7 @@ public class SpotifyMainActivity extends AppCompatActivity implements
 
     @Override
     public void onPlaybackError(Error error) {
-        Log.d("SpotifyMainActivity", "Playback error received: " + error.name());
+        Log.d("SpotifyPlaybackFragment", "Playback error received: " + error.name());
         switch (error) {
             // Handle error type as necessary
             default:
@@ -133,29 +148,29 @@ public class SpotifyMainActivity extends AppCompatActivity implements
 
     @Override
     public void onLoggedIn() {
-        Log.d("SpotifyMainActivity", "User logged in");
+        Log.d("SpotifyPlaybackFragment", "User logged in");
 
         mPlayer.playUri(null, selectedPlaylistUri, 0, 0);
     }
 
     @Override
     public void onLoggedOut() {
-        Log.d("SpotifyMainActivity", "User logged out");
+        Log.d("SpotifyPlaybackFragment", "User logged out");
     }
 
     @Override
     public void onLoginFailed(Error error) {
-        Log.d("SpotifyMainActiviy", "Login failed");
+        Log.d("SpotifyPlaybackFragment", "Login failed");
     }
 
     @Override
     public void onTemporaryError() {
-        Log.d("SpotifyMainActivity", "Temporary error occurred");
+        Log.d("SpotifyPlaybackFragment", "Temporary error occurred");
     }
 
     @Override
     public void onConnectionMessage(String message) {
-        Log.d("SpotifyMainActivity", "Received connection message: " + message);
+        Log.d("SpotifyPlaybackFragment", "Received connection message: " + message);
     }
 
 
@@ -192,7 +207,7 @@ public class SpotifyMainActivity extends AppCompatActivity implements
 
         @Override
         public void failure(RetrofitError error) {
-            Log.d ("SpotifyMainActivity", "Could not get playlist.");
+            Log.d ("SpotifyPlaybackFragment", "Could not get playlist.");
         }
 
     }
