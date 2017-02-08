@@ -12,7 +12,7 @@
         android:id="@+id/textview_twitter_fragment_login"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/textview_twitter_activity_login"
+        android:text="@string/textview_twitter_fragment_login"
         android:textSize="28sp"
         android:textAlignment="center"
         />

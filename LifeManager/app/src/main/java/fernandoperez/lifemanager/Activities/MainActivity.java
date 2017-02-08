@@ -12,7 +12,6 @@ import android.view.MenuItem;
 
 import fernandoperez.lifemanager.R;
 import fernandoperez.lifemanager.utils.constants;
-import fernandoperez.lifemanager.spotifyapi.SpotifyMainActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -51,13 +50,6 @@ public class MainActivity extends AppCompatActivity {
         switch (id) {
             case R.id.action_settings:
                 intent = new Intent(this, SettingsActivity.class);
-                startActivity(intent);
-
-                return true;
-
-            case R.id.action_spotify_login:
-                intent = new Intent(this, SpotifyMainActivity.class);
-                intent.putExtra(constants.SPOTIFIY_INDEX_INTENT,2);
                 startActivity(intent);
 
                 return true;

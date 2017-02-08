@@ -6,12 +6,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.twitter.sdk.android.Twitter;
 import com.twitter.sdk.android.core.TwitterSession;
@@ -21,8 +19,8 @@ import java.util.List;
 
 import fernandoperez.lifemanager.R;
 import fernandoperez.lifemanager.fragments.ScreenSlidePageFragment;
-import fernandoperez.lifemanager.fragments.SpotifySlidePageFragment;
 import fernandoperez.lifemanager.models.Services;
+import fernandoperez.lifemanager.spotifyapi.fragments.SpotifyPlaybackFragment;
 import fernandoperez.lifemanager.twitterapi.fragments.TwitterEmbeddedTimelineFragment;
 import fernandoperez.lifemanager.twitterapi.fragments.TwitterLoginFragment;
 import fernandoperez.lifemanager.utils.constants;
@@ -179,9 +177,12 @@ public class ScreenSlideActivity extends FragmentActivity {
             Fragment fragment;
             switch (mServicesList.get(position).getEnum()) {
                 case SPOTIFY:
-                    return SpotifySlidePageFragment.create();
+                    // Spotify handles by itself the login.
+                    return SpotifyPlaybackFragment.create();
 
                 case TWITTER:
+                    // Twitter only sets the session on the Session Manager, we must retrieve it
+                    // in order to know if the user is logged in.
                     twitterSession = Twitter.getInstance().core.getSessionManager().getActiveSession();
                     if (twitterSession == null) {
                         fragment = TwitterLoginFragment.create();
@@ -193,7 +194,7 @@ public class ScreenSlideActivity extends FragmentActivity {
 
 
                 default:
-                    return SpotifySlidePageFragment.create();
+                    return SpotifyPlaybackFragment.create();
             }
         }
 

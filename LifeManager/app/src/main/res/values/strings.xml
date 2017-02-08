@@ -25,7 +25,10 @@
     <!-- Google APi -->
 
     <!-- Twitter -->
-    <string name="textview_twitter_activity_login">Log in with Twitter to see your timeline.</string>
+    <string name="textview_twitter_fragment_login">Log in with Twitter to see your timeline.</string>
+
+    <!-- Spotify -->
+    <string name="textview_spotify_fragment_login">Log in with Spotify to play music.</string>
 
     <string name="app_id">1274777432582668</string>
     <string name="large_text">
