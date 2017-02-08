@@ -63,13 +63,10 @@
         </activity>
 
         <!-- TWIITER API -->
-        <activity android:name=".twitterapi.activities.TwitterLoginActivity" />
 
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="0099823a69ebd0f6b2ab8b41f7db95d7d121b889" />
-
-        <activity android:name=".twitterapi.activities.EmbeddedTimelineActivity" />
 
         <!-- SPOTIFY API -->
         <!-- Needed for LoginActivity to work -->
@@ -77,15 +74,7 @@
             android:name="com.spotify.sdk.android.authentication.LoginActivity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <activity android:name=".spotifyapi.SpotifyMainActivity" />
-        <activity
-            android:name=".activities.CurrentConfigActivity"
-            android:label="@string/title_activity_current_config"
-            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".activities.ScreenSlideActivity" />
-        <activity
-            android:name=".twitterapi.activities.TwitterMainActivity"
-            android:label="@string/title_activity_twitter_main"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

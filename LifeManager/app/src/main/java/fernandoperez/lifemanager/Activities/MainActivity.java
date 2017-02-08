@@ -13,7 +13,6 @@ import android.view.MenuItem;
 import fernandoperez.lifemanager.R;
 import fernandoperez.lifemanager.utils.constants;
 import fernandoperez.lifemanager.spotifyapi.SpotifyMainActivity;
-import fernandoperez.lifemanager.twitterapi.activities.TwitterLoginActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -52,12 +51,6 @@ public class MainActivity extends AppCompatActivity {
         switch (id) {
             case R.id.action_settings:
                 intent = new Intent(this, SettingsActivity.class);
-                startActivity(intent);
-
-                return true;
-
-            case R.id.action_twitter_login:
-                intent = new Intent(this, TwitterLoginActivity.class);
                 startActivity(intent);
 
                 return true;
