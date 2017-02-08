@@ -1,26 +1,33 @@
-package fernandoperez.lifemanager.twitterapi;
+package fernandoperez.lifemanager.twitterapi.activities;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
 
-import com.twitter.sdk.android.core.*;
-import com.twitter.sdk.android.core.identity.*;
+import com.twitter.sdk.android.core.Callback;
+import com.twitter.sdk.android.core.Result;
+import com.twitter.sdk.android.core.TwitterException;
+import com.twitter.sdk.android.core.TwitterSession;
+import com.twitter.sdk.android.core.identity.TwitterLoginButton;
 
 import fernandoperez.lifemanager.R;
 
-
-public class TwitterLoginActivity extends AppCompatActivity {
+public class TwitterMainActivity extends AppCompatActivity {
     private TwitterLoginButton loginButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_twitter_login);
+        setContentView(R.layout.activity_twitter_main);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         createLoginButton();
-
     }
 
     /**
@@ -43,7 +50,7 @@ public class TwitterLoginActivity extends AppCompatActivity {
 //                Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
 
                 // As the user could log in, we will show the timeline.
-                Intent intent = new Intent(TwitterLoginActivity.this, EmbeddedTimelineActivity.class);
+                Intent intent = new Intent(TwitterMainActivity.this, EmbeddedTimelineActivity.class);
                 startActivity(intent);
             }
             @Override
@@ -66,8 +73,5 @@ public class TwitterLoginActivity extends AppCompatActivity {
         // Activity that it triggered.
         loginButton.onActivityResult(requestCode, resultCode, data);
     }
-
-
-
 
 }

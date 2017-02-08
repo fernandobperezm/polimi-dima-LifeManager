@@ -1,5 +1,6 @@
 package fernandoperez.lifemanager.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -7,17 +8,24 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.twitter.sdk.android.Twitter;
+import com.twitter.sdk.android.core.TwitterSession;
+
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import fernandoperez.lifemanager.R;
 import fernandoperez.lifemanager.fragments.ScreenSlidePageFragment;
 import fernandoperez.lifemanager.fragments.SpotifySlidePageFragment;
-import fernandoperez.lifemanager.fragments.TwitterSlidePageFragment;
 import fernandoperez.lifemanager.models.Services;
+import fernandoperez.lifemanager.twitterapi.fragments.TwitterEmbeddedTimelineFragment;
+import fernandoperez.lifemanager.twitterapi.fragments.TwitterLoginFragment;
 import fernandoperez.lifemanager.utils.constants;
 
 /**
@@ -32,6 +40,10 @@ import fernandoperez.lifemanager.utils.constants;
  * @see ScreenSlidePageFragment
  */
 public class ScreenSlideActivity extends FragmentActivity {
+    /**
+     *
+     */
+    TwitterSession twitterSession;
 
     /**
      * The number of pages (wizard steps) to show in this demo.
@@ -47,7 +59,7 @@ public class ScreenSlideActivity extends FragmentActivity {
     /**
      * The pager adapter, which provides the pages to the view pager widget.
      */
-    private PagerAdapter mPagerAdapter;
+    private ScreenSlidePagerAdapter mPagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +68,9 @@ public class ScreenSlideActivity extends FragmentActivity {
 
         // Instantiate a ViewPager and a PagerAdapter.
         mPager = (ViewPager) findViewById(R.id.pager);
+
+        // Twitter Session Manager.
+        twitterSession = Twitter.getInstance().core.getSessionManager().getActiveSession();
 
         // TODO: mListServices should be retrieved from the config.
         List<Services> servicesList = new ArrayList<Services>();
@@ -68,7 +83,7 @@ public class ScreenSlideActivity extends FragmentActivity {
 
         mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager(), servicesList);
         mPager.setAdapter(mPagerAdapter);
-        mPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        mPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
@@ -129,14 +144,42 @@ public class ScreenSlideActivity extends FragmentActivity {
     }
 
     /**
+     * The method onActivityResult is called after the
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        // Pass the activity result to the fragment, which will then pass the result to the login
+        // button.
+        // TODO: this needs to find the twitter fragment.
+        // TODO: http://stackoverflow.com/questions/12384971/android-fragmentstatepageradapter-how-to-tag-a-fragment-to-find-it-later
+
+        int fragmentPosition = mPager.getCurrentItem();
+        Fragment currentFragment = getSupportFragmentManager().getFragments().get(fragmentPosition);
+        if (currentFragment != null) {
+            currentFragment.onActivityResult(requestCode, resultCode, data);
+            mPagerAdapter.notifyDataSetChanged();
+        }
+        else Log.d("Twitter", "fragment is null");
+    }
+
+
+
+    /**
      * A simple pager adapter that represents 5 {@link ScreenSlidePageFragment} objects, in
      * sequence.
      */
     private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
         List<Services> mServicesList;
+        FragmentManager supportFragmentManager;
+        public HashMap<Integer, Fragment> hola;
 
         public ScreenSlidePagerAdapter(FragmentManager fm, List<Services> servicesList) {
             super(fm);
+            this.supportFragmentManager = fm;
             this.mServicesList = servicesList;
         }
 
@@ -147,7 +190,12 @@ public class ScreenSlideActivity extends FragmentActivity {
                     return SpotifySlidePageFragment.create();
 
                 case TWITTER:
-                    return TwitterSlidePageFragment.create();
+                    if (twitterSession == null) {
+                        return TwitterLoginFragment.create();
+                    } else {
+                        return TwitterEmbeddedTimelineFragment.create();
+                    }
+
 
                 default:
                     return SpotifySlidePageFragment.create();
@@ -156,7 +204,9 @@ public class ScreenSlideActivity extends FragmentActivity {
 
         @Override
         public int getCount() {
-            return NUM_PAGES;
+            return mServicesList.size();
         }
     }
+
+
 }

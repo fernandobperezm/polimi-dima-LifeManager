@@ -13,7 +13,7 @@ import android.view.MenuItem;
 import fernandoperez.lifemanager.R;
 import fernandoperez.lifemanager.utils.constants;
 import fernandoperez.lifemanager.spotifyapi.SpotifyMainActivity;
-import fernandoperez.lifemanager.twitterapi.TwitterLoginActivity;
+import fernandoperez.lifemanager.twitterapi.activities.TwitterLoginActivity;
 
 public class MainActivity extends AppCompatActivity {
 

@@ -1,4 +1,4 @@
-package fernandoperez.lifemanager.twitterapi;
+package fernandoperez.lifemanager.twitterapi.activities;
 
 import android.app.ListActivity;
 import android.os.Bundle;
@@ -24,8 +24,7 @@ public class EmbeddedTimelineActivity extends ListActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_embedded_timeline);
 
-        // TODO: Handle the session better, if there's no active session we should make the user
-        // to login.
+        // TODO: Handle the session better, if there's no active session we should make the user login.
         TwitterSession session = Twitter.getSessionManager().getActiveSession();
 
         Twitter.getApiClient()

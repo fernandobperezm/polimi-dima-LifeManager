@@ -24,7 +24,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import fernandoperez.lifemanager.R;
-import fernandoperez.lifemanager.activities.ScreenSlideActivity;
 
 /**
  * A fragment representing a single step in a wizard. The fragment shows a dummy title indicating

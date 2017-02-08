@@ -1,9 +1,5 @@
 package fernandoperez.lifemanager.models;
 
-import android.support.v4.app.Fragment;
-
-import fernandoperez.lifemanager.fragments.SpotifySlidePageFragment;
-import fernandoperez.lifemanager.fragments.TwitterSlidePageFragment;
 import fernandoperez.lifemanager.utils.constants.SERVICES_LIST;
 
 /**
