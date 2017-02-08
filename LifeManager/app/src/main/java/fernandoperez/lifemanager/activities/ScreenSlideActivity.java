@@ -65,10 +65,10 @@ public class ScreenSlideActivity extends FragmentActivity {
         List<Services> servicesList = new ArrayList<Services>();
         servicesList.add(new Services("Spotify","Spotify Inc.", constants.SERVICES_LIST.SPOTIFY));
         servicesList.add(new Services("Twitter", "Twitter Inc.", constants.SERVICES_LIST.TWITTER));
-        servicesList.add(new Services("Wifi","Spotify Inc.", constants.SERVICES_LIST.SPOTIFY));
-        servicesList.add(new Services("GPS", "Twitter Inc.", constants.SERVICES_LIST.TWITTER));
-        servicesList.add(new Services("Weather","Spotify Inc.", constants.SERVICES_LIST.TWITTER));
-        servicesList.add(new Services("Facebook", "Twitter Inc.", constants.SERVICES_LIST.SPOTIFY));
+        servicesList.add(new Services("Wifi","Spotify Inc.", constants.SERVICES_LIST.LOCATION));
+        servicesList.add(new Services("GPS", "Twitter Inc.", constants.SERVICES_LIST.LOCATION));
+        servicesList.add(new Services("Weather","Spotify Inc.", constants.SERVICES_LIST.LOCATION));
+        servicesList.add(new Services("Facebook", "Twitter Inc.", constants.SERVICES_LIST.LOCATION));
 
         mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager(), servicesList);
         mPager.setAdapter(mPagerAdapter);
@@ -92,7 +92,7 @@ public class ScreenSlideActivity extends FragmentActivity {
 
             }
         });
-        mPager.removeOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        mPager.removeOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
@@ -156,7 +156,6 @@ public class ScreenSlideActivity extends FragmentActivity {
      }
 
 
-
     /**
      * A simple pager adapter that represents 5 {@link ScreenSlidePageFragment} objects, in
      * sequence.
@@ -194,7 +193,7 @@ public class ScreenSlideActivity extends FragmentActivity {
 
 
                 default:
-                    return SpotifyPlaybackFragment.create();
+                    return ScreenSlidePageFragment.create(position);
             }
         }
 
@@ -209,8 +208,7 @@ public class ScreenSlideActivity extends FragmentActivity {
             if (object instanceof TwitterLoginFragment) {
                 return POSITION_NONE;
             }
-/////            if (object instanceof NextFragment && mFragmentAtPos0 instanceof FirstFragment)
-/////                return POSITION_NONE;
+
             return FragmentStatePagerAdapter.POSITION_UNCHANGED;
         }
     }
