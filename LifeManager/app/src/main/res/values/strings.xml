@@ -25,7 +25,7 @@
     <!-- Google APi -->
 
     <!-- Twitter -->
-    <string name="textview_twitter_activity_login">Log In to see your timeline.</string>
+    <string name="textview_twitter_activity_login">Log in with Twitter to see your timeline.</string>
 
     <string name="app_id">1274777432582668</string>
     <string name="large_text">

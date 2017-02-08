@@ -5,8 +5,6 @@ package fernandoperez.lifemanager.utils;
  */
 
 public abstract class constants {
-
-
     // INTENT CODES.
     public final static String TWITTER_ID_INTENT = "TWITTER_ID_INTENT";
     public final static String SPOTIFIY_INDEX_INTENT = "SPOTIFIY_INDEX_INTENT";

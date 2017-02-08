@@ -11,13 +11,12 @@ import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.twitter.sdk.android.Twitter;
 import com.twitter.sdk.android.core.TwitterSession;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 import fernandoperez.lifemanager.R;
@@ -41,11 +40,6 @@ import fernandoperez.lifemanager.utils.constants;
  */
 public class ScreenSlideActivity extends FragmentActivity {
     /**
-     *
-     */
-    TwitterSession twitterSession;
-
-    /**
      * The number of pages (wizard steps) to show in this demo.
      */
     private static final int NUM_PAGES = constants.MAX_SERVICES;
@@ -68,9 +62,6 @@ public class ScreenSlideActivity extends FragmentActivity {
 
         // Instantiate a ViewPager and a PagerAdapter.
         mPager = (ViewPager) findViewById(R.id.pager);
-
-        // Twitter Session Manager.
-        twitterSession = Twitter.getInstance().core.getSessionManager().getActiveSession();
 
         // TODO: mListServices should be retrieved from the config.
         List<Services> servicesList = new ArrayList<Services>();
@@ -154,17 +145,17 @@ public class ScreenSlideActivity extends FragmentActivity {
         super.onActivityResult(requestCode, resultCode, data);
         // Pass the activity result to the fragment, which will then pass the result to the login
         // button.
-        // TODO: this needs to find the twitter fragment.
-        // TODO: http://stackoverflow.com/questions/12384971/android-fragmentstatepageradapter-how-to-tag-a-fragment-to-find-it-later
-
         int fragmentPosition = mPager.getCurrentItem();
         Fragment currentFragment = getSupportFragmentManager().getFragments().get(fragmentPosition);
+
         if (currentFragment != null) {
             currentFragment.onActivityResult(requestCode, resultCode, data);
             mPagerAdapter.notifyDataSetChanged();
         }
-        else Log.d("Twitter", "fragment is null");
-    }
+        else Log.d("ScreenSlideActivity", "fragment is null");
+
+
+     }
 
 
 
@@ -175,7 +166,7 @@ public class ScreenSlideActivity extends FragmentActivity {
     private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
         List<Services> mServicesList;
         FragmentManager supportFragmentManager;
-        public HashMap<Integer, Fragment> hola;
+        TwitterSession twitterSession;
 
         public ScreenSlidePagerAdapter(FragmentManager fm, List<Services> servicesList) {
             super(fm);
@@ -185,15 +176,19 @@ public class ScreenSlideActivity extends FragmentActivity {
 
         @Override
         public Fragment getItem(int position) {
+            Fragment fragment;
             switch (mServicesList.get(position).getEnum()) {
                 case SPOTIFY:
                     return SpotifySlidePageFragment.create();
 
                 case TWITTER:
+                    twitterSession = Twitter.getInstance().core.getSessionManager().getActiveSession();
                     if (twitterSession == null) {
-                        return TwitterLoginFragment.create();
+                        fragment = TwitterLoginFragment.create();
+                        return fragment;
                     } else {
-                        return TwitterEmbeddedTimelineFragment.create();
+                        fragment = TwitterEmbeddedTimelineFragment.create();
+                        return fragment;
                     }
 
 
@@ -205,6 +200,17 @@ public class ScreenSlideActivity extends FragmentActivity {
         @Override
         public int getCount() {
             return mServicesList.size();
+        }
+
+        @Override
+        public int getItemPosition(Object object) {
+            //TODO: Instead of reloading every fragment, reload only the one that needs to be updated.
+            if (object instanceof TwitterLoginFragment) {
+                return POSITION_NONE;
+            }
+/////            if (object instanceof NextFragment && mFragmentAtPos0 instanceof FirstFragment)
+/////                return POSITION_NONE;
+            return FragmentStatePagerAdapter.POSITION_UNCHANGED;
         }
     }
 
