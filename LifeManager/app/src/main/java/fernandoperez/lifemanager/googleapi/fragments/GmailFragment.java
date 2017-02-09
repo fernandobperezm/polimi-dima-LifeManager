@@ -13,6 +13,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,15 +43,21 @@ import java.util.Iterator;
 import java.util.List;
 
 import fernandoperez.lifemanager.R;
+import fernandoperez.lifemanager.adapters.EmailAdapter;
+import fernandoperez.lifemanager.googleapi.interfaces.OnBackgroundTaskListener;
 import fernandoperez.lifemanager.models.Email;
 import fernandoperez.lifemanager.utils.constants;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
 public class GmailFragment extends Fragment
-        implements EasyPermissions.PermissionCallbacks {
+        implements EasyPermissions.PermissionCallbacks, OnBackgroundTaskListener {
     GoogleAccountCredential mCredential;
     ProgressDialog mProgress;
+
+    private RecyclerView mRecyclerView;
+    private RecyclerView.Adapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
 
     static final int REQUEST_ACCOUNT_PICKER = 1000;
     static final int REQUEST_AUTHORIZATION = 1001;
@@ -90,8 +98,17 @@ public class GmailFragment extends Fragment
                 getContext(), Arrays.asList(SCOPES))
                 .setBackOff(new ExponentialBackOff());
 
-        System.out.println("CALLED");
         getResultsFromApi();
+
+        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerview_gmail_emails);
+
+        // use this setting to improve performance if you know that changes
+        // in content do not change the layout size of the RecyclerView
+        mRecyclerView.setHasFixedSize(true);
+
+        // use a linear layout manager
+        mLayoutManager = new LinearLayoutManager(getContext());
+        mRecyclerView.setLayoutManager(mLayoutManager);
 
         return rootView;
     }
@@ -111,7 +128,7 @@ public class GmailFragment extends Fragment
         } else if (! isDeviceOnline()) {
             System.out.println("No network connection available.");
         } else {
-            new MakeRequestTask(mCredential).execute();
+            new MakeRequestTask(mCredential,this).execute();
         }
     }
 
@@ -294,6 +311,17 @@ public class GmailFragment extends Fragment
         dialog.show();
     }
 
+    @Override
+    public void onTaskCompleted(List<Email> emailList) {
+        // specify an adapter (see also next example)
+
+        mAdapter = new EmailAdapter(emailList);
+
+        if (mRecyclerView != null) {
+            mRecyclerView.setAdapter(mAdapter);
+        }
+    }
+
     /**
      * An asynchronous task that handles the Gmail API call.
      * Placing the API calls in their own task ensures the UI stays responsive.
@@ -301,10 +329,12 @@ public class GmailFragment extends Fragment
     private class MakeRequestTask extends AsyncTask<Void, Void, List<Email>> {
         private Gmail mService = null;
         private Exception mLastError = null;
+        public OnBackgroundTaskListener mListener;
 
-        MakeRequestTask(GoogleAccountCredential credential) {
+        MakeRequestTask(GoogleAccountCredential credential, OnBackgroundTaskListener listener) {
             HttpTransport transport = AndroidHttp.newCompatibleTransport();
             JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+            mListener = listener;
             mService = new Gmail.Builder(
                     transport, jsonFactory, credential)
                     .setApplicationName("Life Manager")
@@ -434,7 +464,7 @@ public class GmailFragment extends Fragment
             if (output == null || output.size() == 0) {
                 System.out.println("No results returned.");
             } else {
-//                System.out.println(output);
+                mListener.onTaskCompleted(output);
             }
         }
 
