@@ -9,21 +9,15 @@
         app:showAsAction="never" />
 
     <item
-        android:id="@+id/action_twitter_login"
-        android:orderInCategory="100"
-        android:title="Twitter"
-        app:showAsAction="never" />
-
-    <item
-        android:id="@+id/action_spotify_login"
-        android:orderInCategory="100"
-        android:title="Spotify"
-        app:showAsAction="never" />
-
-    <item
         android:id="@+id/action_current_settings"
         android:orderInCategory="100"
         android:title="CurrentSettings"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_gmail"
+        android:orderInCategory="100"
+        android:title="Gmail"
         app:showAsAction="never" />
 
 </menu>

@@ -19,6 +19,7 @@ import java.util.List;
 
 import fernandoperez.lifemanager.R;
 import fernandoperez.lifemanager.fragments.ScreenSlidePageFragment;
+import fernandoperez.lifemanager.googleapi.fragments.GmailFragment;
 import fernandoperez.lifemanager.models.Services;
 import fernandoperez.lifemanager.spotifyapi.fragments.SpotifyPlaybackFragment;
 import fernandoperez.lifemanager.twitterapi.fragments.TwitterEmbeddedTimelineFragment;
@@ -65,10 +66,10 @@ public class ScreenSlideActivity extends FragmentActivity {
         List<Services> servicesList = new ArrayList<Services>();
         servicesList.add(new Services("Spotify","Spotify Inc.", constants.SERVICES_LIST.SPOTIFY));
         servicesList.add(new Services("Twitter", "Twitter Inc.", constants.SERVICES_LIST.TWITTER));
-        servicesList.add(new Services("Wifi","Spotify Inc.", constants.SERVICES_LIST.LOCATION));
-        servicesList.add(new Services("GPS", "Twitter Inc.", constants.SERVICES_LIST.LOCATION));
-        servicesList.add(new Services("Weather","Spotify Inc.", constants.SERVICES_LIST.LOCATION));
-        servicesList.add(new Services("Facebook", "Twitter Inc.", constants.SERVICES_LIST.LOCATION));
+        servicesList.add(new Services("Wifi","Spotify Inc.", constants.SERVICES_LIST.EMAIL));
+//        servicesList.add(new Services("GPS", "Twitter Inc.", constants.SERVICES_LIST.LOCATION));
+//        servicesList.add(new Services("Weather","Spotify Inc.", constants.SERVICES_LIST.LOCATION));
+//        servicesList.add(new Services("Facebook", "Twitter Inc.", constants.SERVICES_LIST.LOCATION));
 
         mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager(), servicesList);
         mPager.setAdapter(mPagerAdapter);
@@ -185,12 +186,13 @@ public class ScreenSlideActivity extends FragmentActivity {
                     twitterSession = Twitter.getInstance().core.getSessionManager().getActiveSession();
                     if (twitterSession == null) {
                         fragment = TwitterLoginFragment.create();
-                        return fragment;
                     } else {
                         fragment = TwitterEmbeddedTimelineFragment.create();
-                        return fragment;
                     }
+                    return fragment;
 
+                case EMAIL:
+                    return GmailFragment.create();
 
                 default:
                     return ScreenSlidePageFragment.create(position);

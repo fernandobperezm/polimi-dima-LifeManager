@@ -22,7 +22,7 @@ public abstract class constants {
 
     // Enumarable.
     public enum SERVICES_LIST {
-        SPOTIFY, TWITTER, WIFI, LOCATION
+        SPOTIFY, TWITTER, WIFI, LOCATION, EMAIL
     }
 
     //

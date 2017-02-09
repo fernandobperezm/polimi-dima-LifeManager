@@ -23,6 +23,7 @@
     <string name="button_settings_backup_backupnow">Backup Now</string>
 
     <!-- Google APi -->
+    <string name="textview_email_title">Gmail</string>
 
     <!-- Twitter -->
     <string name="textview_twitter_fragment_login">Log in with Twitter to see your timeline.</string>

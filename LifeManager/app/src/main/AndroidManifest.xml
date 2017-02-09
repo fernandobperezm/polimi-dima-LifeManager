@@ -4,6 +4,8 @@
     package="fernandoperez.lifemanager">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
 
     <meta-data
         android:name="com.facebook.sdk.ApplicationId"
@@ -61,6 +63,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="fernandoperez.lifemanager.activities.BackUpActivity" />
         </activity>
+        <activity android:name=".googleapi.activities.GmailActivity"></activity>
 
         <!-- TWIITER API -->
         <meta-data
