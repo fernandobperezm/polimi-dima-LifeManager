@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
@@ -64,12 +65,9 @@ public class ScreenSlideActivity extends FragmentActivity {
 
         // TODO: mListServices should be retrieved from the config.
         List<Services> servicesList = new ArrayList<Services>();
+        servicesList.add(new Services("Wifi","Spotify Inc.", constants.SERVICES_LIST.EMAIL));
         servicesList.add(new Services("Spotify","Spotify Inc.", constants.SERVICES_LIST.SPOTIFY));
         servicesList.add(new Services("Twitter", "Twitter Inc.", constants.SERVICES_LIST.TWITTER));
-        servicesList.add(new Services("Wifi","Spotify Inc.", constants.SERVICES_LIST.EMAIL));
-//        servicesList.add(new Services("GPS", "Twitter Inc.", constants.SERVICES_LIST.LOCATION));
-//        servicesList.add(new Services("Weather","Spotify Inc.", constants.SERVICES_LIST.LOCATION));
-//        servicesList.add(new Services("Facebook", "Twitter Inc.", constants.SERVICES_LIST.LOCATION));
 
         mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager(), servicesList);
         mPager.setAdapter(mPagerAdapter);
@@ -145,6 +143,7 @@ public class ScreenSlideActivity extends FragmentActivity {
         // Pass the activity result to the fragment, which will then pass the result to the login
         // button.
         int fragmentPosition = mPager.getCurrentItem();
+        System.out.println("ACTIVITY RESULT");
         Fragment currentFragment = getSupportFragmentManager().getFragments().get(fragmentPosition);
 
         if (currentFragment != null) {
@@ -211,7 +210,7 @@ public class ScreenSlideActivity extends FragmentActivity {
                 return POSITION_NONE;
             }
 
-            return FragmentStatePagerAdapter.POSITION_UNCHANGED;
+            return POSITION_UNCHANGED;
         }
     }
 

@@ -6,7 +6,6 @@ package fernandoperez.lifemanager.utils;
 
 public abstract class constants {
     // INTENT CODES.
-    public final static String SPOTIFIY_INDEX_INTENT = "SPOTIFIY_INDEX_INTENT";
     public final static int TWITTER_MAX_HOME_TIMELINE_TWEETS = 50;
 
     // Call codes.
@@ -27,4 +26,8 @@ public abstract class constants {
 
     //
     public final static int MAX_SERVICES = 6;
+
+    // Gmail API.
+    public final static long MAX_EMAILS_FETCH = 20;
 }
+

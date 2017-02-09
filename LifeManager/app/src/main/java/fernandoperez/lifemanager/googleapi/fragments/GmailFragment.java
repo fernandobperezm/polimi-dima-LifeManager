@@ -2,7 +2,6 @@ package fernandoperez.lifemanager.googleapi.fragments;
 
 import android.Manifest;
 import android.accounts.AccountManager;
-import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -14,14 +13,9 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.text.TextUtils;
-import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -43,17 +37,18 @@ import com.google.api.services.gmail.model.Message;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import fernandoperez.lifemanager.R;
-import fernandoperez.lifemanager.spotifyapi.fragments.SpotifyPlaybackFragment;
+import fernandoperez.lifemanager.models.Email;
+import fernandoperez.lifemanager.utils.constants;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
 public class GmailFragment extends Fragment
         implements EasyPermissions.PermissionCallbacks {
     GoogleAccountCredential mCredential;
-    private Button mCallApiButton;
     ProgressDialog mProgress;
 
     static final int REQUEST_ACCOUNT_PICKER = 1000;
@@ -61,7 +56,6 @@ public class GmailFragment extends Fragment
     static final int REQUEST_GOOGLE_PLAY_SERVICES = 1002;
     static final int REQUEST_PERMISSION_GET_ACCOUNTS = 1003;
 
-    private static final String BUTTON_TEXT = "Call Gmail API";
     private static final String PREF_ACCOUNT_NAME = "accountName";
     private static final String[] SCOPES = {GmailScopes.MAIL_GOOGLE_COM, GmailScopes.GMAIL_SEND};
 
@@ -88,17 +82,6 @@ public class GmailFragment extends Fragment
         ViewGroup rootView = (ViewGroup) inflater
           .inflate(R.layout.fragment_gmail_main_emails, container, false);
 
-        mCallApiButton = (Button) rootView.findViewById(R.id.button_email_loadapi);
-        mCallApiButton.setText(BUTTON_TEXT);
-        mCallApiButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mCallApiButton.setEnabled(false);
-                getResultsFromApi();
-                mCallApiButton.setEnabled(true);
-            }
-        });
-
         mProgress = new ProgressDialog(getContext());
         mProgress.setMessage("Calling Gmail API ...");
 
@@ -106,6 +89,9 @@ public class GmailFragment extends Fragment
         mCredential = GoogleAccountCredential.usingOAuth2(
                 getContext(), Arrays.asList(SCOPES))
                 .setBackOff(new ExponentialBackOff());
+
+        System.out.println("CALLED");
+        getResultsFromApi();
 
         return rootView;
     }
@@ -312,7 +298,7 @@ public class GmailFragment extends Fragment
      * An asynchronous task that handles the Gmail API call.
      * Placing the API calls in their own task ensures the UI stays responsive.
      */
-    private class MakeRequestTask extends AsyncTask<Void, Void, List<String>> {
+    private class MakeRequestTask extends AsyncTask<Void, Void, List<Email>> {
         private Gmail mService = null;
         private Exception mLastError = null;
 
@@ -321,7 +307,7 @@ public class GmailFragment extends Fragment
             JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
             mService = new Gmail.Builder(
                     transport, jsonFactory, credential)
-                    .setApplicationName("Gmail API Android Quickstart")
+                    .setApplicationName("Life Manager")
                     .build();
         }
 
@@ -330,7 +316,7 @@ public class GmailFragment extends Fragment
          * @param params no parameters needed for this task.
          */
         @Override
-        protected List<String> doInBackground(Void... params) {
+        protected List<Email> doInBackground(Void... params) {
             try {
                 return getDataFromApi();
             } catch (Exception e) {
@@ -341,38 +327,98 @@ public class GmailFragment extends Fragment
         }
 
         /**
-         * Fetch a list of Gmail labels attached to the specified account.
+         * Fetch a list of Gmail emails with it's snippet and full content to display.
          * @return List of Strings labels.
          * @throws IOException
          */
-        private List<String> getDataFromApi() throws IOException {
-            // Get the labels in the user's account.
+        private List<Email> getDataFromApi() throws IOException {
+            // Get the emails ids, snippets and bodies in the user's account.
             String user = "me";
+            String emailId;
+            String emailSnippet;
+            String emailBody;
+            String emailMimeType;
+            List<String> emailsIds = new ArrayList<>();
+            List<Email> emailList = new ArrayList<>();
 
-            List<String> emails = new ArrayList<String>();
+            // Getting the emails Ids.
             ListMessagesResponse listResponse =
-                    mService.users().messages().list(user).execute();
+                    mService
+                      .users()
+                      .messages()
+                      .list(user)
+                      .setMaxResults(constants.MAX_EMAILS_FETCH)
+                      .execute();
             for (Message message : listResponse.getMessages()) {
-                emails.add(message.getId());
-                System.out.println(message.getId());
+                emailsIds.add(message.getId());
             }
 
-            Message messageResponse =
-              mService.users().messages().get(user, "15a20172b33f801f").setFormat("FULL").execute();
-
+            // Getting the emails snippet and bodies.
             // Emails come in two parts:
             // Parts have two values:
-            //  1st- Email plain text.
-            //  2nd- html text.
-            String emailString = messageResponse.getPayload().getParts().get(0).getBody().getData();
+            //  1st- Email plain base 64 encoded string.
+            //  2nd- html base 64 encoded string.
+            for (Iterator<String> emailIdIterator = emailsIds.iterator(); emailIdIterator.hasNext();){
+                emailId = emailIdIterator.next();
+                Message messageResponse =
+                  mService
+                    .users()
+                    .messages()
+                    .get(user, emailId)
+                    .setFormat("FULL")
+                    .execute();
+                emailSnippet = messageResponse.getSnippet();
+                Email email = new Email(emailId, emailSnippet);
+                emailMimeType = messageResponse.getPayload().getMimeType();
+                switch (emailMimeType) {
+                    case "multipart/alternative":
+                        emailBody =
+                          StringUtils.newStringUtf8(
+                            Base64.decodeBase64(
+                              messageResponse
+                                .getPayload()
+                                .getParts()
+                                .get(0)
+                                .getBody()
+                                .getData()
+                            )
+                          );
+                        email.setBody(emailBody);
+                        break;
+                    case "multipart/mixed":
+                        emailBody =
+                          StringUtils.newStringUtf8(
+                            Base64.decodeBase64(
+                              messageResponse
+                                .getPayload()
+                                .getParts()
+                                .get(0)
+                                .getBody()
+                                .getData()
+                            )
+                          );
+                        email.setBody(emailBody);
+                        break;
 
-            System.out.println(
-              StringUtils.newStringUtf8(
-                Base64.decodeBase64(emailString)
-              )
-            );
+                    case "text/plain":
+                        emailBody =
+                          StringUtils.newStringUtf8(
+                            Base64.decodeBase64(
+                              messageResponse
+                                .getPayload()
+                                .getBody()
+                                .getData()
+                            )
+                          );
+                        email.setBody(emailBody);
+                        break;
 
-            return emails;
+                    default:
+                        break;
+                }
+                emailList.add(email);
+            }
+            return emailList;
         }
 
 
@@ -383,13 +429,12 @@ public class GmailFragment extends Fragment
         }
 
         @Override
-        protected void onPostExecute(List<String> output) {
+        protected void onPostExecute(List<Email> output) {
             mProgress.hide();
             if (output == null || output.size() == 0) {
                 System.out.println("No results returned.");
             } else {
-                output.add(0, "Data retrieved using the Gmail API:");
-                System.out.println(TextUtils.join("\n", output));
+                System.out.println(output);
             }
         }
 

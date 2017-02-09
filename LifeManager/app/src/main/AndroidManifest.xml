@@ -73,6 +73,8 @@
         <!-- SPOTIFY API -->
         <!-- Needed for LoginActivity to work -->
         <activity
+            tools:replace="android:launchMode"
+            android:launchMode="standard"
             android:name="com.spotify.sdk.android.authentication.LoginActivity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <activity android:name=".activities.ScreenSlideActivity" />
