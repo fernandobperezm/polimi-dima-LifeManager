@@ -35,6 +35,7 @@ import com.google.api.services.gmail.Gmail;
 import com.google.api.services.gmail.GmailScopes;
 import com.google.api.services.gmail.model.ListMessagesResponse;
 import com.google.api.services.gmail.model.Message;
+import com.google.api.services.gmail.model.MessagePartHeader;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -65,7 +66,7 @@ public class GmailFragment extends Fragment
     static final int REQUEST_PERMISSION_GET_ACCOUNTS = 1003;
 
     private static final String PREF_ACCOUNT_NAME = "accountName";
-    private static final String[] SCOPES = {GmailScopes.MAIL_GOOGLE_COM, GmailScopes.GMAIL_SEND};
+    private static final String[] SCOPES = {GmailScopes.MAIL_GOOGLE_COM, GmailScopes.GMAIL_SEND, GmailScopes.GMAIL_MODIFY};
 
     public static GmailFragment create() {
         GmailFragment fragment = new GmailFragment();
@@ -367,6 +368,8 @@ public class GmailFragment extends Fragment
             String emailId;
             String emailSnippet;
             String emailBody;
+            String emailSender = null;
+            String emailSubject = null;
             String emailMimeType;
             List<String> emailsIds = new ArrayList<>();
             List<Email> emailList = new ArrayList<>();
@@ -397,8 +400,22 @@ public class GmailFragment extends Fragment
                     .get(user, emailId)
                     .setFormat("FULL")
                     .execute();
+
+                for (Iterator<MessagePartHeader> headerIterator = messageResponse.getPayload().getHeaders().iterator(); headerIterator.hasNext();) {
+                    MessagePartHeader header = headerIterator.next();
+                    switch (header.getName()){
+                        case "From":
+                            emailSender = header.getValue();
+                            break;
+
+                        case "Subject":
+                            emailSubject = header.getValue();
+                            break;
+                    }
+                }
+
                 emailSnippet = messageResponse.getSnippet();
-                Email email = new Email(emailId, emailSnippet);
+                Email email = new Email(emailId, emailSnippet, emailSender, emailSubject);
                 emailMimeType = messageResponse.getPayload().getMimeType();
                 switch (emailMimeType) {
                     case "multipart/alternative":

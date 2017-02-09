@@ -9,6 +9,8 @@ import fernandoperez.lifemanager.utils.constants.SERVICES_LIST;
 public class Email {
 
     private String mId;
+    private String mSender;
+    private String mSubject;
     private String mSnippet;
     private String mBody;
 
@@ -19,10 +21,18 @@ public class Email {
         this.mSnippet = snippet;
     }
 
-    public Email(String id, String snippet, String body) {
+    public Email(String id, String snippet, String sender, String subject) {
+        this.mId = id;
+        this.mSnippet = snippet;
+        this.mSender = sender;
+        this.mSubject = (subject != null && !subject.isEmpty()) ? subject : "*No Subject*";
+    }
+    public Email(String id, String snippet, String body, String sender, String subject) {
         this.mId = id;
         this.mSnippet = snippet;
         this.mBody = body;
+        this.mSender = sender;
+        this.mSubject = (subject != null && !subject.isEmpty()) ? subject : "*No Subject*";
     }
 
     public String getId() {
@@ -32,6 +42,10 @@ public class Email {
     public String getSnippet() {
         return mSnippet;
     }
+
+    public String getSender() {return mSender;}
+
+    public String getSubject() {return mSubject;}
 
     public String getBody() {return mBody; }
 
