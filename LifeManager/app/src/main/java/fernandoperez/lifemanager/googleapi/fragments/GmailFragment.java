@@ -434,7 +434,7 @@ public class GmailFragment extends Fragment
             if (output == null || output.size() == 0) {
                 System.out.println("No results returned.");
             } else {
-                System.out.println(output);
+//                System.out.println(output);
             }
         }
 

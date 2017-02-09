@@ -16,6 +16,7 @@ import com.twitter.sdk.android.Twitter;
 import com.twitter.sdk.android.core.TwitterSession;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import fernandoperez.lifemanager.R;
@@ -64,10 +65,13 @@ public class ScreenSlideActivity extends FragmentActivity {
         mPager = (ViewPager) findViewById(R.id.pager);
 
         // TODO: mListServices should be retrieved from the config.
-        List<Services> servicesList = new ArrayList<Services>();
-        servicesList.add(new Services("Wifi","Spotify Inc.", constants.SERVICES_LIST.EMAIL));
-        servicesList.add(new Services("Spotify","Spotify Inc.", constants.SERVICES_LIST.SPOTIFY));
+        List<Services> servicesList = new ArrayList<>();
+
         servicesList.add(new Services("Twitter", "Twitter Inc.", constants.SERVICES_LIST.TWITTER));
+        servicesList.add(new Services("Spotify","Spotify Inc.", constants.SERVICES_LIST.SPOTIFY));
+        servicesList.add(new Services("Wifi","Spotify Inc.", constants.SERVICES_LIST.EMAIL));
+
+        Collections.sort(servicesList);
 
         mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager(), servicesList);
         mPager.setAdapter(mPagerAdapter);
@@ -143,7 +147,6 @@ public class ScreenSlideActivity extends FragmentActivity {
         // Pass the activity result to the fragment, which will then pass the result to the login
         // button.
         int fragmentPosition = mPager.getCurrentItem();
-        System.out.println("ACTIVITY RESULT");
         Fragment currentFragment = getSupportFragmentManager().getFragments().get(fragmentPosition);
 
         if (currentFragment != null) {
@@ -151,8 +154,6 @@ public class ScreenSlideActivity extends FragmentActivity {
             mPagerAdapter.notifyDataSetChanged();
         }
         else Log.d("ScreenSlideActivity", "fragment is null");
-
-
      }
 
 
@@ -207,10 +208,10 @@ public class ScreenSlideActivity extends FragmentActivity {
         public int getItemPosition(Object object) {
             //TODO: Instead of reloading every fragment, reload only the one that needs to be updated.
             if (object instanceof TwitterLoginFragment) {
-                return POSITION_NONE;
+                return FragmentPagerAdapter.POSITION_NONE;
             }
 
-            return POSITION_UNCHANGED;
+            return FragmentPagerAdapter.POSITION_UNCHANGED;
         }
     }
 
