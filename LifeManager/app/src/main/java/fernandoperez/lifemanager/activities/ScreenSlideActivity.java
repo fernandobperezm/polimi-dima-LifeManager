@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
@@ -15,10 +16,12 @@ import com.twitter.sdk.android.Twitter;
 import com.twitter.sdk.android.core.TwitterSession;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import fernandoperez.lifemanager.R;
 import fernandoperez.lifemanager.fragments.ScreenSlidePageFragment;
+import fernandoperez.lifemanager.googleapi.fragments.GmailFragment;
 import fernandoperez.lifemanager.models.Services;
 import fernandoperez.lifemanager.spotifyapi.fragments.SpotifyPlaybackFragment;
 import fernandoperez.lifemanager.twitterapi.fragments.TwitterEmbeddedTimelineFragment;
@@ -62,13 +65,13 @@ public class ScreenSlideActivity extends FragmentActivity {
         mPager = (ViewPager) findViewById(R.id.pager);
 
         // TODO: mListServices should be retrieved from the config.
-        List<Services> servicesList = new ArrayList<Services>();
-        servicesList.add(new Services("Spotify","Spotify Inc.", constants.SERVICES_LIST.SPOTIFY));
+        List<Services> servicesList = new ArrayList<>();
+
         servicesList.add(new Services("Twitter", "Twitter Inc.", constants.SERVICES_LIST.TWITTER));
-        servicesList.add(new Services("Wifi","Spotify Inc.", constants.SERVICES_LIST.LOCATION));
-        servicesList.add(new Services("GPS", "Twitter Inc.", constants.SERVICES_LIST.LOCATION));
-        servicesList.add(new Services("Weather","Spotify Inc.", constants.SERVICES_LIST.LOCATION));
-        servicesList.add(new Services("Facebook", "Twitter Inc.", constants.SERVICES_LIST.LOCATION));
+        servicesList.add(new Services("Spotify","Spotify Inc.", constants.SERVICES_LIST.SPOTIFY));
+        servicesList.add(new Services("Wifi","Spotify Inc.", constants.SERVICES_LIST.EMAIL));
+
+        Collections.sort(servicesList);
 
         mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager(), servicesList);
         mPager.setAdapter(mPagerAdapter);
@@ -151,8 +154,6 @@ public class ScreenSlideActivity extends FragmentActivity {
             mPagerAdapter.notifyDataSetChanged();
         }
         else Log.d("ScreenSlideActivity", "fragment is null");
-
-
      }
 
 
@@ -185,12 +186,13 @@ public class ScreenSlideActivity extends FragmentActivity {
                     twitterSession = Twitter.getInstance().core.getSessionManager().getActiveSession();
                     if (twitterSession == null) {
                         fragment = TwitterLoginFragment.create();
-                        return fragment;
                     } else {
                         fragment = TwitterEmbeddedTimelineFragment.create();
-                        return fragment;
                     }
+                    return fragment;
 
+                case EMAIL:
+                    return GmailFragment.create();
 
                 default:
                     return ScreenSlidePageFragment.create(position);
@@ -206,10 +208,10 @@ public class ScreenSlideActivity extends FragmentActivity {
         public int getItemPosition(Object object) {
             //TODO: Instead of reloading every fragment, reload only the one that needs to be updated.
             if (object instanceof TwitterLoginFragment) {
-                return POSITION_NONE;
+                return FragmentPagerAdapter.POSITION_NONE;
             }
 
-            return FragmentStatePagerAdapter.POSITION_UNCHANGED;
+            return FragmentPagerAdapter.POSITION_UNCHANGED;
         }
     }
 

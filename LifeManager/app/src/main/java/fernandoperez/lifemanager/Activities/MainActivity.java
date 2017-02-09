@@ -10,7 +10,10 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.google.api.services.gmail.Gmail;
+
 import fernandoperez.lifemanager.R;
+import fernandoperez.lifemanager.googleapi.activities.GmailActivity;
 import fernandoperez.lifemanager.utils.constants;
 
 public class MainActivity extends AppCompatActivity {
@@ -56,6 +59,12 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.action_current_settings:
                 intent = new Intent(this, ScreenSlideActivity.class);
+                startActivity(intent);
+
+                return true;
+
+            case R.id.action_gmail:
+                intent = new Intent(this, GmailActivity.class);
                 startActivity(intent);
 
             default:
