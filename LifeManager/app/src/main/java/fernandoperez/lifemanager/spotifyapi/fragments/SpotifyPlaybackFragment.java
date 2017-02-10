@@ -64,6 +64,7 @@ public class SpotifyPlaybackFragment extends Fragment implements
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
+
     public static SpotifyPlaybackFragment create() {
         SpotifyPlaybackFragment fragment = new SpotifyPlaybackFragment();
         return fragment;
@@ -101,7 +102,16 @@ public class SpotifyPlaybackFragment extends Fragment implements
         mRecyclerView.setHasFixedSize(true);
 
         // use a grid layout manager
-        mLayoutManager = new GridLayoutManager(getContext(), 2);
+        int numberOfColumns = 2;
+
+        //Check your orientation in your OnCreate
+        if(getContext().getResources().getConfiguration().orientation ==
+                getContext().getResources().getConfiguration()
+                .ORIENTATION_LANDSCAPE) {
+            numberOfColumns = 3;
+        }
+
+        mLayoutManager = new GridLayoutManager(getContext(), numberOfColumns);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         return rootView;
