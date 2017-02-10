@@ -78,5 +78,5 @@ public class PlaylistCardAdapter extends RecyclerView.Adapter<PlaylistCardAdapte
         return mDataset.size();
     }
 
-
+    public Playlist get(int position) { return mDataset.get(position);}
 }

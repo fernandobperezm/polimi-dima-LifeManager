@@ -7,12 +7,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.spotify.sdk.android.authentication.AuthenticationClient;
 import com.spotify.sdk.android.authentication.AuthenticationRequest;
@@ -20,6 +20,7 @@ import com.spotify.sdk.android.authentication.AuthenticationResponse;
 import com.spotify.sdk.android.player.Config;
 import com.spotify.sdk.android.player.ConnectionStateCallback;
 import com.spotify.sdk.android.player.Error;
+import com.spotify.sdk.android.player.Metadata;
 import com.spotify.sdk.android.player.Player;
 import com.spotify.sdk.android.player.PlayerEvent;
 import com.spotify.sdk.android.player.Spotify;
@@ -32,6 +33,7 @@ import java.util.List;
 import fernandoperez.lifemanager.R;
 import fernandoperez.lifemanager.adapters.PlaylistCardAdapter;
 import fernandoperez.lifemanager.models.Playlist;
+import fernandoperez.lifemanager.utils.RecyclerItemClickListener;
 import fernandoperez.lifemanager.utils.constants;
 import kaaes.spotify.webapi.android.SpotifyApi;
 import kaaes.spotify.webapi.android.SpotifyService;
@@ -61,8 +63,13 @@ public class SpotifyPlaybackFragment extends Fragment implements
     private int selectedPlaylistIndex;
 
     private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
+    private PlaylistCardAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
+
+    private TextView mPlayingSong;
+    private TextView mPlayingPlaylist;
+
+    private boolean playerLoggedIn = false;
 
 
     public static SpotifyPlaybackFragment create() {
@@ -114,6 +121,23 @@ public class SpotifyPlaybackFragment extends Fragment implements
         mLayoutManager = new GridLayoutManager(getContext(), numberOfColumns);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
+        mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), new RecyclerItemClickListener.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+
+                Playlist playlist = mAdapter.get(position);
+                if (playerLoggedIn) {
+                    selectedPlaylistIndex = position;
+                    selectedPlaylistUri = playlist.getmUri();
+                    mPlayingPlaylist.setText(playlist.getName());
+                    mPlayer.playUri(null, selectedPlaylistUri, 0, 0);
+                }
+            }
+        }));
+
+        mPlayingSong = (TextView) rootView.findViewById(R.id.textview_spotify_song);
+        mPlayingPlaylist = (TextView) rootView.findViewById(R.id.textview_spotify_playlist);
+
         return rootView;
     }
 
@@ -154,7 +178,7 @@ public class SpotifyPlaybackFragment extends Fragment implements
     @Override
     public void onDestroy() {
         // VERY IMPORTANT! This must always be called or else you will leak resources
-        //Spotify.destroyPlayer(this);
+        Spotify.destroyPlayer(this);
         super.onDestroy();
     }
 
@@ -163,6 +187,12 @@ public class SpotifyPlaybackFragment extends Fragment implements
         Log.d("SpotifyPlaybackFragment", "Playback event received: " + playerEvent.name());
         switch (playerEvent) {
             // Handle event type as necessary
+            case kSpPlaybackNotifyMetadataChanged:
+                Metadata.Track track = mPlayer.getMetadata().currentTrack;
+                if (mPlayingSong != null) {
+                    mPlayingSong.setText(track.name);
+                }
+
             default:
                 break;
         }
@@ -181,6 +211,8 @@ public class SpotifyPlaybackFragment extends Fragment implements
     @Override
     public void onLoggedIn() {
         Log.d("SpotifyPlaybackFragment", "User logged in");
+
+        playerLoggedIn = true;
 
         mPlayer.playUri(null, selectedPlaylistUri, 0, 0);
     }
@@ -254,6 +286,10 @@ public class SpotifyPlaybackFragment extends Fragment implements
             }
 
             selectedPlaylistUri = userPlaylists.get(selectedPlaylistIndex).uri;
+
+            if (mPlayingPlaylist != null) {
+                mPlayingPlaylist.setText(userPlaylists.get(selectedPlaylistIndex).name);
+            }
 
             mAdapter = new PlaylistCardAdapter(playlistList);
 
