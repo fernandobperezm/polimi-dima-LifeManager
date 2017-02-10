@@ -6,6 +6,9 @@ package fernandoperez.lifemanager.spotifyapi.fragments;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,12 +25,17 @@ import com.spotify.sdk.android.player.PlayerEvent;
 import com.spotify.sdk.android.player.Spotify;
 import com.spotify.sdk.android.player.SpotifyPlayer;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import fernandoperez.lifemanager.R;
+import fernandoperez.lifemanager.adapters.PlaylistCardAdapter;
+import fernandoperez.lifemanager.models.Playlist;
 import fernandoperez.lifemanager.utils.constants;
 import kaaes.spotify.webapi.android.SpotifyApi;
 import kaaes.spotify.webapi.android.SpotifyService;
+import kaaes.spotify.webapi.android.models.Image;
 import kaaes.spotify.webapi.android.models.Pager;
 import kaaes.spotify.webapi.android.models.PlaylistSimple;
 import retrofit.Callback;
@@ -51,6 +59,10 @@ public class SpotifyPlaybackFragment extends Fragment implements
     private List<PlaylistSimple> userPlaylists;
     private String selectedPlaylistUri;
     private int selectedPlaylistIndex;
+
+    private RecyclerView mRecyclerView;
+    private RecyclerView.Adapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
 
     public static SpotifyPlaybackFragment create() {
         SpotifyPlaybackFragment fragment = new SpotifyPlaybackFragment();
@@ -81,6 +93,16 @@ public class SpotifyPlaybackFragment extends Fragment implements
 
         Intent intent = AuthenticationClient.createLoginActivityIntent(getActivity(), request);
         startActivityForResult(intent, REQUEST_CODE);
+
+        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerview_spotify_playlists);
+
+        // use this setting to improve performance if you know that changes
+        // in content do not change the layout size of the RecyclerView
+        mRecyclerView.setHasFixedSize(true);
+
+        // use a grid layout manager
+        mLayoutManager = new GridLayoutManager(getContext(), 2);
+        mRecyclerView.setLayoutManager(mLayoutManager);
 
         return rootView;
     }
@@ -122,7 +144,7 @@ public class SpotifyPlaybackFragment extends Fragment implements
     @Override
     public void onDestroy() {
         // VERY IMPORTANT! This must always be called or else you will leak resources
-        Spotify.destroyPlayer(this);
+        //Spotify.destroyPlayer(this);
         super.onDestroy();
     }
 
@@ -173,7 +195,6 @@ public class SpotifyPlaybackFragment extends Fragment implements
         Log.d("SpotifyPlaybackFragment", "Received connection message: " + message);
     }
 
-
     /**
      * This function sets all the necessary endpoints to the spotify Web API and return
      * @param authToken Is the token that spotify gave to authorized users.
@@ -200,9 +221,36 @@ public class SpotifyPlaybackFragment extends Fragment implements
 
         @Override
         public void success(Pager<PlaylistSimple> playlistSimplePager, Response response) {
+            String playlistUri;
+            String playlistName;
+            String playlistId;
+            List<Playlist> playlistList = new ArrayList<>();
+
             userPlaylists = playlistSimplePager.items;
 
+            for (Iterator<PlaylistSimple> iterator = userPlaylists.iterator(); iterator.hasNext(); ){
+                PlaylistSimple playlist = iterator.next();
+                playlistId = playlist.id;
+                playlistName = playlist.name;
+                playlistUri = playlist.uri;
+                List<String> playlistImagesUrls = new ArrayList<>();
+
+                for (Iterator<Image> imageIterator = playlist.images.iterator(); imageIterator.hasNext();) {
+                    Image image = imageIterator.next();
+                    playlistImagesUrls.add(image.url);
+                }
+
+                playlistList.add(new Playlist(playlistId, playlistName, playlistUri, playlistImagesUrls));
+            }
+
             selectedPlaylistUri = userPlaylists.get(selectedPlaylistIndex).uri;
+
+            mAdapter = new PlaylistCardAdapter(playlistList);
+
+            if (mRecyclerView != null) {
+                mRecyclerView.setAdapter(mAdapter);
+            }
+
         }
 
         @Override
