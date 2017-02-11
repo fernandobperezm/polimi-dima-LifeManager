@@ -97,52 +97,12 @@ public class SpotifyPlaybackFragment extends Fragment implements
 
         selectedPlaylistIndex = constants.SPOTIFY_DEFAULT_INDEX_PLAYLIST;
 
-        AuthenticationRequest.Builder builder = new AuthenticationRequest.Builder(CLIENT_ID,
-                AuthenticationResponse.Type.TOKEN,
-                REDIRECT_URI);
-        builder.setScopes(new String[]{"user-read-private", "streaming"});
-        AuthenticationRequest request = builder.build();
-
-        Intent intent = AuthenticationClient.createLoginActivityIntent(getActivity(), request);
-        startActivityForResult(intent, REQUEST_CODE);
-
-        configureButtons(rootView);
-
-        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerview_spotify_playlists);
-
-        // use this setting to improve performance if you know that changes
-        // in content do not change the layout size of the RecyclerView
-        mRecyclerView.setHasFixedSize(true);
-
-        // use a grid layout manager
-        int numberOfColumns = 2;
-
-        //Check your orientation in your OnCreate
-        mOrientation = getContext().getResources().getConfiguration().orientation;
-        if(mOrientation == getContext().getResources().getConfiguration()
-                .ORIENTATION_LANDSCAPE) {
-            numberOfColumns = 3;
-        }
-
-        mLayoutManager = new GridLayoutManager(getContext(), numberOfColumns);
-        mRecyclerView.setLayoutManager(mLayoutManager);
-
-        mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), new RecyclerItemClickListener.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-
-                Playlist playlist = mAdapter.get(position);
-                if (playerLoggedIn) {
-                    selectedPlaylistIndex = position;
-                    selectedPlaylistUri = playlist.getmUri();
-                    mPlayingPlaylist.setText(playlist.getName());
-                    mPlayer.playUri(null, selectedPlaylistUri, 0, 0);
-                }
-            }
-        }));
-
         mPlayingSong = (TextView) rootView.findViewById(R.id.textview_spotify_song);
         mPlayingPlaylist = (TextView) rootView.findViewById(R.id.textview_spotify_playlist);
+
+        buildAuthentication();
+        configureButtons(rootView);
+        setRecyclerView(rootView);
 
         return rootView;
     }
@@ -179,6 +139,52 @@ public class SpotifyPlaybackFragment extends Fragment implements
 
             }
         }
+    }
+
+    private void buildAuthentication() {
+        AuthenticationRequest.Builder builder = new AuthenticationRequest.Builder(CLIENT_ID,
+          AuthenticationResponse.Type.TOKEN,
+          REDIRECT_URI);
+        builder.setScopes(new String[]{"user-read-private", "streaming"});
+        AuthenticationRequest request = builder.build();
+
+        Intent intent = AuthenticationClient.createLoginActivityIntent(getActivity(), request);
+        startActivityForResult(intent, REQUEST_CODE);
+    }
+
+    private void setRecyclerView(ViewGroup rootView) {
+        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerview_spotify_playlists);
+
+        // use this setting to improve performance if you know that changes
+        // in content do not change the layout size of the RecyclerView
+        mRecyclerView.setHasFixedSize(true);
+
+        // use a grid layout manager
+        int numberOfColumns = 2;
+
+        //Check your orientation in your OnCreate
+        mOrientation = getContext().getResources().getConfiguration().orientation;
+        if(mOrientation == getContext().getResources().getConfiguration()
+          .ORIENTATION_LANDSCAPE) {
+            numberOfColumns = 3;
+        }
+
+        mLayoutManager = new GridLayoutManager(getContext(), numberOfColumns);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+
+        mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), new RecyclerItemClickListener.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+
+                Playlist playlist = mAdapter.get(position);
+                if (playerLoggedIn) {
+                    selectedPlaylistIndex = position;
+                    selectedPlaylistUri = playlist.getmUri();
+                    mPlayingPlaylist.setText(playlist.getName());
+                    mPlayer.playUri(null, selectedPlaylistUri, 0, 0);
+                }
+            }
+        }));
     }
 
     private void configureButtons(ViewGroup container) {
