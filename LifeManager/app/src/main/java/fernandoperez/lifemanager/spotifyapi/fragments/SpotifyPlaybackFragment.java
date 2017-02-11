@@ -5,7 +5,9 @@ package fernandoperez.lifemanager.spotifyapi.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -70,7 +72,9 @@ public class SpotifyPlaybackFragment extends Fragment implements
     private TextView mPlayingPlaylist;
 
     private boolean playerLoggedIn = false;
+    private boolean isPlayingSong = true;
 
+    private static int mOrientation;
 
     public static SpotifyPlaybackFragment create() {
         SpotifyPlaybackFragment fragment = new SpotifyPlaybackFragment();
@@ -102,6 +106,8 @@ public class SpotifyPlaybackFragment extends Fragment implements
         Intent intent = AuthenticationClient.createLoginActivityIntent(getActivity(), request);
         startActivityForResult(intent, REQUEST_CODE);
 
+        configureButtons(rootView);
+
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerview_spotify_playlists);
 
         // use this setting to improve performance if you know that changes
@@ -112,8 +118,8 @@ public class SpotifyPlaybackFragment extends Fragment implements
         int numberOfColumns = 2;
 
         //Check your orientation in your OnCreate
-        if(getContext().getResources().getConfiguration().orientation ==
-                getContext().getResources().getConfiguration()
+        mOrientation = getContext().getResources().getConfiguration().orientation;
+        if(mOrientation == getContext().getResources().getConfiguration()
                 .ORIENTATION_LANDSCAPE) {
             numberOfColumns = 3;
         }
@@ -175,6 +181,57 @@ public class SpotifyPlaybackFragment extends Fragment implements
         }
     }
 
+    private void configureButtons(ViewGroup container) {
+        final FloatingActionButton vFabPlay =
+          (FloatingActionButton) container.findViewById(R.id.fab_spotify_playpause);
+
+        FloatingActionButton vFabNext =
+          (FloatingActionButton) container.findViewById(R.id.fab_spotify_nextsong);
+
+        FloatingActionButton vFabPrevious =
+          (FloatingActionButton) container.findViewById(R.id.fab_spotify_previoussong);
+
+        vFabNext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (playerLoggedIn) {
+                    mPlayer.skipToNext(null);
+                }
+            }
+        });
+
+        vFabPlay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (playerLoggedIn){
+                    if (isPlayingSong) {
+                        vFabPlay.setImageDrawable(
+                          ContextCompat.getDrawable(
+                            getContext(),
+                            R.drawable.ic_action_playback_play));
+                        mPlayer.pause(null);
+                    } else {
+                        vFabPlay.setImageDrawable(
+                          ContextCompat.getDrawable(
+                            getContext(),
+                            R.drawable.ic_action_playback_pause));
+                        mPlayer.resume(null);
+                    }
+                }
+            }
+        });
+
+        vFabPrevious.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (playerLoggedIn) {
+                    mPlayer.skipToPrevious(null);
+                }
+            }
+        });
+
+    }
+
     @Override
     public void onDestroy() {
         // VERY IMPORTANT! This must always be called or else you will leak resources
@@ -192,6 +249,15 @@ public class SpotifyPlaybackFragment extends Fragment implements
                 if (mPlayingSong != null) {
                     mPlayingSong.setText(track.name);
                 }
+                break;
+
+            case kSpPlaybackNotifyPause:
+                isPlayingSong = false;
+                break;
+
+            case kSpPlaybackNotifyPlay:
+                isPlayingSong = true;
+                break;
 
             default:
                 break;
