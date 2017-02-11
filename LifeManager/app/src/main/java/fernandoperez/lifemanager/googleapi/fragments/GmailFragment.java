@@ -73,6 +73,18 @@ public class GmailFragment extends Fragment
         return fragment;
     }
 
+    public void fetchData() {
+        mProgress = new ProgressDialog(getContext());
+        mProgress.setMessage("Calling Gmail API ...");
+
+        // Initialize credentials and service object.
+        mCredential = GoogleAccountCredential.usingOAuth2(
+          getContext(), Arrays.asList(SCOPES))
+          .setBackOff(new ExponentialBackOff());
+
+        getResultsFromApi();
+    }
+
     public GmailFragment () {}
 
     /**
@@ -90,16 +102,6 @@ public class GmailFragment extends Fragment
         // Inflate the layout containing a title and body text.
         ViewGroup rootView = (ViewGroup) inflater
           .inflate(R.layout.fragment_gmail_main_emails, container, false);
-
-        mProgress = new ProgressDialog(getContext());
-        mProgress.setMessage("Calling Gmail API ...");
-
-        // Initialize credentials and service object.
-        mCredential = GoogleAccountCredential.usingOAuth2(
-                getContext(), Arrays.asList(SCOPES))
-                .setBackOff(new ExponentialBackOff());
-
-        getResultsFromApi();
 
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerview_gmail_emails);
 

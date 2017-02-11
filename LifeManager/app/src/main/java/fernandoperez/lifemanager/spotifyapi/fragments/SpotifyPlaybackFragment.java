@@ -49,8 +49,7 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 public class SpotifyPlaybackFragment extends Fragment implements
-        SpotifyPlayer.NotificationCallback, ConnectionStateCallback
-{
+        SpotifyPlayer.NotificationCallback, ConnectionStateCallback {
     private static final String CLIENT_ID = "7499847a03c440caa753f45305762a56";
     private static final String REDIRECT_URI = "lifemanager-login://callback";
 
@@ -88,6 +87,13 @@ public class SpotifyPlaybackFragment extends Fragment implements
         super.onCreate(savedInstanceState);
     }
 
+    /**
+     *
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -100,13 +106,18 @@ public class SpotifyPlaybackFragment extends Fragment implements
         mPlayingSong = (TextView) rootView.findViewById(R.id.textview_spotify_song);
         mPlayingPlaylist = (TextView) rootView.findViewById(R.id.textview_spotify_playlist);
 
-        buildAuthentication();
         configureButtons(rootView);
         setRecyclerView(rootView);
 
         return rootView;
     }
 
+    /**
+     *
+     * @param requestCode
+     * @param resultCode
+     * @param intent
+     */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
@@ -141,7 +152,10 @@ public class SpotifyPlaybackFragment extends Fragment implements
         }
     }
 
-    private void buildAuthentication() {
+    /**
+     *
+     */
+    public void buildAuthentication() {
         AuthenticationRequest.Builder builder = new AuthenticationRequest.Builder(CLIENT_ID,
           AuthenticationResponse.Type.TOKEN,
           REDIRECT_URI);
@@ -152,6 +166,10 @@ public class SpotifyPlaybackFragment extends Fragment implements
         startActivityForResult(intent, REQUEST_CODE);
     }
 
+    /**
+     *
+     * @param rootView
+     */
     private void setRecyclerView(ViewGroup rootView) {
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerview_spotify_playlists);
 
@@ -187,6 +205,10 @@ public class SpotifyPlaybackFragment extends Fragment implements
         }));
     }
 
+    /**
+     *
+     * @param container
+     */
     private void configureButtons(ViewGroup container) {
         final FloatingActionButton vFabPlay =
           (FloatingActionButton) container.findViewById(R.id.fab_spotify_playpause);
@@ -238,6 +260,9 @@ public class SpotifyPlaybackFragment extends Fragment implements
 
     }
 
+    /**
+     *
+     */
     @Override
     public void onDestroy() {
         // VERY IMPORTANT! This must always be called or else you will leak resources
@@ -245,6 +270,10 @@ public class SpotifyPlaybackFragment extends Fragment implements
         super.onDestroy();
     }
 
+    /**
+     *
+     * @param playerEvent
+     */
     @Override
     public void onPlaybackEvent(PlayerEvent playerEvent) {
         Log.d("SpotifyPlaybackFragment", "Playback event received: " + playerEvent.name());
@@ -270,6 +299,10 @@ public class SpotifyPlaybackFragment extends Fragment implements
         }
     }
 
+    /**
+     *
+     * @param error
+     */
     @Override
     public void onPlaybackError(Error error) {
         Log.d("SpotifyPlaybackFragment", "Playback error received: " + error.name());
@@ -280,6 +313,9 @@ public class SpotifyPlaybackFragment extends Fragment implements
         }
     }
 
+    /**
+     *
+     */
     @Override
     public void onLoggedIn() {
         Log.d("SpotifyPlaybackFragment", "User logged in");
@@ -289,21 +325,35 @@ public class SpotifyPlaybackFragment extends Fragment implements
         mPlayer.playUri(null, selectedPlaylistUri, 0, 0);
     }
 
+    /**
+     *
+     */
     @Override
     public void onLoggedOut() {
         Log.d("SpotifyPlaybackFragment", "User logged out");
     }
 
+    /**
+     *
+     * @param error
+     */
     @Override
     public void onLoginFailed(Error error) {
         Log.d("SpotifyPlaybackFragment", "Login failed");
     }
 
+    /**
+     *
+     */
     @Override
     public void onTemporaryError() {
         Log.d("SpotifyPlaybackFragment", "Temporary error occurred");
     }
 
+    /**
+     *
+     * @param message
+     */
     @Override
     public void onConnectionMessage(String message) {
         Log.d("SpotifyPlaybackFragment", "Received connection message: " + message);
@@ -330,9 +380,16 @@ public class SpotifyPlaybackFragment extends Fragment implements
         return restAdapter.create(SpotifyService.class);
     }
 
-
+    /**
+     *
+     */
     class SimplePlaylistCallback implements Callback<Pager<PlaylistSimple>> {
 
+        /**
+         *
+         * @param playlistSimplePager
+         * @param response
+         */
         @Override
         public void success(Pager<PlaylistSimple> playlistSimplePager, Response response) {
             String playlistUri;
