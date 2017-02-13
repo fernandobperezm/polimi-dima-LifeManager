@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
-
+//
         //Test for background
         bg=(RelativeLayout) findViewById(R.id.content_main);
         //Buttons Declaration
@@ -233,10 +233,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
 
                 return true;
-
-            case R.id.action_gmail:
-                intent = new Intent(this, GmailActivity.class);
-                startActivity(intent);
 
             default:
                 return super.onOptionsItemSelected(item);

@@ -12,8 +12,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.google.api.services.gmail.Gmail;
-import com.twitter.sdk.android.Twitter;
 import com.twitter.sdk.android.core.TwitterSession;
 
 import java.util.ArrayList;
@@ -24,8 +22,7 @@ import fernandoperez.lifemanager.R;
 import fernandoperez.lifemanager.googleapi.fragments.GmailFragment;
 import fernandoperez.lifemanager.models.Services;
 import fernandoperez.lifemanager.spotifyapi.fragments.SpotifyPlaybackFragment;
-import fernandoperez.lifemanager.twitterapi.fragments.TwitterEmbeddedTimelineFragment;
-import fernandoperez.lifemanager.twitterapi.fragments.TwitterLoginFragment;
+import fernandoperez.lifemanager.twitterapi.fragments.TwitterMainFragment;
 import fernandoperez.lifemanager.utils.constants;
 
 /**
@@ -83,8 +80,6 @@ public class ScreenSlideActivity extends FragmentActivity {
             public void onPageSelected(int fragmentPosition) {
                 FragmentManager fragmentManager = getSupportFragmentManager();
                 SpotifyPlaybackFragment spotifyPlaybackFragment = null;
-                TwitterEmbeddedTimelineFragment twitterEmbeddedTimelineFragment = null;
-                TwitterLoginFragment twitterLoginFragment = null;
                 GmailFragment gmailFragment = null;
 
                 switch (fragmentPosition) {
@@ -167,9 +162,8 @@ public class ScreenSlideActivity extends FragmentActivity {
     private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
         List<Services> mServicesList;
         FragmentManager supportFragmentManager;
-        TwitterSession twitterSession;
 
-        public ScreenSlidePagerAdapter(FragmentManager fm, List<Services> servicesList) {
+        private ScreenSlidePagerAdapter(FragmentManager fm, List<Services> servicesList) {
             super(fm);
             this.supportFragmentManager = fm;
             this.mServicesList = servicesList;
@@ -177,7 +171,6 @@ public class ScreenSlideActivity extends FragmentActivity {
 
         @Override
         public Fragment getItem(int position) {
-            Fragment fragment;
             switch (mServicesList.get(position).getEnum()) {
                 case SPOTIFY:
                     // Spotify handles by itself the login.
@@ -185,14 +178,7 @@ public class ScreenSlideActivity extends FragmentActivity {
 
                 case TWITTER:
                     // Twitter only sets the session on the Session Manager, we must retrieve it
-                    // in order to know if the user is logged in.
-                    twitterSession = Twitter.getInstance().core.getSessionManager().getActiveSession();
-                    if (twitterSession == null) {
-                        fragment = TwitterLoginFragment.create();
-                    } else {
-                        fragment = TwitterEmbeddedTimelineFragment.create();
-                    }
-                    return fragment;
+                    return TwitterMainFragment.create();
 
                 case EMAIL:
                     return GmailFragment.create();
@@ -209,11 +195,6 @@ public class ScreenSlideActivity extends FragmentActivity {
 
         @Override
         public int getItemPosition(Object object) {
-            //TODO: Instead of reloading every fragment, reload only the one that needs to be updated.
-            if (object instanceof TwitterLoginFragment) {
-                return FragmentPagerAdapter.POSITION_NONE;
-            }
-
             return FragmentPagerAdapter.POSITION_UNCHANGED;
         }
     }

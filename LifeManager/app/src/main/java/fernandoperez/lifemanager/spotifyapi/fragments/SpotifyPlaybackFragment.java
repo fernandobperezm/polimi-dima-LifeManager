@@ -1,6 +1,3 @@
-// TutorialApp
-// Created by Spotify on 25/02/14.
-// Copyright (c) 2014 Spotify. All rights reserved.
 package fernandoperez.lifemanager.spotifyapi.fragments;
 
 import android.content.Intent;
