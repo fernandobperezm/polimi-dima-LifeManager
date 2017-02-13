@@ -37,7 +37,7 @@ public class Playlist {
         return mName;
     }
 
-    public String getmUri() {return mUri;}
+    public String getUri() {return mUri;}
 
     public List<String> getImagesUri() {return mImagesUri;}
 

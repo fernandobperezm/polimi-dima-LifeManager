@@ -68,9 +68,13 @@ public class SpotifyPlaybackFragment extends Fragment implements
     private TextView mPlayingPlaylist;
 
     private boolean playerLoggedIn = false;
-    private boolean isPlayingSong = true;
+    private boolean isPlayingSong = false;
 
     private static int mOrientation;
+
+    private FloatingActionButton vFabPlay;
+    private FloatingActionButton vFabNext;
+    private FloatingActionButton vFabPrevious;
 
     public static SpotifyPlaybackFragment create() {
         SpotifyPlaybackFragment fragment = new SpotifyPlaybackFragment();
@@ -194,7 +198,7 @@ public class SpotifyPlaybackFragment extends Fragment implements
                 Playlist playlist = mAdapter.get(position);
                 if (playerLoggedIn) {
                     selectedPlaylistIndex = position;
-                    selectedPlaylistUri = playlist.getmUri();
+                    selectedPlaylistUri = playlist.getUri();
                     mPlayingPlaylist.setText(playlist.getName());
                     mPlayer.playUri(null, selectedPlaylistUri, 0, 0);
                 }
@@ -207,13 +211,13 @@ public class SpotifyPlaybackFragment extends Fragment implements
      * @param container
      */
     private void configureButtons(ViewGroup container) {
-        final FloatingActionButton vFabPlay =
+        vFabPlay =
           (FloatingActionButton) container.findViewById(R.id.fab_spotify_playpause);
 
-        FloatingActionButton vFabNext =
+        vFabNext =
           (FloatingActionButton) container.findViewById(R.id.fab_spotify_nextsong);
 
-        FloatingActionButton vFabPrevious =
+        vFabPrevious =
           (FloatingActionButton) container.findViewById(R.id.fab_spotify_previoussong);
 
         vFabNext.setOnClickListener(new View.OnClickListener() {
@@ -230,16 +234,8 @@ public class SpotifyPlaybackFragment extends Fragment implements
             public void onClick(View view) {
                 if (playerLoggedIn){
                     if (isPlayingSong) {
-                        vFabPlay.setImageDrawable(
-                          ContextCompat.getDrawable(
-                            getContext(),
-                            R.drawable.ic_action_playback_play));
                         mPlayer.pause(null);
                     } else {
-                        vFabPlay.setImageDrawable(
-                          ContextCompat.getDrawable(
-                            getContext(),
-                            R.drawable.ic_action_playback_pause));
                         mPlayer.resume(null);
                     }
                 }
@@ -256,6 +252,8 @@ public class SpotifyPlaybackFragment extends Fragment implements
         });
 
     }
+
+
 
     /**
      *
@@ -284,10 +282,18 @@ public class SpotifyPlaybackFragment extends Fragment implements
                 break;
 
             case kSpPlaybackNotifyPause:
+                vFabPlay.setImageDrawable(
+                  ContextCompat.getDrawable(
+                    getContext(),
+                    R.drawable.ic_action_playback_play));
                 isPlayingSong = false;
                 break;
 
             case kSpPlaybackNotifyPlay:
+                vFabPlay.setImageDrawable(
+                  ContextCompat.getDrawable(
+                    getContext(),
+                    R.drawable.ic_action_playback_pause));
                 isPlayingSong = true;
                 break;
 
@@ -318,8 +324,6 @@ public class SpotifyPlaybackFragment extends Fragment implements
         Log.d("SpotifyPlaybackFragment", "User logged in");
 
         playerLoggedIn = true;
-
-        mPlayer.playUri(null, selectedPlaylistUri, 0, 0);
     }
 
     /**
@@ -409,12 +413,6 @@ public class SpotifyPlaybackFragment extends Fragment implements
                 }
 
                 playlistList.add(new Playlist(playlistId, playlistName, playlistUri, playlistImagesUrls));
-            }
-
-            selectedPlaylistUri = userPlaylists.get(selectedPlaylistIndex).uri;
-
-            if (mPlayingPlaylist != null) {
-                mPlayingPlaylist.setText(userPlaylists.get(selectedPlaylistIndex).name);
             }
 
             mAdapter = new PlaylistCardAdapter(playlistList);
