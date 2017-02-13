@@ -74,7 +74,7 @@ public class TwitterMainFragment extends ListFragment {
     }
 
 
-    protected void fetchData() {
+    public void fetchData() {
         Twitter.getApiClient()
           .getStatusesService()
           .homeTimeline(
