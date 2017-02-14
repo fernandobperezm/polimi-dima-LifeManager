@@ -76,7 +76,6 @@ public class TwitterMainFragment extends ListFragment {
         fetchData();
     }
 
-
     public void fetchData() {
         Twitter.getApiClient()
           .getStatusesService()

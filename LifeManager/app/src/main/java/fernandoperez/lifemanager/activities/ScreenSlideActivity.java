@@ -12,8 +12,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.twitter.sdk.android.core.TwitterSession;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -79,34 +77,19 @@ public class ScreenSlideActivity extends FragmentActivity {
             @Override
             public void onPageSelected(int fragmentPosition) {
                 FragmentManager fragmentManager = getSupportFragmentManager();
-                TwitterMainFragment twitterMainFragment = null;
-                SpotifyPlaybackFragment spotifyPlaybackFragment = null;
-                GmailFragment gmailFragment = null;
 
-                switch (fragmentPosition) {
-                    case 0:
-                        twitterMainFragment = (TwitterMainFragment) fragmentManager.getFragments().get(fragmentPosition);
-                        break;
-                    case 1:
-                        spotifyPlaybackFragment = (SpotifyPlaybackFragment) fragmentManager.getFragments().get(fragmentPosition);
-                        break;
-                    case 2:
-                        gmailFragment = (GmailFragment) fragmentManager.getFragments().get(fragmentPosition);
-                        break;
-                    default:
-                        break;
+                Fragment fragment = fragmentManager.getFragments().get(fragmentPosition);
+
+                if (fragment instanceof TwitterMainFragment) {
+                    ((TwitterMainFragment) fragment).fetchData();
                 }
 
-                if (twitterMainFragment != null) {
-                    twitterMainFragment.fetchData();
+                if (fragment instanceof  SpotifyPlaybackFragment) {
+                    ((SpotifyPlaybackFragment) fragment).fetchData();
                 }
 
-                if (spotifyPlaybackFragment != null) {
-                    spotifyPlaybackFragment.buildAuthentication();
-                }
-
-                if (gmailFragment != null) {
-                    gmailFragment.fetchData();
+                if (fragment instanceof GmailFragment) {
+                    ((GmailFragment) fragment).fetchData();
                 }
             }
 

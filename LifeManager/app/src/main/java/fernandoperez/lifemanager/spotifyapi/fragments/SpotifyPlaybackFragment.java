@@ -156,7 +156,7 @@ public class SpotifyPlaybackFragment extends Fragment implements
     /**
      *
      */
-    public void buildAuthentication() {
+    public void fetchData() {
         AuthenticationRequest.Builder builder = new AuthenticationRequest.Builder(CLIENT_ID,
           AuthenticationResponse.Type.TOKEN,
           REDIRECT_URI);

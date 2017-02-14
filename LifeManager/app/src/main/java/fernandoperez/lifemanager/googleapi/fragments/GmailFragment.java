@@ -13,7 +13,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -74,7 +73,6 @@ public class GmailFragment extends Fragment
         return fragment;
     }
 
-//    @Override
     public void fetchData() {
         mProgress = new ProgressDialog(getContext());
         mProgress.setMessage("Calling Gmail API ...");
