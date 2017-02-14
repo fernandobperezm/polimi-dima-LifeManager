@@ -30,12 +30,15 @@ public class TwitterMainFragment extends ListFragment {
     private TwitterLoginButton loginButton;
     private ViewGroup mRootView;
 
+    private List<Tweet> mTweetList;
+    private FixedTweetTimeline mUserTimeline;
+    private TweetTimelineListAdapter mTimelineAdapter;
+
     public TwitterMainFragment() {
     }
 
     public static TwitterMainFragment create() {
-        TwitterMainFragment fragment = new TwitterMainFragment();
-        return fragment;
+        return new TwitterMainFragment();
     }
 
     @Override
@@ -93,17 +96,19 @@ public class TwitterMainFragment extends ListFragment {
                       System.out.println("Not successful.");
                       return ;
                   }
-                  final List<Tweet> tweetList = response.body();
 
-                  final FixedTweetTimeline userTimeline = new FixedTweetTimeline.Builder()
-                    .setTweets(tweetList)
+                  mTweetList = response.body();
+
+                  mUserTimeline = new FixedTweetTimeline.Builder()
+                    .setTweets(mTweetList)
                     .build();
-                  final TweetTimelineListAdapter adapter = new TweetTimelineListAdapter
+
+                  mTimelineAdapter = new TweetTimelineListAdapter
                     .Builder(getContext())
-                    .setTimeline(userTimeline)
+                    .setTimeline(mUserTimeline)
                     .build();
 
-                  setListAdapter(adapter);
+                  setListAdapter(mTimelineAdapter);
               }
 
               @Override
