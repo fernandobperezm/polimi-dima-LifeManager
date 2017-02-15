@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.ContentFrameLayout;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
@@ -16,11 +17,23 @@ import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import org.greenrobot.greendao.query.Query;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import fernandoperez.lifemanager.R;
 import fernandoperez.lifemanager.helpers.DBHelper;
+import fernandoperez.lifemanager.models.ArrivingConfWithServ;
+import fernandoperez.lifemanager.models.ArrivingConfWithServDao;
 import fernandoperez.lifemanager.models.Configurations;
 import fernandoperez.lifemanager.models.ConfigurationsDao;
 import fernandoperez.lifemanager.models.DaoSession;
+import fernandoperez.lifemanager.models.LeavingConfWithServ;
+import fernandoperez.lifemanager.models.LeavingConfWithServDao;
+import fernandoperez.lifemanager.models.Services;
+import fernandoperez.lifemanager.models.ServicesDao;
 import fernandoperez.lifemanager.utils.constants;
 
 public class MainActivity extends AppCompatActivity {
@@ -40,6 +53,11 @@ public class MainActivity extends AppCompatActivity {
 
     private DaoSession daoSession;
     private ConfigurationsDao configurationsDao;
+    private ServicesDao servicesDao;
+    private ArrivingConfWithServDao arrivingDao;
+    private LeavingConfWithServDao leavingDao;
+
+    private Integer counter = 0;
 
     private final static int REQUEST_ENABLE_BT = 1;
 
@@ -61,6 +79,10 @@ public class MainActivity extends AppCompatActivity {
 
         daoSession = ((MyApplication) getApplication()).getDaoSession();
         configurationsDao = daoSession.getConfigurationsDao();
+        servicesDao = daoSession.getServicesDao();
+        arrivingDao = daoSession.getArrivingConfWithServDao();
+        leavingDao = daoSession.getLeavingConfWithServDao();
+
 
         //Test for background
         bg=(RelativeLayout) findViewById(R.id.content_main);
@@ -240,11 +262,20 @@ public class MainActivity extends AppCompatActivity {
             case R.id.action_current_settings:
                 intent = new Intent(this, ScreenSlideActivity.class);
 
-                String confName = "Home";
+                // Find (in some way) the configuration to show.
+//                List<Configurations> configurationsList = configurationsDao.queryBuilder()
+//                  .where(ConfigurationsDao.Properties.Name.eq("Work3"))
+//                  .orderAsc(ConfigurationsDao.Properties.Name)
+//                  .list();
+//
+//                if (configurationsList.size() > 0) {
+//                    // As the names are unique, we can assure that this list is of size 1.
+//                    Configurations confToShow = configurationsList.get(0);
+//
+//                } else {
+//                    Toast.makeText(this, "No Configuration found",Toast.LENGTH_SHORT);
+//                }
 
-                Configurations configuration = new Configurations(null, confName);
-
-                DBHelper.insertConfiguration(this, configurationsDao, configuration);
 
 //                List<Services> servicesLeaving =
 //
@@ -269,6 +300,43 @@ public class MainActivity extends AppCompatActivity {
 
                 return true;
 
+            case R.id.action_create_config:
+                String confName = "Work" + counter.toString();
+                counter += 1;
+
+                Configurations configuration = new Configurations(null, confName);
+                DBHelper.insertConfiguration(this, configurationsDao, configuration);
+
+                return true;
+
+            case R.id.action_create_services:
+                Configurations conf1 =
+                  DBHelper
+                    .insertArrivingServices(
+                      this,
+                      configurationsDao,
+                      servicesDao,
+                      arrivingDao,
+                      "Work3",
+                      new String[] {"WIFI", "SPOTIFY"}
+                    );
+
+                Configurations conf2 =
+                  DBHelper
+                    .insertLeavingServices(
+                      this,
+                      configurationsDao,
+                      servicesDao,
+                      leavingDao,
+                      "Work3",
+                      new String[] {"WIFI", "SPOTIFY"}
+                    );
+
+                if (conf1 != null && conf2 != null && conf1.getId() == conf2.getId()) {
+                    Toast.makeText(this, "DONE", Toast.LENGTH_SHORT).show();
+                }
+
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
