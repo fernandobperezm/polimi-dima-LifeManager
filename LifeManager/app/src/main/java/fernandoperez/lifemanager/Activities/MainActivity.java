@@ -2,6 +2,7 @@ package fernandoperez.lifemanager.activities;
 
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
+import android.database.SQLException;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -15,16 +16,11 @@ import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-
 import fernandoperez.lifemanager.R;
 import fernandoperez.lifemanager.helpers.DBHelper;
-import fernandoperez.lifemanager.models.ConfigurationWithServices;
 import fernandoperez.lifemanager.models.Configurations;
-import fernandoperez.lifemanager.models.Services;
+import fernandoperez.lifemanager.models.ConfigurationsDao;
+import fernandoperez.lifemanager.models.DaoSession;
 import fernandoperez.lifemanager.utils.constants;
 
 public class MainActivity extends AppCompatActivity {
@@ -42,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
 
     BluetoothAdapter mBluetoothAdapter;
 
+    private DaoSession daoSession;
+    private ConfigurationsDao configurationsDao;
 
     private final static int REQUEST_ENABLE_BT = 1;
 
@@ -60,7 +58,10 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
-//
+
+        daoSession = ((MyApplication) getApplication()).getDaoSession();
+        configurationsDao = daoSession.getConfigurationsDao();
+
         //Test for background
         bg=(RelativeLayout) findViewById(R.id.content_main);
         //Buttons Declaration
@@ -241,8 +242,10 @@ public class MainActivity extends AppCompatActivity {
 
                 String confName = "Home";
 
-//
-//
+                Configurations configuration = new Configurations(null, confName);
+
+                DBHelper.insertConfiguration(this, configurationsDao, configuration);
+
 //                List<Services> servicesLeaving =
 //
 ////
@@ -255,7 +258,7 @@ public class MainActivity extends AppCompatActivity {
 ////                DBHelper.saveList(configuration, servicesArriving, constants.CONFIGURATION_TYPES.ARRIVING);
 ////                DBHelper.saveList(configuration, servicesLeaving, constants.CONFIGURATION_TYPES.LEAVING);
 ////
-////                for (Iterator<ConfigurationWithServices> iterator = ConfigurationWithServices.findAll(ConfigurationWithServices.class); iterator.hasNext();) {
+////                for (Iterator<ArrivingConfWithServ> iterator = ArrivingConfWithServ.findAll(ArrivingConfWithServ.class); iterator.hasNext();) {
 ////                    System.out.println(iterator.next().toString());
 //                }
 //

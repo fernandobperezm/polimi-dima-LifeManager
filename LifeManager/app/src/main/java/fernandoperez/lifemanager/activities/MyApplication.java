@@ -15,6 +15,7 @@ import com.twitter.sdk.android.core.TwitterAuthConfig;
 
 import org.greenrobot.greendao.database.Database;
 
+import fernandoperez.lifemanager.helpers.DBHelper;
 import fernandoperez.lifemanager.models.DaoMaster;
 import fernandoperez.lifemanager.models.DaoSession;
 import io.fabric.sdk.android.Fabric;
@@ -47,6 +48,7 @@ public class MyApplication extends Application {
         DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(this, ENCRYPTED ? "notes-db-encrypted" : "notes-db");
         Database db = ENCRYPTED ? helper.getEncryptedWritableDb("super-secret") : helper.getWritableDb();
         daoSession = new DaoMaster(db).newSession();
+        DBHelper.insertServices(daoSession.getServicesDao());
     }
 
     public DaoSession getDaoSession() {

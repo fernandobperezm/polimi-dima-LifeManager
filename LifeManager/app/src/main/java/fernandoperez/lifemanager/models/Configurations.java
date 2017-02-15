@@ -2,21 +2,17 @@ package fernandoperez.lifemanager.models;
 
 import android.location.Location;
 
-import org.greenrobot.greendao.annotation.Convert;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Index;
 import org.greenrobot.greendao.annotation.JoinEntity;
-import org.greenrobot.greendao.annotation.NotNull;
 import org.greenrobot.greendao.annotation.ToMany;
 import org.greenrobot.greendao.annotation.Transient;
 
 import java.util.List;
 
-import fernandoperez.lifemanager.utils.constants.CONFIGURATION_TYPES;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.DaoException;
-import org.greenrobot.greendao.converter.PropertyConverter;
 
 /**
  * Created by fernandoperez on 2/4/17.
@@ -33,18 +29,21 @@ public class Configurations  {
     @Transient
     protected Location location;
 
-    @Index(unique = true)
-    @NotNull
-    @Convert(converter = ConfigurationTypeConverter.class, columnType = Integer.class)
-    private CONFIGURATION_TYPES configurationType;
-
     @ToMany
     @JoinEntity(
-      entity = ConfigurationWithServices.class,
+      entity = ArrivingConfWithServ.class,
       sourceProperty = "configurationId",
       targetProperty = "serviceId"
     )
-    private List<Services> servicesList;
+    private List<Services> arrivingServicesList;
+
+    @ToMany
+    @JoinEntity(
+      entity = LeavingConfWithServ.class,
+      sourceProperty = "configurationId",
+      targetProperty = "serviceId"
+    )
+    private List<Services> leavingServicesList;
 
     /** Used to resolve relations */
     @Generated(hash = 2040040024)
@@ -54,31 +53,15 @@ public class Configurations  {
     @Generated(hash = 772260358)
     private transient ConfigurationsDao myDao;
 
-    @Generated(hash = 1601009303)
-    public Configurations(Long Id, String name, @NotNull CONFIGURATION_TYPES configurationType) {
+    @Generated(hash = 460719181)
+    public Configurations(Long Id, String name) {
         this.Id = Id;
         this.name = name;
-        this.configurationType = configurationType;
     }
 
     @Generated(hash = 2130777203)
     public Configurations() {
     }
-
-//
-//    public Configurations() {
-//    }
-//
-//    public Configurations(String name, int configurationType) {
-//        this.name = name;
-//        this.configurationType = configurationType;
-//    }
-//
-//    public Configurations(String name, Location location, constants.CONFIGURATION_TYPES configurationType) {
-//        this.name = name;
-//        this.location = location;
-//        this.configurationType = configurationType;
-//    }
 
     public Long getId() { return this.Id; }
 
@@ -90,10 +73,8 @@ public class Configurations  {
         return this.location;
     }
 
-    public CONFIGURATION_TYPES getConfigurationType () { return this.configurationType; }
-
     public String toString() {
-        return "Configuration: " + this.name + " - " + String.valueOf(configurationType)+ " - " + "ID: " + String.valueOf(getId());
+        return "Configuration: " + this.name +  " - " + "ID: " + String.valueOf(getId());
     }
 
     public void setId(Long Id) {
@@ -102,38 +83,6 @@ public class Configurations  {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public void setConfigurationType(CONFIGURATION_TYPES configurationType) {
-        this.configurationType = configurationType;
-    }
-
-    /**
-     * To-many relationship, resolved on first access (and after reset).
-     * Changes to to-many relations are not persisted, make changes to the target entity.
-     */
-    @Generated(hash = 385969599)
-    public List<Services> getServicesList() {
-        if (servicesList == null) {
-            final DaoSession daoSession = this.daoSession;
-            if (daoSession == null) {
-                throw new DaoException("Entity is detached from DAO context");
-            }
-            ServicesDao targetDao = daoSession.getServicesDao();
-            List<Services> servicesListNew = targetDao._queryConfigurations_ServicesList(Id);
-            synchronized (this) {
-                if (servicesList == null) {
-                    servicesList = servicesListNew;
-                }
-            }
-        }
-        return servicesList;
-    }
-
-    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
-    @Generated(hash = 1459600032)
-    public synchronized void resetServicesList() {
-        servicesList = null;
     }
 
     /**
@@ -172,31 +121,66 @@ public class Configurations  {
         myDao.update(this);
     }
 
+    /**
+     * To-many relationship, resolved on first access (and after reset).
+     * Changes to to-many relations are not persisted, make changes to the target entity.
+     */
+    @Generated(hash = 891851738)
+    public List<Services> getArrivingServicesList() {
+        if (arrivingServicesList == null) {
+            final DaoSession daoSession = this.daoSession;
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            ServicesDao targetDao = daoSession.getServicesDao();
+            List<Services> arrivingServicesListNew = targetDao._queryConfigurations_ArrivingServicesList(Id);
+            synchronized (this) {
+                if (arrivingServicesList == null) {
+                    arrivingServicesList = arrivingServicesListNew;
+                }
+            }
+        }
+        return arrivingServicesList;
+    }
+
+    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
+    @Generated(hash = 129772664)
+    public synchronized void resetArrivingServicesList() {
+        arrivingServicesList = null;
+    }
+
+    /**
+     * To-many relationship, resolved on first access (and after reset).
+     * Changes to to-many relations are not persisted, make changes to the target entity.
+     */
+    @Generated(hash = 631528086)
+    public List<Services> getLeavingServicesList() {
+        if (leavingServicesList == null) {
+            final DaoSession daoSession = this.daoSession;
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            ServicesDao targetDao = daoSession.getServicesDao();
+            List<Services> leavingServicesListNew = targetDao._queryConfigurations_LeavingServicesList(Id);
+            synchronized (this) {
+                if (leavingServicesList == null) {
+                    leavingServicesList = leavingServicesListNew;
+                }
+            }
+        }
+        return leavingServicesList;
+    }
+
+    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
+    @Generated(hash = 2125745834)
+    public synchronized void resetLeavingServicesList() {
+        leavingServicesList = null;
+    }
+
     /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 1646890137)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getConfigurationsDao() : null;
-    }
-
-
-    public static class ConfigurationTypeConverter implements PropertyConverter<CONFIGURATION_TYPES, Integer> {
-        @Override
-        public CONFIGURATION_TYPES convertToEntityProperty(Integer databaseValue) {
-            if (databaseValue == null) {
-                return null;
-            }
-            for (CONFIGURATION_TYPES configuration : CONFIGURATION_TYPES.values()) {
-                if (configuration.id == databaseValue) {
-                    return configuration;
-                }
-            }
-            return null;
-        }
-
-        @Override
-        public Integer convertToDatabaseValue(CONFIGURATION_TYPES entityProperty) {
-            return entityProperty == null ? null : entityProperty.id;
-        }
     }
 }

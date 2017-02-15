@@ -9,22 +9,22 @@ import org.greenrobot.greendao.annotation.Generated;
 
 // Class to represent M-N relationship between Configuration and Services.
 @Entity
-public class ConfigurationWithServices {
+public class ArrivingConfWithServ {
     @Id
     private Long Id;
 
     private Long configurationId;
     private Long serviceId;
 
-    @Generated(hash = 997289079)
-    public ConfigurationWithServices(Long Id, Long configurationId, Long serviceId) {
+    @Generated(hash = 844188693)
+    public ArrivingConfWithServ(Long Id, Long configurationId, Long serviceId) {
         this.Id = Id;
         this.configurationId = configurationId;
         this.serviceId = serviceId;
     }
 
-    @Generated(hash = 1866723219)
-    public ConfigurationWithServices() {
+    @Generated(hash = 1347227677)
+    public ArrivingConfWithServ() {
     }
 
     public Long getId() {return this.Id;}
