@@ -13,11 +13,14 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -35,6 +38,9 @@ import com.google.api.services.gmail.Gmail;
 import com.google.api.services.gmail.GmailScopes;
 import com.google.api.services.gmail.model.ListMessagesResponse;
 import com.google.api.services.gmail.model.Message;
+import com.google.api.services.gmail.model.MessagePartHeader;
+
+import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -46,6 +52,8 @@ import fernandoperez.lifemanager.R;
 import fernandoperez.lifemanager.adapters.EmailAdapter;
 import fernandoperez.lifemanager.googleapi.interfaces.OnBackgroundTaskListener;
 import fernandoperez.lifemanager.models.Email;
+import fernandoperez.lifemanager.models.Playlist;
+import fernandoperez.lifemanager.utils.RecyclerItemClickListener;
 import fernandoperez.lifemanager.utils.constants;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
@@ -65,11 +73,24 @@ public class GmailFragment extends Fragment
     static final int REQUEST_PERMISSION_GET_ACCOUNTS = 1003;
 
     private static final String PREF_ACCOUNT_NAME = "accountName";
-    private static final String[] SCOPES = {GmailScopes.MAIL_GOOGLE_COM, GmailScopes.GMAIL_SEND};
+    private static final String[] SCOPES = {GmailScopes.MAIL_GOOGLE_COM, GmailScopes.GMAIL_SEND, GmailScopes.GMAIL_MODIFY};
 
     public static GmailFragment create() {
         GmailFragment fragment = new GmailFragment();
         return fragment;
+    }
+
+    public void fetchData() {
+        mProgress = new ProgressDialog(getContext());
+        mProgress.setMessage("Calling Gmail API ...");
+
+        // Initialize credentials and service object.
+        mCredential = GoogleAccountCredential.usingOAuth2(
+          getContext(), Arrays.asList(SCOPES))
+          .setBackOff(new ExponentialBackOff());
+
+        getResultsFromApi();
+
     }
 
     public GmailFragment () {}
@@ -90,16 +111,6 @@ public class GmailFragment extends Fragment
         ViewGroup rootView = (ViewGroup) inflater
           .inflate(R.layout.fragment_gmail_main_emails, container, false);
 
-        mProgress = new ProgressDialog(getContext());
-        mProgress.setMessage("Calling Gmail API ...");
-
-        // Initialize credentials and service object.
-        mCredential = GoogleAccountCredential.usingOAuth2(
-                getContext(), Arrays.asList(SCOPES))
-                .setBackOff(new ExponentialBackOff());
-
-        getResultsFromApi();
-
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerview_gmail_emails);
 
         // use this setting to improve performance if you know that changes
@@ -109,6 +120,14 @@ public class GmailFragment extends Fragment
         // use a linear layout manager
         mLayoutManager = new LinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
+
+        mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), new RecyclerItemClickListener.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                // TODO: Make this fragment communicate with the activity and create the fragment to see the whole email and maybe answer it.
+                // https://developer.android.com/training/basics/fragments/communicating.html
+            }
+        }));
 
         return rootView;
     }
@@ -367,6 +386,8 @@ public class GmailFragment extends Fragment
             String emailId;
             String emailSnippet;
             String emailBody;
+            String emailSender = null;
+            String emailSubject = null;
             String emailMimeType;
             List<String> emailsIds = new ArrayList<>();
             List<Email> emailList = new ArrayList<>();
@@ -397,8 +418,22 @@ public class GmailFragment extends Fragment
                     .get(user, emailId)
                     .setFormat("FULL")
                     .execute();
+
+                for (Iterator<MessagePartHeader> headerIterator = messageResponse.getPayload().getHeaders().iterator(); headerIterator.hasNext();) {
+                    MessagePartHeader header = headerIterator.next();
+                    switch (header.getName()){
+                        case "From":
+                            emailSender = header.getValue();
+                            break;
+
+                        case "Subject":
+                            emailSubject = header.getValue();
+                            break;
+                    }
+                }
+
                 emailSnippet = messageResponse.getSnippet();
-                Email email = new Email(emailId, emailSnippet);
+                Email email = new Email(emailId, emailSnippet, emailSender, emailSubject);
                 emailMimeType = messageResponse.getPayload().getMimeType();
                 switch (emailMimeType) {
                     case "multipart/alternative":

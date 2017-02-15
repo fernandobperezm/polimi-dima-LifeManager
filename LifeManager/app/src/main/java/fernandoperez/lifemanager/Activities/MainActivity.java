@@ -15,11 +15,7 @@ import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.google.api.services.gmail.Gmail;
-
 import fernandoperez.lifemanager.R;
-import fernandoperez.lifemanager.googleapi.activities.GmailActivity;
-import fernandoperez.lifemanager.utils.constants;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -54,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
-
+//
         //Test for background
         bg=(RelativeLayout) findViewById(R.id.content_main);
         //Buttons Declaration
@@ -233,10 +229,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
 
                 return true;
-
-            case R.id.action_gmail:
-                intent = new Intent(this, GmailActivity.class);
-                startActivity(intent);
 
             default:
                 return super.onOptionsItemSelected(item);

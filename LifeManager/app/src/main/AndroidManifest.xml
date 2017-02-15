@@ -6,6 +6,8 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
+    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
@@ -70,7 +72,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="fernandoperez.lifemanager.activities.BackUpActivity" />
         </activity>
-        <activity android:name=".googleapi.activities.GmailActivity"></activity>
 
         <!-- TWIITER API -->
         <meta-data

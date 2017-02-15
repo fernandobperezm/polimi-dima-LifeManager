@@ -12,20 +12,15 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.twitter.sdk.android.Twitter;
-import com.twitter.sdk.android.core.TwitterSession;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import fernandoperez.lifemanager.R;
-import fernandoperez.lifemanager.fragments.ScreenSlidePageFragment;
 import fernandoperez.lifemanager.googleapi.fragments.GmailFragment;
 import fernandoperez.lifemanager.models.Services;
 import fernandoperez.lifemanager.spotifyapi.fragments.SpotifyPlaybackFragment;
-import fernandoperez.lifemanager.twitterapi.fragments.TwitterEmbeddedTimelineFragment;
-import fernandoperez.lifemanager.twitterapi.fragments.TwitterLoginFragment;
+import fernandoperez.lifemanager.twitterapi.fragments.TwitterMainFragment;
 import fernandoperez.lifemanager.utils.constants;
 
 /**
@@ -36,8 +31,6 @@ import fernandoperez.lifemanager.utils.constants;
  * <p>This sample shows a "next" button that advances the user to the next step in a wizard,
  * animating the current screen out (to the left) and the next screen in (from the right). The
  * reverse animation is played when the user presses the "previous" button.</p>
- *
- * @see ScreenSlidePageFragment
  */
 public class ScreenSlideActivity extends FragmentActivity {
     /**
@@ -75,40 +68,34 @@ public class ScreenSlideActivity extends FragmentActivity {
 
         mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager(), servicesList);
         mPager.setAdapter(mPagerAdapter);
-        mPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+        mPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
+                System.out.println("Scrolled " + String.valueOf(position));
             }
 
             @Override
-            public void onPageSelected(int position) {
-                // When changing pages, reset the action bar actions since they are dependent
-                // on which page is currently active. An alternative approach is to have each
-                // fragment expose actions itself (rather than the activity exposing actions),
-                // but for simplicity, the activity provides the actions in this sample.
-                invalidateOptionsMenu();
+            public void onPageSelected(int fragmentPosition) {
+                FragmentManager fragmentManager = getSupportFragmentManager();
+
+                Fragment fragment = fragmentManager.getFragments().get(fragmentPosition);
+
+                if (fragment instanceof TwitterMainFragment) {
+                    ((TwitterMainFragment) fragment).fetchData();
+                }
+
+                if (fragment instanceof  SpotifyPlaybackFragment) {
+                    ((SpotifyPlaybackFragment) fragment).fetchData();
+                }
+
+                if (fragment instanceof GmailFragment) {
+                    ((GmailFragment) fragment).fetchData();
+                }
             }
 
             @Override
             public void onPageScrollStateChanged(int state) {
-
-            }
-        });
-        mPager.removeOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
+                System.out.println("SCROLLSTATECHANGED " +  String.valueOf(state));
             }
         });
     }
@@ -158,15 +145,14 @@ public class ScreenSlideActivity extends FragmentActivity {
 
 
     /**
-     * A simple pager adapter that represents 5 {@link ScreenSlidePageFragment} objects, in
+     * A simple pager adapter that represents 5 {@link } objects, in
      * sequence.
      */
     private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
         List<Services> mServicesList;
         FragmentManager supportFragmentManager;
-        TwitterSession twitterSession;
 
-        public ScreenSlidePagerAdapter(FragmentManager fm, List<Services> servicesList) {
+        private ScreenSlidePagerAdapter(FragmentManager fm, List<Services> servicesList) {
             super(fm);
             this.supportFragmentManager = fm;
             this.mServicesList = servicesList;
@@ -174,7 +160,6 @@ public class ScreenSlideActivity extends FragmentActivity {
 
         @Override
         public Fragment getItem(int position) {
-            Fragment fragment;
             switch (mServicesList.get(position).getEnum()) {
                 case SPOTIFY:
                     // Spotify handles by itself the login.
@@ -182,20 +167,13 @@ public class ScreenSlideActivity extends FragmentActivity {
 
                 case TWITTER:
                     // Twitter only sets the session on the Session Manager, we must retrieve it
-                    // in order to know if the user is logged in.
-                    twitterSession = Twitter.getInstance().core.getSessionManager().getActiveSession();
-                    if (twitterSession == null) {
-                        fragment = TwitterLoginFragment.create();
-                    } else {
-                        fragment = TwitterEmbeddedTimelineFragment.create();
-                    }
-                    return fragment;
+                    return TwitterMainFragment.create();
 
                 case EMAIL:
                     return GmailFragment.create();
 
                 default:
-                    return ScreenSlidePageFragment.create(position);
+                    return null;
             }
         }
 
@@ -206,11 +184,6 @@ public class ScreenSlideActivity extends FragmentActivity {
 
         @Override
         public int getItemPosition(Object object) {
-            //TODO: Instead of reloading every fragment, reload only the one that needs to be updated.
-            if (object instanceof TwitterLoginFragment) {
-                return FragmentPagerAdapter.POSITION_NONE;
-            }
-
             return FragmentPagerAdapter.POSITION_UNCHANGED;
         }
     }

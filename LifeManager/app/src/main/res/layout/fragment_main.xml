@@ -9,10 +9,11 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:typeface="serif"
-    android:background="@drawable/fondo"
     tools:context="fernandoperez.lifemanager.fragments.MainFragment"
-    tools:showIn="@layout/activity_main">
+    tools:showIn="@layout/activity_main"
+    android:typeface="serif">
+    <!--android:background="@drawable/fondo">-->
+
 
     <TextView
         android:text="Arriving Services"

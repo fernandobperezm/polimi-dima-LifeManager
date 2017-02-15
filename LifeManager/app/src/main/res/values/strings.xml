@@ -31,7 +31,9 @@
     <!-- Spotify -->
     <string name="textview_spotify_title">Spotify</string>
     <string name="textview_spotify_currentlyplaying">Currently playing:</string>
+    <string name="textview_spotify_currentplaylist">Playlist Name: </string>
     <string name="textview_spotify_song">Play a song</string>
+    <string name="textview_spotify_playlist">Playlist</string>
 
     <string name="app_id">1274777432582668</string>
     <string name="large_text">
@@ -129,4 +131,7 @@
     <string name="title_template_step">Step <xliff:g id="step_number">%1$d</xliff:g>: Lorem
         Ipsum</string>
     <string name="title_activity_twitter_main">TwitterMainActivity</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
