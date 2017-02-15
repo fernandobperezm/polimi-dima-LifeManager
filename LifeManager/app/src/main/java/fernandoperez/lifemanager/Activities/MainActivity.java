@@ -15,11 +15,7 @@ import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.google.api.services.gmail.Gmail;
-
 import fernandoperez.lifemanager.R;
-import fernandoperez.lifemanager.googleapi.activities.GmailActivity;
-import fernandoperez.lifemanager.utils.constants;
 
 public class MainActivity extends AppCompatActivity {
 

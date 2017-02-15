@@ -72,7 +72,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="fernandoperez.lifemanager.activities.BackUpActivity" />
         </activity>
-        <activity android:name=".googleapi.activities.GmailActivity"></activity>
 
         <!-- TWIITER API -->
         <meta-data

@@ -49,7 +49,6 @@ public class TwitterMainFragment extends ListFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         mRootView =
           (ViewGroup) inflater.inflate(R.layout.fragment_twitter_main, container, false);
 
