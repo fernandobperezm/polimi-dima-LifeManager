@@ -15,7 +15,17 @@ import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+
 import fernandoperez.lifemanager.R;
+import fernandoperez.lifemanager.helpers.DBHelper;
+import fernandoperez.lifemanager.models.ConfigurationWithServices;
+import fernandoperez.lifemanager.models.Configurations;
+import fernandoperez.lifemanager.models.Services;
+import fernandoperez.lifemanager.utils.constants;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -202,6 +212,8 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -226,7 +238,31 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.action_current_settings:
                 intent = new Intent(this, ScreenSlideActivity.class);
-                startActivity(intent);
+
+                String confName = "Home";
+
+//
+//
+//                List<Services> servicesLeaving =
+//
+////
+////                Configurations configuration = new Configurations(confName);
+////                if (configuration.save() >= 1) {
+////                } else {
+////                    System.out.println("DIDNT SAVE");
+////                }
+////
+////                DBHelper.saveList(configuration, servicesArriving, constants.CONFIGURATION_TYPES.ARRIVING);
+////                DBHelper.saveList(configuration, servicesLeaving, constants.CONFIGURATION_TYPES.LEAVING);
+////
+////                for (Iterator<ConfigurationWithServices> iterator = ConfigurationWithServices.findAll(ConfigurationWithServices.class); iterator.hasNext();) {
+////                    System.out.println(iterator.next().toString());
+//                }
+//
+//                intent.putExtra(constants.CONFIGURATION_NAME, confName);
+//                intent.putExtra(constants.CONFIGURATION_CURRENT_TYPE, constants.CONFIGURATION_TYPES.ARRIVING);
+
+//                startActivity(intent);
 
                 return true;
 

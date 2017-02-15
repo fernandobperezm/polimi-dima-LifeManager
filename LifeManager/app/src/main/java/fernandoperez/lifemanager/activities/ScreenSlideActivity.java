@@ -12,16 +12,18 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import fernandoperez.lifemanager.R;
 import fernandoperez.lifemanager.googleapi.fragments.GmailFragment;
+import fernandoperez.lifemanager.models.Configurations;
 import fernandoperez.lifemanager.models.Services;
 import fernandoperez.lifemanager.spotifyapi.fragments.SpotifyPlaybackFragment;
 import fernandoperez.lifemanager.twitterapi.fragments.TwitterMainFragment;
 import fernandoperez.lifemanager.utils.constants;
+
+import static fernandoperez.lifemanager.utils.constants.SERVICES_LIST.SPOTIFY;
+
 
 /**
  * Demonstrates a "screen-slide" animation using a {@link ViewPager}. Because {@link ViewPager}
@@ -54,18 +56,30 @@ public class ScreenSlideActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_screen_slide);
 
+        Intent intent = getIntent();
+//        String confName = intent.getExtras().getString(constants.CONFIGURATION_NAME);
+//        constants.CONFIGURATION_TYPES confType =
+//          (constants.CONFIGURATION_TYPES) intent.getExtras().get(constants.CONFIGURATION_CURRENT_TYPE);
+//
+        Configurations currentConfiguration;
+        List<Services> servicesList = null;
+//
+//        List<Configurations> configurationsList = Configurations.find(Configurations.class, "name = ?",confName);
+//        if (configurationsList.size() > 0) {
+//            currentConfiguration = configurationsList.get(0);
+//            switch (confType) {
+//                case ARRIVING:
+//                    servicesList = currentConfiguration.getArrivingServices();
+//                    break;
+//                case LEAVING:
+//                    servicesList = currentConfiguration.getLeavingServices();
+//                    break;
+//            }
+//        }
+
+
         // Instantiate a ViewPager and a PagerAdapter.
         mPager = (ViewPager) findViewById(R.id.pager);
-
-        // TODO: mListServices should be retrieved from the config.
-        List<Services> servicesList = new ArrayList<>();
-
-        servicesList.add(new Services("Twitter", "Twitter Inc.", constants.SERVICES_LIST.TWITTER));
-        servicesList.add(new Services("Spotify","Spotify Inc.", constants.SERVICES_LIST.SPOTIFY));
-        servicesList.add(new Services("Wifi","Spotify Inc.", constants.SERVICES_LIST.EMAIL));
-
-        Collections.sort(servicesList);
-
         mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager(), servicesList);
         mPager.setAdapter(mPagerAdapter);
         mPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -160,7 +174,7 @@ public class ScreenSlideActivity extends FragmentActivity {
 
         @Override
         public Fragment getItem(int position) {
-            switch (mServicesList.get(position).getEnum()) {
+            switch (mServicesList.get(position).getServiceType()) {
                 case SPOTIFY:
                     // Spotify handles by itself the login.
                     return SpotifyPlaybackFragment.create();
