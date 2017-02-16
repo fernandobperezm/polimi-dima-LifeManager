@@ -2,13 +2,11 @@ package fernandoperez.lifemanager.activities;
 
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
-import android.database.SQLException;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.ContentFrameLayout;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
@@ -17,24 +15,17 @@ import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import org.greenrobot.greendao.query.Query;
-
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import fernandoperez.lifemanager.R;
 import fernandoperez.lifemanager.helpers.DBHelper;
-import fernandoperez.lifemanager.models.ArrivingConfWithServ;
 import fernandoperez.lifemanager.models.ArrivingConfWithServDao;
 import fernandoperez.lifemanager.models.Configurations;
 import fernandoperez.lifemanager.models.ConfigurationsDao;
 import fernandoperez.lifemanager.models.DaoSession;
-import fernandoperez.lifemanager.models.LeavingConfWithServ;
 import fernandoperez.lifemanager.models.LeavingConfWithServDao;
-import fernandoperez.lifemanager.models.Services;
 import fernandoperez.lifemanager.models.ServicesDao;
-import fernandoperez.lifemanager.utils.constants;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -58,6 +49,8 @@ public class MainActivity extends AppCompatActivity {
     private LeavingConfWithServDao leavingDao;
 
     private Integer counter = 0;
+
+    private String confName;
 
     private final static int REQUEST_ENABLE_BT = 1;
 
@@ -301,8 +294,8 @@ public class MainActivity extends AppCompatActivity {
                 return true;
 
             case R.id.action_create_config:
-                String confName = "Work" + counter.toString();
                 counter += 1;
+                confName = "Work" + counter.toString();
 
                 Configurations configuration = new Configurations(null, confName);
                 DBHelper.insertConfiguration(this, configurationsDao, configuration);
@@ -310,6 +303,13 @@ public class MainActivity extends AppCompatActivity {
                 return true;
 
             case R.id.action_create_services:
+                // Example of services adding to arriving and leaving.
+                confName = "Work" + counter.toString();
+                List<String> servicesToAdd = new ArrayList<>();
+                servicesToAdd.add("Gmail");
+                servicesToAdd.add("Twitter");
+                servicesToAdd.add("Spotify");
+
                 Configurations conf1 =
                   DBHelper
                     .insertArrivingServices(
@@ -317,8 +317,8 @@ public class MainActivity extends AppCompatActivity {
                       configurationsDao,
                       servicesDao,
                       arrivingDao,
-                      "Work3",
-                      new String[] {"WIFI", "SPOTIFY"}
+                      confName,
+                      servicesToAdd // adds gmail, twitter and spofify.
                     );
 
                 Configurations conf2 =
@@ -328,11 +328,13 @@ public class MainActivity extends AppCompatActivity {
                       configurationsDao,
                       servicesDao,
                       leavingDao,
-                      "Work3",
-                      new String[] {"WIFI", "SPOTIFY"}
+                      confName,
+                      servicesToAdd.subList(1,servicesToAdd.size()) // Adds twitter and spotify.
                     );
 
-                if (conf1 != null && conf2 != null && conf1.getId() == conf2.getId()) {
+                if ((conf1 != null) && (conf2 != null) && (conf1.getId() == conf2.getId())) {
+                    System.out.println(conf1.getArrivingServicesList().toString());
+                    System.out.println(conf2.getLeavingServicesList().toString());
                     Toast.makeText(this, "DONE", Toast.LENGTH_SHORT).show();
                 }
 
