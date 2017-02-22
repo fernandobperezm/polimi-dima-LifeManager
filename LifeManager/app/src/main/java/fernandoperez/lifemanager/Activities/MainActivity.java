@@ -15,7 +15,17 @@ import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import fernandoperez.lifemanager.R;
+import fernandoperez.lifemanager.helpers.DBHelper;
+import fernandoperez.lifemanager.models.ArrivingConfWithServDao;
+import fernandoperez.lifemanager.models.Configurations;
+import fernandoperez.lifemanager.models.ConfigurationsDao;
+import fernandoperez.lifemanager.models.DaoSession;
+import fernandoperez.lifemanager.models.LeavingConfWithServDao;
+import fernandoperez.lifemanager.models.ServicesDao;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -32,6 +42,15 @@ public class MainActivity extends AppCompatActivity {
 
     BluetoothAdapter mBluetoothAdapter;
 
+    private DaoSession daoSession;
+    private ConfigurationsDao configurationsDao;
+    private ServicesDao servicesDao;
+    private ArrivingConfWithServDao arrivingDao;
+    private LeavingConfWithServDao leavingDao;
+
+    private Integer counter = 0;
+
+    private String confName;
 
     private final static int REQUEST_ENABLE_BT = 1;
 
@@ -50,7 +69,14 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
-//
+
+        daoSession = ((MyApplication) getApplication()).getDaoSession();
+        configurationsDao = daoSession.getConfigurationsDao();
+        servicesDao = daoSession.getServicesDao();
+        arrivingDao = daoSession.getArrivingConfWithServDao();
+        leavingDao = daoSession.getLeavingConfWithServDao();
+
+
         //Test for background
         bg=(RelativeLayout) findViewById(R.id.content_main);
         //Buttons Declaration
@@ -202,6 +228,8 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -226,10 +254,91 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.action_current_settings:
                 intent = new Intent(this, ScreenSlideActivity.class);
-                startActivity(intent);
+
+                // Find (in some way) the configuration to show.
+//                List<Configurations> configurationsList = configurationsDao.queryBuilder()
+//                  .where(ConfigurationsDao.Properties.Name.eq("Work3"))
+//                  .orderAsc(ConfigurationsDao.Properties.Name)
+//                  .list();
+//
+//                if (configurationsList.size() > 0) {
+//                    // As the names are unique, we can assure that this list is of size 1.
+//                    Configurations confToShow = configurationsList.get(0);
+//
+//                } else {
+//                    Toast.makeText(this, "No Configuration found",Toast.LENGTH_SHORT);
+//                }
+
+
+//                List<Services> servicesLeaving =
+//
+////
+////                Configurations configuration = new Configurations(confName);
+////                if (configuration.save() >= 1) {
+////                } else {
+////                    System.out.println("DIDNT SAVE");
+////                }
+////
+////                DBHelper.saveList(configuration, servicesArriving, constants.CONFIGURATION_TYPES.ARRIVING);
+////                DBHelper.saveList(configuration, servicesLeaving, constants.CONFIGURATION_TYPES.LEAVING);
+////
+////                for (Iterator<ArrivingConfWithServ> iterator = ArrivingConfWithServ.findAll(ArrivingConfWithServ.class); iterator.hasNext();) {
+////                    System.out.println(iterator.next().toString());
+//                }
+//
+//                intent.putExtra(constants.CONFIGURATION_NAME, confName);
+//                intent.putExtra(constants.CONFIGURATION_CURRENT_TYPE, constants.CONFIGURATION_TYPES.ARRIVING);
+
+//                startActivity(intent);
 
                 return true;
 
+            case R.id.action_create_config:
+                counter += 1;
+                confName = "Work" + counter.toString();
+
+                Configurations configuration = new Configurations(null, confName);
+                DBHelper.insertConfiguration(this, configurationsDao, configuration);
+
+                return true;
+
+            case R.id.action_create_services:
+                // Example of services adding to arriving and leaving.
+                confName = "Work" + counter.toString();
+                List<String> servicesToAdd = new ArrayList<>();
+                servicesToAdd.add("Gmail");
+                servicesToAdd.add("Twitter");
+                servicesToAdd.add("Spotify");
+
+                Configurations conf1 =
+                  DBHelper
+                    .insertArrivingServices(
+                      this,
+                      configurationsDao,
+                      servicesDao,
+                      arrivingDao,
+                      confName,
+                      servicesToAdd // adds gmail, twitter and spofify.
+                    );
+
+                Configurations conf2 =
+                  DBHelper
+                    .insertLeavingServices(
+                      this,
+                      configurationsDao,
+                      servicesDao,
+                      leavingDao,
+                      confName,
+                      servicesToAdd.subList(1,servicesToAdd.size()) // Adds twitter and spotify.
+                    );
+
+                if ((conf1 != null) && (conf2 != null) && (conf1.getId() == conf2.getId())) {
+                    System.out.println(conf1.getArrivingServicesList().toString());
+                    System.out.println(conf2.getLeavingServicesList().toString());
+                    Toast.makeText(this, "DONE", Toast.LENGTH_SHORT).show();
+                }
+
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
