@@ -106,8 +106,9 @@ public class Configurations  {
 //         xmlSerializer.endTag(null, "Location");
 
          xmlSerializer.startTag(null, "Arriving");
-            if (arrivingServicesList != null) {
-                for (Iterator<Services> iterator = arrivingServicesList.iterator(); iterator.hasNext(); ) {
+            List<Services> arrList = getArrivingServicesList();
+            if (arrList != null) {
+                for (Iterator<Services> iterator = arrList.iterator(); iterator.hasNext(); ) {
                     Services service = iterator.next();
                     service.toXML(xmlSerializer);
                 }
@@ -115,8 +116,9 @@ public class Configurations  {
          xmlSerializer.endTag(null, "Arriving");
 
          xmlSerializer.startTag(null, "Leaving");
-            if (leavingServicesList != null) {
-                for (Iterator<Services> iterator = leavingServicesList.iterator(); iterator.hasNext(); ) {
+            List<Services> leavList = getLeavingServicesList();
+            if (leavList != null) {
+                for (Iterator<Services> iterator = leavList.iterator(); iterator.hasNext(); ) {
                     Services service = iterator.next();
                     service.toXML(xmlSerializer);
                 }

@@ -119,6 +119,19 @@ public class DBHelper {
             return null;
         }
 
+        // Search for the list of entities with the current config.
+        List<ArrivingConfWithServ> arrivingConfWithServList =
+          arrivingDao.queryBuilder()
+            .where(ArrivingConfWithServDao.Properties.ConfigurationId.eq(configurationForServices.getId()))
+            .list();
+
+        try {
+            arrivingDao.deleteInTx(arrivingConfWithServList);
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+            return null;
+        }
+
         try {
             for (Iterator<Services> arrivingIterator = arrivingList.iterator(); arrivingIterator.hasNext();) {
                 arrivingDao.insert(
@@ -184,9 +197,22 @@ public class DBHelper {
             return null;
         }
 
+        // Search for the list of entities with the current config.
+        List<LeavingConfWithServ> leavingConfWithServList =
+          leavingDao.queryBuilder()
+            .where(ArrivingConfWithServDao.Properties.ConfigurationId.eq(configurationForServices.getId()))
+            .list();
+
+        try {
+            leavingDao.deleteInTx(leavingConfWithServList);
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+            return null;
+        }
+
         try {
             for (Iterator<Services> leavingIterator = leavingList.iterator(); leavingIterator.hasNext();) {
-                leavingDao.insert(
+                leavingDao.save(
                   new LeavingConfWithServ(
                     null,
                     configurationForServices.getId(),

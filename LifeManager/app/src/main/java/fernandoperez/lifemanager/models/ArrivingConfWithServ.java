@@ -3,6 +3,9 @@ package fernandoperez.lifemanager.models;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.annotation.Index;
+import org.greenrobot.greendao.annotation.Unique;
+
 /**
  * Created by fernandoperez on 2/4/17.
  */
@@ -30,7 +33,8 @@ public class ArrivingConfWithServ {
     public Long getId() {return this.Id;}
 
     public String toString() {
-        return configurationId.toString() + " - " + serviceId.toString() + " - " + " - " + "ID: " + Id.toString();
+//        return configurationId.toString() + " - " + serviceId.toString() + " - " + " - " + "ID: " + Id.toString();
+        return configurationId.toString() + " - " + serviceId.toString();
     }
 
     public void setId(Long Id) {

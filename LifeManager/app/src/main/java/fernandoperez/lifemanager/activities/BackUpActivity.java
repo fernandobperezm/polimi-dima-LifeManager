@@ -147,6 +147,7 @@ public class BackUpActivity extends AppCompatActivity  {
                 conf.toXML(xmlSerializer);
             }
 
+            xmlSerializer.endTag(null, "Backup");
             xmlSerializer.endDocument();
             xmlSerializer.flush();
             String dataWrite = writer.toString();
