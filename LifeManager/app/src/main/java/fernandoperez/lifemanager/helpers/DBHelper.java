@@ -200,7 +200,7 @@ public class DBHelper {
         // Search for the list of entities with the current config.
         List<LeavingConfWithServ> leavingConfWithServList =
           leavingDao.queryBuilder()
-            .where(ArrivingConfWithServDao.Properties.ConfigurationId.eq(configurationForServices.getId()))
+            .where(LeavingConfWithServDao.Properties.ConfigurationId.eq(configurationForServices.getId()))
             .list();
 
         try {
