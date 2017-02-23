@@ -2,6 +2,7 @@ package fernandoperez.lifemanager.helpers;
 
 import android.content.Context;
 import android.util.Xml;
+import android.widget.Toast;
 
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlSerializer;
@@ -53,34 +54,20 @@ public class XMLHelper {
             String dataWrite = writer.toString();
             fileos.write(dataWrite.getBytes());
             fileos.close();
+            Toast.makeText(context, "Backup made sucessfully.", Toast.LENGTH_SHORT).show();
         }
-        catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        catch (IllegalArgumentException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        catch (IllegalStateException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        catch (IOException e) {
+        catch (IllegalArgumentException | IllegalStateException | IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
 
     public static void readLocalBackup(Context context, DaoSession daoSession) {
-        // TODO: read the backup as XML and load the data.
-
         ConfigurationsDao configurationsDao = daoSession.getConfigurationsDao();
         ServicesDao servicesDao = daoSession.getServicesDao();
         ArrivingConfWithServDao arrivingDao = daoSession.getArrivingConfWithServDao();
         LeavingConfWithServDao leavingDao = daoSession.getLeavingConfWithServDao();
 
-        List<Configurations> configurationsList;
         FileInputStream inputStream;
         InputStreamReader inputStreamReader;
         BackupParser backupParser = new BackupParser();
@@ -91,19 +78,29 @@ public class XMLHelper {
             List<Triplet<Configurations, List<String>, List<String>>> configurationWithServices = backupParser.parse(inputStreamReader);
             inputStream.close();
 
+            if (configurationWithServices.size() > 0) {
+                configurationsDao.deleteAll();
+                daoSession.getArrivingConfWithServDao().deleteAll();
+                daoSession.getLeavingConfWithServDao().deleteAll();
+            }
+
             for (Iterator<Triplet<Configurations, List<String>, List<String>>> iterator = configurationWithServices.iterator(); iterator.hasNext();  ){
                 Triplet<Configurations, List<String>, List<String>> triplet = iterator.next();
                 Configurations configurations = triplet.first;
                 List<String> arrivingServices = triplet.second;
                 List<String> leavingServices = triplet.third;
 
-                DBHelper.insertConfiguration(context,configurationsDao,configurations);
+                DBHelper.insertConfiguration(context,configurationsDao, configurations);
                 DBHelper.insertArrivingServices(context, configurationsDao, servicesDao, arrivingDao, configurations.getName(), arrivingServices);
                 DBHelper.insertLeavingServices(context, configurationsDao, servicesDao, leavingDao, configurations.getName(), leavingServices);
-
             }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            Toast.makeText(context, "No previous backup exist.",Toast.LENGTH_SHORT).show();
         } catch (IOException | XmlPullParserException e) {
             e.printStackTrace();
         }
+
+
     }
 }
