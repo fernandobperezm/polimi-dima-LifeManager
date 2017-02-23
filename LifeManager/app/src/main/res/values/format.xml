@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+</resources>
+<!--<Backup>-->
+    <!--<Configuration>-->
+        <!--<ID>1234</ID>-->
+        <!--<Name>Home</Name>-->
+        <!--<Location>12345123123123</Location>-->
+        <!--<Arriving>-->
+            <!--<Service>-->
+                <!--<ID>1</ID>-->
+                <!--<Name>Spotify</Name>-->
+                <!--<Type>SPOTIFY</Type>-->
+            <!--</Service>-->
+            <!--<Service>-->
+                <!--<ID>2</ID>-->
+                <!--<Name>Twitter</Name>-->
+                <!--<Type>TWITTER</Type>-->
+            <!--</Service>-->
+            <!--<Service>-->
+                <!--<ID>3</ID>-->
+                <!--<Name>Gmail</Name>-->
+                <!--<Type>GMAIL</Type>-->
+            <!--</Service>-->
+        <!--</Arriving>-->
+        <!--<Leaving>-->
+            <!--<Service>-->
+                <!--<ID>1</ID>-->
+                <!--<Name>Spotify</Name>-->
+                <!--<Type>SPOTIFY</Type>-->
+            <!--</Service>-->
+            <!--<Service>-->
+                <!--<ID>2</ID>-->
+                <!--<Name>Twitter</Name>-->
+                <!--<Type>TWITTER</Type>-->
+            <!--</Service>-->
+        <!--</Leaving>-->
+    <!--</Configuration>-->
+<!--</Backup>-->

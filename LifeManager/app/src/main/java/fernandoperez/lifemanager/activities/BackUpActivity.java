@@ -4,19 +4,33 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Xml;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 
+import org.xmlpull.v1.XmlSerializer;
+
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.StringWriter;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Scanner;
 
 import fernandoperez.lifemanager.R;
+import fernandoperez.lifemanager.helpers.DBHelper;
+import fernandoperez.lifemanager.models.ArrivingConfWithServDao;
+import fernandoperez.lifemanager.models.Configurations;
+import fernandoperez.lifemanager.models.ConfigurationsDao;
+import fernandoperez.lifemanager.models.DaoSession;
+import fernandoperez.lifemanager.models.LeavingConfWithServDao;
+import fernandoperez.lifemanager.models.ServicesDao;
 import fernandoperez.lifemanager.utils.constants;
 
 /**
@@ -30,6 +44,10 @@ public class BackUpActivity extends AppCompatActivity  {
     private static final String TAG = "LifeManager";
     private Context mContext;
 
+    private DaoSession daoSession;
+    private ConfigurationsDao configurationsDao;
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +57,8 @@ public class BackUpActivity extends AppCompatActivity  {
 
         manageSwitchButton();
         mContext = getApplicationContext();
+        daoSession = ((MyApplication) getApplication()).getDaoSession();
+        configurationsDao = daoSession.getConfigurationsDao();
     }
 
     /**
@@ -112,19 +132,50 @@ public class BackUpActivity extends AppCompatActivity  {
      *
      */
     public void makeLocalBackup() {
-        String string = "Hello world! How are you?";
-        FileOutputStream outputStream;
+        StringWriter writer = new StringWriter();
+        XmlSerializer xmlSerializer = Xml.newSerializer();
 
         try {
-            outputStream = openFileOutput(constants.BACKUP_FILENAME, Context.MODE_PRIVATE);
-            outputStream.write(string.getBytes());
-            outputStream.close();
-        } catch (Exception e) {
+            FileOutputStream fileos = mContext.openFileOutput(constants.BACKUP_FILENAME, Context.MODE_PRIVATE);
+            xmlSerializer.setOutput(writer);
+            xmlSerializer.startDocument("UTF-8", true);
+            xmlSerializer.startTag(null, "Backup");
+
+            List<Configurations> backupConfigurations = DBHelper.getAllConfigurations(configurationsDao);
+            for (Iterator<Configurations> iterator = backupConfigurations.iterator(); iterator.hasNext(); ){
+                Configurations conf = iterator.next();
+                conf.toXML(xmlSerializer);
+            }
+
+            xmlSerializer.endDocument();
+            xmlSerializer.flush();
+            String dataWrite = writer.toString();
+            fileos.write(dataWrite.getBytes());
+            fileos.close();
+        }
+        catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
             e.printStackTrace();
         }
+        catch (IllegalArgumentException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        catch (IllegalStateException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        readLocalBackUp();
     }
 
     private void readLocalBackUp() {
+        // TODO: read the backup as XML and load the data.
+
         FileInputStream inputStream;
         InputStreamReader inputStreamReader;
 

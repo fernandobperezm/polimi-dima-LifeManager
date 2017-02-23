@@ -31,6 +31,10 @@ public class DBHelper {
     public static void saveList(Configurations configuration, List<Services> servicesList, constants.CONFIGURATION_TYPES configurationType) {
     }
 
+    public static List<Configurations> getAllConfigurations(ConfigurationsDao configurationsDao) {
+        return configurationsDao.loadAll();
+    }
+
     /**
      * The method insertConfiguration receives an instance of a Configuration and an instance of
      * ConfigurationsDao and tries to insert the Configuration into the Configurations table.
@@ -86,6 +90,7 @@ public class DBHelper {
             String confName,
             List<String> servicesToAdd) {
 
+        // TODO: Figure out how to not insert the same elements (now inserting repetitions).
         Configurations configurationForServices = configurationsDao.queryBuilder()
           .where(ConfigurationsDao.Properties.Name.eq(confName))
           .orderAsc(ConfigurationsDao.Properties.Name)

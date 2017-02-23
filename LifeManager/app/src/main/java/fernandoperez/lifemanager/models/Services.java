@@ -1,14 +1,20 @@
 package fernandoperez.lifemanager.models;
 
+import android.support.annotation.NonNull;
+
 import org.greenrobot.greendao.annotation.Convert;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Index;
 import org.greenrobot.greendao.annotation.NotNull;
 
+import java.io.IOException;
 import java.util.Comparator;
+import java.util.Iterator;
+
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.converter.PropertyConverter;
+import org.xmlpull.v1.XmlSerializer;
 
 import fernandoperez.lifemanager.utils.constants.SERVICES_LIST;
 
@@ -74,6 +80,22 @@ public class Services implements Comparable<Services>, Comparator<Services>{
 
     public void setServiceType(SERVICES_LIST serviceType) {
         this.serviceType = serviceType;
+    }
+
+    public void toXML(@NonNull XmlSerializer xmlSerializer) throws IOException {
+        xmlSerializer.startTag(null, "Service");
+         xmlSerializer.startTag(null, "ID");
+          xmlSerializer.text(getId().toString());
+         xmlSerializer.endTag(null,"ID");
+
+         xmlSerializer.startTag(null, "Name");
+          xmlSerializer.text(getName());
+         xmlSerializer.endTag(null, "Name");
+
+         xmlSerializer.startTag(null, "Type");
+          xmlSerializer.text(getServiceType().toString());
+         xmlSerializer.endTag(null, "Type");
+        xmlSerializer.endTag(null, "Service");
     }
 
     public static class ServiceConverter implements PropertyConverter<SERVICES_LIST, Integer> {
