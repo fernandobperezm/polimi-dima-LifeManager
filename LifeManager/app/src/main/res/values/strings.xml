@@ -19,7 +19,7 @@
     <string name="textview_settings_backup_localswitchbackup">Local Backups</string>
     <string name="textview_settings_backup_frequency">Frequency</string>
     <string name="textview_settings_backup_backupfolder">Backup Folder</string>
-    <string name="button_settings_backup_backupfolder">Folder path</string>
+    <string name="button_settings_backup_backupfolder">Load Backup</string>
     <string name="button_settings_backup_backupnow">Backup Now</string>
 
     <!-- Google APi -->

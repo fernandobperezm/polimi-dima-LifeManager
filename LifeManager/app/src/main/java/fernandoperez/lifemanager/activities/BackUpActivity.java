@@ -68,8 +68,8 @@ public class BackUpActivity extends AppCompatActivity  {
     private void manageSwitchButton(){
         // We need to have the relative layout we want to turn on with the switch. It must be final
         // in order to be visible inside the onCheckecChanged Method.
-        final RelativeLayout googleDriveBackupLayout = (RelativeLayout)
-                findViewById(R.id.relativelayout_settings_backup_googledrivebackupONlayout);
+//        final RelativeLayout googleDriveBackupLayout = (RelativeLayout)
+//                findViewById(R.id.relativelayout_settings_backup_googledrivebackupONlayout);
 
         final RelativeLayout localBackupLayout = (RelativeLayout)
                 findViewById(R.id.relativelayout_settings_backup_localbackupONlayout);
@@ -78,20 +78,20 @@ public class BackUpActivity extends AppCompatActivity  {
         // The method setOnCheckedChangeListener implements a listener object that checks if the
         // switch is activated or not, when it gets activated we turn on the visibility of the backup
         // config, otherwise, we turn it off.
-        Switch googleDriveBackupSwitch = (Switch) findViewById(R.id.switch_settings_backup_googledriveswitchbackup);
-        googleDriveBackupSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    googleDriveBackupLayout.setVisibility(View.VISIBLE);
-                    isGoogleDriveBackupOn = true;
-                    System.out.println("GD ON");
-                } else {
-                    googleDriveBackupLayout.setVisibility(View.GONE);
-                    isGoogleDriveBackupOn = false;
-                    System.out.println("GD OFF");
-                }
-            }
-        });
+//        Switch googleDriveBackupSwitch = (Switch) findViewById(R.id.switch_settings_backup_googledriveswitchbackup);
+//        googleDriveBackupSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//                if (isChecked) {
+//                    googleDriveBackupLayout.setVisibility(View.VISIBLE);
+//                    isGoogleDriveBackupOn = true;
+//                    System.out.println("GD ON");
+//                } else {
+//                    googleDriveBackupLayout.setVisibility(View.GONE);
+//                    isGoogleDriveBackupOn = false;
+//                    System.out.println("GD OFF");
+//                }
+//            }
+//        });
 
         Switch localBackupSwitch = (Switch) findViewById(R.id.switch_settings_backup_localswitchbackup);
         localBackupSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -123,13 +123,15 @@ public class BackUpActivity extends AppCompatActivity  {
      * turned on.
      * @param view
      */
-    public void makeBackUpNow(View view) {
-        //TODO: make the backup in google drive and local.
-
+    public void makeBackUp(View view) {
         XMLHelper.makeLocalBackup(mContext, configurationsDao);
-        configurationsDao.deleteAll();
-        daoSession.getArrivingConfWithServDao().deleteAll();
-        daoSession.getLeavingConfWithServDao().deleteAll();
+    }
+
+    /**
+     * This method loads the backup in
+     * @param view
+     */
+    public void loadBackUp(View view) {
         XMLHelper.readLocalBackup(mContext, daoSession);
     }
 

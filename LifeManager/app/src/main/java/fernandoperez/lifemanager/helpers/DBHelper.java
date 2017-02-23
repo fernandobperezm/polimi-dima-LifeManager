@@ -64,11 +64,17 @@ public class DBHelper {
         Services spotify = new Services(null, "Spotify", constants.SERVICES_LIST.SPOTIFY );
         Services twitter = new Services(null, "Twitter", constants.SERVICES_LIST.TWITTER );
         Services gmail = new Services(null, "Gmail", constants.SERVICES_LIST.EMAIL );
+        Services bluetooth = new Services(null, "Bluetooth", constants.SERVICES_LIST.BLUETOOTH);
+        Services wifi = new Services(null, "Wi-Fi", constants.SERVICES_LIST.WIFI);
+        Services gps = new Services(null, "GPS", constants.SERVICES_LIST.LOCATION);
 
         try {
             servicesDao.insert(spotify);
             servicesDao.insert(twitter);
             servicesDao.insert(gmail);
+            servicesDao.insert(bluetooth);
+            servicesDao.insert(wifi);
+            servicesDao.insert(gps);
         } catch (SQLException exception) {
         }
     }
