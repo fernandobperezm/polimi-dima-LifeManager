@@ -1,14 +1,37 @@
 package fernandoperez.lifemanager.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Xml;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 
+import org.xmlpull.v1.XmlSerializer;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.StringWriter;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Scanner;
+
 import fernandoperez.lifemanager.R;
+import fernandoperez.lifemanager.helpers.DBHelper;
+import fernandoperez.lifemanager.helpers.XMLHelper;
+import fernandoperez.lifemanager.models.ArrivingConfWithServDao;
+import fernandoperez.lifemanager.models.Configurations;
+import fernandoperez.lifemanager.models.ConfigurationsDao;
+import fernandoperez.lifemanager.models.DaoSession;
+import fernandoperez.lifemanager.models.LeavingConfWithServDao;
+import fernandoperez.lifemanager.models.ServicesDao;
 import fernandoperez.lifemanager.utils.constants;
 
 /**
@@ -20,6 +43,11 @@ public class BackUpActivity extends AppCompatActivity  {
     static boolean isLocalBackupON = false;
 
     private static final String TAG = "LifeManager";
+    private Context mContext;
+
+    private DaoSession daoSession;
+    private ConfigurationsDao configurationsDao;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -29,6 +57,9 @@ public class BackUpActivity extends AppCompatActivity  {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         manageSwitchButton();
+        mContext = getApplicationContext();
+        daoSession = ((MyApplication) getApplication()).getDaoSession();
+        configurationsDao = daoSession.getConfigurationsDao();
     }
 
     /**
@@ -94,6 +125,12 @@ public class BackUpActivity extends AppCompatActivity  {
      */
     public void makeBackUpNow(View view) {
         //TODO: make the backup in google drive and local.
+
+        XMLHelper.makeLocalBackup(mContext, configurationsDao);
+        configurationsDao.deleteAll();
+        daoSession.getArrivingConfWithServDao().deleteAll();
+        daoSession.getLeavingConfWithServDao().deleteAll();
+        XMLHelper.readLocalBackup(mContext, daoSession);
     }
 
     /**

@@ -1,6 +1,7 @@
 package fernandoperez.lifemanager.models;
 
 import android.location.Location;
+import android.support.annotation.NonNull;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
@@ -9,10 +10,13 @@ import org.greenrobot.greendao.annotation.JoinEntity;
 import org.greenrobot.greendao.annotation.ToMany;
 import org.greenrobot.greendao.annotation.Transient;
 
+import java.io.IOException;
+import java.util.Iterator;
 import java.util.List;
 
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.DaoException;
+import org.xmlpull.v1.XmlSerializer;
 
 /**
  * Created by fernandoperez on 2/4/17.
@@ -83,6 +87,44 @@ public class Configurations  {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+
+    public void toXML(@NonNull XmlSerializer xmlSerializer) throws IOException{
+        xmlSerializer.startTag(null, "Configuration");
+         xmlSerializer.startTag(null, "ID");
+          xmlSerializer.text(getId().toString());
+         xmlSerializer.endTag(null,"ID");
+
+         xmlSerializer.startTag(null, "Name");
+          xmlSerializer.text(getName());
+         xmlSerializer.endTag(null, "Name");
+
+//         xmlSerializer.startTag(null, "Location");
+//          xmlSerializer.text(getLocation().toString());
+//         xmlSerializer.endTag(null, "Location");
+
+         xmlSerializer.startTag(null, "Arriving");
+            List<Services> arrList = getArrivingServicesList();
+            if (arrList != null) {
+                for (Iterator<Services> iterator = arrList.iterator(); iterator.hasNext(); ) {
+                    Services service = iterator.next();
+                    service.toXML(xmlSerializer);
+                }
+            }
+         xmlSerializer.endTag(null, "Arriving");
+
+         xmlSerializer.startTag(null, "Leaving");
+            List<Services> leavList = getLeavingServicesList();
+            if (leavList != null) {
+                for (Iterator<Services> iterator = leavList.iterator(); iterator.hasNext(); ) {
+                    Services service = iterator.next();
+                    service.toXML(xmlSerializer);
+                }
+            }
+         xmlSerializer.endTag(null, "Leaving");
+
+        xmlSerializer.endTag(null, "Configuration");
     }
 
     /**
@@ -183,4 +225,6 @@ public class Configurations  {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getConfigurationsDao() : null;
     }
+
+
 }

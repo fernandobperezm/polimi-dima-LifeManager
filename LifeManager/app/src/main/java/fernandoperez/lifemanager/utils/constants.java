@@ -11,6 +11,8 @@ public abstract class constants {
     public final static String CONFIGURATION_NAME = "CONFIGURATION_NAME";
     public final static String CONFIGURATION_CURRENT_TYPE = "CONFIGURATION_TYPE";
 
+    //
+    public final static String BACKUP_FILENAME = "backup.xml";
 
     // Call codes.
     public final static int CREATE_GOOGLEDRIVE_BACKUP_FOLDER = 1000;

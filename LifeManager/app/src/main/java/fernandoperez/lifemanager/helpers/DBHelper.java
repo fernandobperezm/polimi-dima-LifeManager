@@ -12,10 +12,13 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
+import fernandoperez.lifemanager.activities.MyApplication;
 import fernandoperez.lifemanager.models.ArrivingConfWithServ;
 import fernandoperez.lifemanager.models.ArrivingConfWithServDao;
 import fernandoperez.lifemanager.models.Configurations;
 import fernandoperez.lifemanager.models.ConfigurationsDao;
+import fernandoperez.lifemanager.models.DaoMaster;
+import fernandoperez.lifemanager.models.DaoSession;
 import fernandoperez.lifemanager.models.LeavingConfWithServ;
 import fernandoperez.lifemanager.models.LeavingConfWithServDao;
 import fernandoperez.lifemanager.models.Services;
@@ -31,6 +34,10 @@ public class DBHelper {
     public static void saveList(Configurations configuration, List<Services> servicesList, constants.CONFIGURATION_TYPES configurationType) {
     }
 
+    public static List<Configurations> getAllConfigurations(ConfigurationsDao configurationsDao) {
+        return configurationsDao.loadAll();
+    }
+
     /**
      * The method insertConfiguration receives an instance of a Configuration and an instance of
      * ConfigurationsDao and tries to insert the Configuration into the Configurations table.
@@ -41,7 +48,7 @@ public class DBHelper {
     public static void insertConfiguration(Context context, ConfigurationsDao configurationsDao, Configurations configuration) {
         try {
             configurationsDao.insert(configuration);
-            Toast.makeText(context, "Successfully added a new configuration.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Successfully added configuration: " + configuration.toString(), Toast.LENGTH_SHORT).show();
         } catch (SQLException exception) {
             Toast.makeText(context, "Configuration already exists", Toast.LENGTH_SHORT).show();
         }
@@ -86,6 +93,7 @@ public class DBHelper {
             String confName,
             List<String> servicesToAdd) {
 
+        // TODO: Figure out how to not insert the same elements (now inserting repetitions).
         Configurations configurationForServices = configurationsDao.queryBuilder()
           .where(ConfigurationsDao.Properties.Name.eq(confName))
           .orderAsc(ConfigurationsDao.Properties.Name)
@@ -111,6 +119,19 @@ public class DBHelper {
 
         if (arrivingList == null) {
             Toast.makeText(context, "No services to add at arriving.",Toast.LENGTH_SHORT).show();
+            return null;
+        }
+
+        // Search for the list of entities with the current config.
+        List<ArrivingConfWithServ> arrivingConfWithServList =
+          arrivingDao.queryBuilder()
+            .where(ArrivingConfWithServDao.Properties.ConfigurationId.eq(configurationForServices.getId()))
+            .list();
+
+        try {
+            arrivingDao.deleteInTx(arrivingConfWithServList);
+        } catch (SQLException exception) {
+            exception.printStackTrace();
             return null;
         }
 
@@ -179,9 +200,22 @@ public class DBHelper {
             return null;
         }
 
+        // Search for the list of entities with the current config.
+        List<LeavingConfWithServ> leavingConfWithServList =
+          leavingDao.queryBuilder()
+            .where(LeavingConfWithServDao.Properties.ConfigurationId.eq(configurationForServices.getId()))
+            .list();
+
+        try {
+            leavingDao.deleteInTx(leavingConfWithServList);
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+            return null;
+        }
+
         try {
             for (Iterator<Services> leavingIterator = leavingList.iterator(); leavingIterator.hasNext();) {
-                leavingDao.insert(
+                leavingDao.save(
                   new LeavingConfWithServ(
                     null,
                     configurationForServices.getId(),
