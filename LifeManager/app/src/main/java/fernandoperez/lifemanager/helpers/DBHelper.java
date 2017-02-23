@@ -12,10 +12,13 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
+import fernandoperez.lifemanager.activities.MyApplication;
 import fernandoperez.lifemanager.models.ArrivingConfWithServ;
 import fernandoperez.lifemanager.models.ArrivingConfWithServDao;
 import fernandoperez.lifemanager.models.Configurations;
 import fernandoperez.lifemanager.models.ConfigurationsDao;
+import fernandoperez.lifemanager.models.DaoMaster;
+import fernandoperez.lifemanager.models.DaoSession;
 import fernandoperez.lifemanager.models.LeavingConfWithServ;
 import fernandoperez.lifemanager.models.LeavingConfWithServDao;
 import fernandoperez.lifemanager.models.Services;
@@ -45,7 +48,7 @@ public class DBHelper {
     public static void insertConfiguration(Context context, ConfigurationsDao configurationsDao, Configurations configuration) {
         try {
             configurationsDao.insert(configuration);
-            Toast.makeText(context, "Successfully added a new configuration.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Successfully added configuration: " + configuration.toString(), Toast.LENGTH_SHORT).show();
         } catch (SQLException exception) {
             Toast.makeText(context, "Configuration already exists", Toast.LENGTH_SHORT).show();
         }

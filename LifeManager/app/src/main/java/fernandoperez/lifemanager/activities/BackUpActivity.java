@@ -25,6 +25,7 @@ import java.util.Scanner;
 
 import fernandoperez.lifemanager.R;
 import fernandoperez.lifemanager.helpers.DBHelper;
+import fernandoperez.lifemanager.helpers.XMLHelper;
 import fernandoperez.lifemanager.models.ArrivingConfWithServDao;
 import fernandoperez.lifemanager.models.Configurations;
 import fernandoperez.lifemanager.models.ConfigurationsDao;
@@ -125,73 +126,11 @@ public class BackUpActivity extends AppCompatActivity  {
     public void makeBackUpNow(View view) {
         //TODO: make the backup in google drive and local.
 
-        makeLocalBackup();
-    }
-
-    /**
-     *
-     */
-    public void makeLocalBackup() {
-        StringWriter writer = new StringWriter();
-        XmlSerializer xmlSerializer = Xml.newSerializer();
-
-        try {
-            FileOutputStream fileos = mContext.openFileOutput(constants.BACKUP_FILENAME, Context.MODE_PRIVATE);
-            xmlSerializer.setOutput(writer);
-            xmlSerializer.startDocument("UTF-8", true);
-            xmlSerializer.startTag(null, "Backup");
-
-            List<Configurations> backupConfigurations = DBHelper.getAllConfigurations(configurationsDao);
-            for (Iterator<Configurations> iterator = backupConfigurations.iterator(); iterator.hasNext(); ){
-                Configurations conf = iterator.next();
-                conf.toXML(xmlSerializer);
-            }
-
-            xmlSerializer.endTag(null, "Backup");
-            xmlSerializer.endDocument();
-            xmlSerializer.flush();
-            String dataWrite = writer.toString();
-            fileos.write(dataWrite.getBytes());
-            fileos.close();
-        }
-        catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        catch (IllegalArgumentException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        catch (IllegalStateException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-        readLocalBackUp();
-    }
-
-    private void readLocalBackUp() {
-        // TODO: read the backup as XML and load the data.
-
-        FileInputStream inputStream;
-        InputStreamReader inputStreamReader;
-
-        try {
-            inputStream = openFileInput(constants.BACKUP_FILENAME);
-            inputStreamReader = new InputStreamReader(inputStream);
-            char[] inputBuffer = new char[inputStream.available()];
-            inputStreamReader.read(inputBuffer);
-            String data = new String (inputBuffer);
-            inputStream.close();
-            inputStreamReader.close();
-            System.out.println(data);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        XMLHelper.makeLocalBackup(mContext, configurationsDao);
+        configurationsDao.deleteAll();
+        daoSession.getArrivingConfWithServDao().deleteAll();
+        daoSession.getLeavingConfWithServDao().deleteAll();
+        XMLHelper.readLocalBackup(mContext, daoSession);
     }
 
     /**
