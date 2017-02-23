@@ -1,5 +1,6 @@
 package fernandoperez.lifemanager.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -7,6 +8,13 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Scanner;
 
 import fernandoperez.lifemanager.R;
 import fernandoperez.lifemanager.utils.constants;
@@ -20,6 +28,7 @@ public class BackUpActivity extends AppCompatActivity  {
     static boolean isLocalBackupON = false;
 
     private static final String TAG = "LifeManager";
+    private Context mContext;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -29,6 +38,7 @@ public class BackUpActivity extends AppCompatActivity  {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         manageSwitchButton();
+        mContext = getApplicationContext();
     }
 
     /**
@@ -94,6 +104,42 @@ public class BackUpActivity extends AppCompatActivity  {
      */
     public void makeBackUpNow(View view) {
         //TODO: make the backup in google drive and local.
+
+        makeLocalBackup();
+    }
+
+    /**
+     *
+     */
+    public void makeLocalBackup() {
+        String string = "Hello world! How are you?";
+        FileOutputStream outputStream;
+
+        try {
+            outputStream = openFileOutput(constants.BACKUP_FILENAME, Context.MODE_PRIVATE);
+            outputStream.write(string.getBytes());
+            outputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void readLocalBackUp() {
+        FileInputStream inputStream;
+        InputStreamReader inputStreamReader;
+
+        try {
+            inputStream = openFileInput(constants.BACKUP_FILENAME);
+            inputStreamReader = new InputStreamReader(inputStream);
+            char[] inputBuffer = new char[inputStream.available()];
+            inputStreamReader.read(inputBuffer);
+            String data = new String (inputBuffer);
+            inputStream.close();
+            inputStreamReader.close();
+            System.out.println(data);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
