@@ -1,6 +1,8 @@
 package fernandoperez.lifemanager.activities;
 
+import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -54,10 +56,24 @@ public class ScreenSlideActivity extends FragmentActivity {
      */
     private ScreenSlidePagerAdapter mPagerAdapter;
 
+    /**
+     * WIFI and Bluetooth variables.
+     */
+    WifiManager wifiManager;
+    BluetoothAdapter mBluetoothAdapter;
+    private final static int REQUEST_ENABLE_BT = 1;
+
+    /**
+     *
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_screen_slide);
+
+        wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
+        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
         Intent intent = getIntent();
         String confName = intent.getExtras().getString(constants.CONFIGURATION_NAME);
@@ -89,7 +105,6 @@ public class ScreenSlideActivity extends FragmentActivity {
         mPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                System.out.println("Scrolled " + String.valueOf(position));
             }
 
             @Override
@@ -113,7 +128,6 @@ public class ScreenSlideActivity extends FragmentActivity {
 
             @Override
             public void onPageScrollStateChanged(int state) {
-                System.out.println("SCROLLSTATECHANGED " +  String.valueOf(state));
             }
         });
     }
@@ -143,15 +157,23 @@ public class ScreenSlideActivity extends FragmentActivity {
         for (Services service : servicesList) {
             switch (service.getServiceType()) {
                 case WIFI:
-
+                    if (!wifiManager.isWifiEnabled()) {
+                        wifiManager.setWifiEnabled(true);
+                    }
                     break;
 
                 case BLUETOOTH:
-
+                    if (mBluetoothAdapter != null && !mBluetoothAdapter.isEnabled()) {
+                        Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                        startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+//                        mBluetoothAdapter.enable();
+                    }
                     break;
 
                 case LOCATION:
-
+                    Intent gpsOptionsIntent = new Intent(
+                      android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    startActivity(gpsOptionsIntent);
                     break;
 
                 default:
@@ -188,7 +210,7 @@ public class ScreenSlideActivity extends FragmentActivity {
      * A simple pager adapter that represents 5 {@link } objects, in
      * sequence.
      */
-    private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
+    private class ScreenSlidePagerAdapter extends FragmentPagerAdapter {
         List<Services> mServicesList;
         FragmentManager supportFragmentManager;
 
@@ -200,17 +222,23 @@ public class ScreenSlideActivity extends FragmentActivity {
 
         @Override
         public Fragment getItem(int position) {
+            Fragment fragment;
+            boolean isFirst = position == 0;
             switch (mServicesList.get(position).getServiceType()) {
                 case SPOTIFY:
                     // Spotify handles by itself the login.
-                    return SpotifyPlaybackFragment.create();
+                    fragment = SpotifyPlaybackFragment.create(isFirst);
+                    return fragment;
 
                 case TWITTER:
-                    // Twitter only sets the session on the Session Manager, we must retrieve it
-                    return TwitterMainFragment.create();
+                    // As fetching the data is made inside the fragment after login, we don't need
+                    // to specify if this fragment is the first.
+                    fragment =  TwitterMainFragment.create();
+                    return fragment;
 
                 case EMAIL:
-                    return GmailFragment.create();
+                    fragment =  GmailFragment.create(isFirst);
+                    return fragment;
 
                 default:
                     return null;

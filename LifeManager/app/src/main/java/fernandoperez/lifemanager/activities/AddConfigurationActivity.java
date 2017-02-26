@@ -1,9 +1,7 @@
 package fernandoperez.lifemanager.activities;
 
-import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
-import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -20,13 +18,10 @@ import java.util.List;
 
 import fernandoperez.lifemanager.R;
 import fernandoperez.lifemanager.helpers.DBHelper;
-import fernandoperez.lifemanager.models.ArrivingConfWithServDao;
 import fernandoperez.lifemanager.models.Configurations;
 import fernandoperez.lifemanager.models.ConfigurationsDao;
 import fernandoperez.lifemanager.models.DaoSession;
-import fernandoperez.lifemanager.models.LeavingConfWithServDao;
 import fernandoperez.lifemanager.models.Services;
-import fernandoperez.lifemanager.models.ServicesDao;
 import fernandoperez.lifemanager.utils.constants;
 
 public class AddConfigurationActivity extends AppCompatActivity {
@@ -43,19 +38,10 @@ public class AddConfigurationActivity extends AppCompatActivity {
     EditText configname;
     private String confName;
 
-    // WIFI parameters declaration
-    WifiManager wifiManager;
-    BluetoothAdapter mBluetoothAdapter;
-    private final static int REQUEST_ENABLE_BT = 1;
-
     // Database management.
     private DaoSession daoSession;
     private ConfigurationsDao configurationsDao;
-    private ServicesDao servicesDao;
-    private ArrivingConfWithServDao arrivingDao;
-    private LeavingConfWithServDao leavingDao;
 
-    private Integer counter = 0;
     private Context mContext;
 
     @Override
@@ -68,22 +54,15 @@ public class AddConfigurationActivity extends AppCompatActivity {
         // Database managament.
         daoSession = ((MyApplication) getApplication()).getDaoSession();
         configurationsDao = daoSession.getConfigurationsDao();
-        servicesDao = daoSession.getServicesDao();
-        arrivingDao = daoSession.getArrivingConfWithServDao();
-        leavingDao = daoSession.getLeavingConfWithServDao();
-
-        // Bluetooth
-        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
         //Buttons Declaration
-        imageButtonTwitter =(ImageButton) findViewById(R.id.imB1);
-        imageButtonSpotify =(ImageButton) findViewById(R.id.imB2);
-        imageButtonGmail =(ImageButton) findViewById(R.id.imB3);
-        imageButtonBluetooth =(ImageButton) findViewById(R.id.imB4);
-        imageButtonWifi =(ImageButton) findViewById(R.id.imB5);
-        imageButtonGPS =(ImageButton) findViewById(R.id.imB6);
+        imageButtonTwitter = (ImageButton) findViewById(R.id.imB1);
+        imageButtonSpotify = (ImageButton) findViewById(R.id.imB2);
+        imageButtonGmail = (ImageButton) findViewById(R.id.imB3);
+        imageButtonBluetooth = (ImageButton) findViewById(R.id.imB4);
+        imageButtonWifi = (ImageButton) findViewById(R.id.imB5);
+        imageButtonGPS = (ImageButton) findViewById(R.id.imB6);
 
-        wifiManager=(WifiManager) getSystemService(WIFI_SERVICE);
         configname = (EditText) findViewById(R.id.edittext_activity_main);
 
         imageButtonTwitter.setOnClickListener(new View.OnClickListener() {
@@ -150,21 +129,12 @@ public class AddConfigurationActivity extends AppCompatActivity {
             public void onClick(View v) {
                 imageButtonBluetooth.setSelected(!imageButtonBluetooth.isSelected());
                 if (imageButtonBluetooth.isSelected()) {
-                    //Handle selected state change
-                    //imageButtonTwitter = (ImageButton) setFeatureDrawable();
-
                     imageButtonBluetooth.setImageDrawable(getBaseContext().getResources().getDrawable(R.drawable.bluetooth));
-
-                    if (!mBluetoothAdapter.isEnabled()) {
-                        Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                        startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-                        bl=true;
-                    }
+                    bl=true;
                 }
                 else {
                     //Handle de-select state change
                     imageButtonBluetooth.setImageDrawable(getBaseContext().getResources().getDrawable(R.drawable.blg));
-                    mBluetoothAdapter.disable();
                     bl=false;
                 }
 
@@ -178,21 +148,13 @@ public class AddConfigurationActivity extends AppCompatActivity {
             public void onClick(View v) {
                 imageButtonWifi.setSelected(!imageButtonWifi.isSelected());
                 if (imageButtonWifi.isSelected()) {
-
                     imageButtonWifi.setImageDrawable(getBaseContext().getResources().getDrawable(R.drawable.wifi));
-                    if(wifiManager.isWifiEnabled()==false){
-                        wifiManager.setWifiEnabled(true);
-                        Toast.makeText(AddConfigurationActivity.this, "wifi on",Toast.LENGTH_SHORT).show();
-                        wi=true;
-                    }
+                    wi=true;
                 }
                 else {
                     //Handle de-select state change
                     imageButtonWifi.setImageDrawable(getBaseContext().getResources().getDrawable(R.drawable.wifig));
-                    if(wifiManager.isWifiEnabled()==true){
-                        wifiManager.setWifiEnabled(false);
-                        wi=false;
-                    }
+                    wi=false;
                 }
             }
         });
@@ -202,13 +164,8 @@ public class AddConfigurationActivity extends AppCompatActivity {
             public void onClick(View v) {
                 imageButtonGPS.setSelected(!imageButtonGPS.isSelected());
                 if (imageButtonGPS.isSelected()) {
-
                     imageButtonGPS.setImageDrawable(getBaseContext().getResources().getDrawable(R.drawable.gps));
-                    Intent gpsOptionsIntent = new Intent(
-                      android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                    startActivity(gpsOptionsIntent);
                     gp=true;
-
                 }
                 else {
                     //Handle de-select state change

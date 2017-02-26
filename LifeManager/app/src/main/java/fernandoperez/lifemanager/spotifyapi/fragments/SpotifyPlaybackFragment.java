@@ -70,14 +70,17 @@ public class SpotifyPlaybackFragment extends Fragment implements
     private boolean playerLoggedIn = false;
     private boolean isPlayingSong = false;
 
+    private static boolean isFirstService;
+
     private static int mOrientation;
 
     private FloatingActionButton vFabPlay;
     private FloatingActionButton vFabNext;
     private FloatingActionButton vFabPrevious;
 
-    public static SpotifyPlaybackFragment create() {
+    public static SpotifyPlaybackFragment create(boolean firstService) {
         SpotifyPlaybackFragment fragment = new SpotifyPlaybackFragment();
+        isFirstService = firstService;
         return fragment;
     }
 
@@ -109,6 +112,10 @@ public class SpotifyPlaybackFragment extends Fragment implements
 
         configureButtons(rootView);
         setRecyclerView(rootView);
+
+        if (isFirstService) {
+            fetchData();
+        }
 
         return rootView;
     }
