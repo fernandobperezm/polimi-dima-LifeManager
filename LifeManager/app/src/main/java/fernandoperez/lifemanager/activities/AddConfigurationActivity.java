@@ -249,12 +249,10 @@ public class AddConfigurationActivity extends AppCompatActivity {
         Intent intent = getIntent();
         confName = intent.getStringExtra(constants.CONFIGURATION_NAME);
 
-        if (!confName.isEmpty()) {
+        if (confName != null && !confName.isEmpty()) {
             loadServices();
         }
     }
-
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -272,64 +270,16 @@ public class AddConfigurationActivity extends AppCompatActivity {
 
         Intent intent;
         switch (id) {
-            case R.id.action_settings:
-                intent = new Intent(this, SettingsActivity.class);
+            case R.id.action_backup:
+                intent = new Intent(this, BackUpActivity.class);
                 startActivity(intent);
-
                 return true;
 
-            case R.id.action_current_settings:
-                intent = new Intent(this, ScreenSlideActivity.class);
-
-
+            case R.id.action_aboutus:
+                intent = new Intent(this, AboutUsActivity.class);
+                startActivity(intent);
                 return true;
 
-            case R.id.action_create_config:
-                counter += 1;
-                confName = "Work" + counter.toString();
-
-                Configurations configuration = new Configurations(null, confName);
-                DBHelper.insertConfiguration(this, configurationsDao, configuration);
-
-                return true;
-
-            case R.id.action_create_services:
-                // Example of services adding to arriving and leaving.
-                confName = "Work" + counter.toString();
-                List<String> servicesToAdd = new ArrayList<>();
-                servicesToAdd.add("Gmail");
-                servicesToAdd.add("Twitter");
-                servicesToAdd.add("Spotify");
-
-                Configurations conf1 =
-                  DBHelper
-                    .insertArrivingServices(
-                      this,
-                      configurationsDao,
-                      servicesDao,
-                      arrivingDao,
-                      confName,
-                      servicesToAdd // adds gmail, twitter and spofify.
-                    );
-
-                Configurations conf2 =
-                  DBHelper
-                    .insertLeavingServices(
-                      this,
-                      configurationsDao,
-                      servicesDao,
-                      leavingDao,
-                      confName,
-                      servicesToAdd.subList(1,servicesToAdd.size()) // Adds twitter and spotify.
-                    );
-
-                if ((conf1 != null) && (conf2 != null) && (conf1.getId() == conf2.getId())) {
-                    System.out.println(conf1.getArrivingServicesList().toString());
-                    System.out.println(conf2.getLeavingServicesList().toString());
-                    Toast.makeText(this, "DONE", Toast.LENGTH_SHORT).show();
-                }
-
-                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

@@ -47,7 +47,10 @@ public abstract class constants {
     }
 
     //
-    public final static int MAX_SERVICES = 6;
+    public final static int MAX_SERVICES = 3;
+    public final static int INTERNAL_SERVICES_SUBLIST = 0;
+    public final static int EXTERNAL_SERVICES_SUBLIST = 1;
+
 
     // Gmail API.
     public final static long MAX_EMAILS_FETCH = 20;

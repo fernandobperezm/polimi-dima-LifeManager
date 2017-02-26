@@ -50,29 +50,30 @@
         <activity
             android:name=".activities.SettingsActivity"
             android:label="@string/bar_title_settings"
-            android:parentActivityName=".activities.AddConfigurationActivity">
+            android:parentActivityName=".activities.ConfigurationListActivity">
 
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.AddConfigurationActivity" />
+                android:value=".activities.ConfigurationListActivity" />
         </activity>
         <activity
             android:name=".activities.AboutUsActivity"
             android:label="@string/title_activity_about_us"
-            android:parentActivityName=".activities.SettingsActivity">
+            android:parentActivityName=".activities.ConfigurationListActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="fernandoperez.lifemanager.activities.SettingsActivity" />
+                android:value="fernandoperez.lifemanager.activities.ConfigurationListActivity" />
         </activity>
         <activity
             android:name=".activities.BackUpActivity"
             android:label="@string/title_activity_back_up"
-            android:parentActivityName=".activities.SettingsActivity">
+            android:parentActivityName=".activities.ConfigurationListActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="fernandoperez.lifemanager.activities.SettingsActivity" />
+                android:value="fernandoperez.lifemanager.activities.ConfigurationListActivity" />
         </activity>
+        <activity android:name=".activities.ScreenSlideActivity" />
 
         <!-- GOOGLE API -->
         <activity
@@ -95,8 +96,8 @@
             android:launchMode="standard"
             android:name="com.spotify.sdk.android.authentication.LoginActivity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
-        <activity android:name=".activities.ScreenSlideActivity" />
 
+        <!-- Database (greenDAO) -->
         <meta-data android:name="VERSION" android:value="1" />
         <meta-data android:name="DOMAIN_PACKAGE_NAME" android:value="fernandoperez.lifemanager.models" />
 
