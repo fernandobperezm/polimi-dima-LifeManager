@@ -276,41 +276,6 @@ public class MainActivity extends AppCompatActivity {
             case R.id.action_current_settings:
                 intent = new Intent(this, ScreenSlideActivity.class);
 
-                // Find (in some way) the configuration to show.
-//                List<Configurations> configurationsList = configurationsDao.queryBuilder()
-//                  .where(ConfigurationsDao.Properties.Name.eq("Work3"))
-//                  .orderAsc(ConfigurationsDao.Properties.Name)
-//                  .list();
-//
-//                if (configurationsList.size() > 0) {
-//                    // As the names are unique, we can assure that this list is of size 1.
-//                    Configurations confToShow = configurationsList.get(0);
-//
-//                } else {
-//                    Toast.makeText(this, "No Configuration found",Toast.LENGTH_SHORT);
-//                }
-
-
-//                List<Services> servicesLeaving =
-//
-////
-////                Configurations configuration = new Configurations(confName);
-////                if (configuration.save() >= 1) {
-////                } else {
-////                    System.out.println("DIDNT SAVE");
-////                }
-////
-////                DBHelper.saveList(configuration, servicesArriving, constants.CONFIGURATION_TYPES.ARRIVING);
-////                DBHelper.saveList(configuration, servicesLeaving, constants.CONFIGURATION_TYPES.LEAVING);
-////
-////                for (Iterator<ArrivingConfWithServ> iterator = ArrivingConfWithServ.findAll(ArrivingConfWithServ.class); iterator.hasNext();) {
-////                    System.out.println(iterator.next().toString());
-//                }
-//
-//                intent.putExtra(constants.CONFIGURATION_NAME, confName);
-//                intent.putExtra(constants.CONFIGURATION_CURRENT_TYPE, constants.CONFIGURATION_TYPES.ARRIVING);
-
-//                startActivity(intent);
 
                 return true;
 
