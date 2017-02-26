@@ -9,20 +9,28 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import fernandoperez.lifemanager.R;
 import fernandoperez.lifemanager.googleapi.fragments.GmailFragment;
 import fernandoperez.lifemanager.models.Configurations;
+import fernandoperez.lifemanager.models.ConfigurationsDao;
+import fernandoperez.lifemanager.models.DaoSession;
 import fernandoperez.lifemanager.models.Services;
 import fernandoperez.lifemanager.spotifyapi.fragments.SpotifyPlaybackFragment;
 import fernandoperez.lifemanager.twitterapi.fragments.TwitterMainFragment;
+import fernandoperez.lifemanager.utils.Tuple;
 import fernandoperez.lifemanager.utils.constants;
 
+import static fernandoperez.lifemanager.utils.constants.SERVICES_LIST.BLUETOOTH;
+import static fernandoperez.lifemanager.utils.constants.SERVICES_LIST.EMAIL;
+import static fernandoperez.lifemanager.utils.constants.SERVICES_LIST.LOCATION;
 import static fernandoperez.lifemanager.utils.constants.SERVICES_LIST.SPOTIFY;
+import static fernandoperez.lifemanager.utils.constants.SERVICES_LIST.TWITTER;
+import static fernandoperez.lifemanager.utils.constants.SERVICES_LIST.WIFI;
 
 
 /**
@@ -35,11 +43,6 @@ import static fernandoperez.lifemanager.utils.constants.SERVICES_LIST.SPOTIFY;
  * reverse animation is played when the user presses the "previous" button.</p>
  */
 public class ScreenSlideActivity extends FragmentActivity {
-    /**
-     * The number of pages (wizard steps) to show in this demo.
-     */
-    private static final int NUM_PAGES = constants.MAX_SERVICES;
-
     /**
      * The pager widget, which handles animation and allows swiping horizontally to access previous
      * and next wizard steps.
@@ -57,30 +60,31 @@ public class ScreenSlideActivity extends FragmentActivity {
         setContentView(R.layout.activity_screen_slide);
 
         Intent intent = getIntent();
-//        String confName = intent.getExtras().getString(constants.CONFIGURATION_NAME);
-//        constants.CONFIGURATION_TYPES confType =
-//          (constants.CONFIGURATION_TYPES) intent.getExtras().get(constants.CONFIGURATION_CURRENT_TYPE);
-//
-        Configurations currentConfiguration;
-        List<Services> servicesList = null;
-//
-//        List<Configurations> configurationsList = Configurations.find(Configurations.class, "name = ?",confName);
-//        if (configurationsList.size() > 0) {
-//            currentConfiguration = configurationsList.get(0);
-//            switch (confType) {
-//                case ARRIVING:
-//                    servicesList = currentConfiguration.getArrivingServices();
-//                    break;
-//                case LEAVING:
-//                    servicesList = currentConfiguration.getLeavingServices();
-//                    break;
-//            }
-//        }
+        String confName = intent.getExtras().getString(constants.CONFIGURATION_NAME);
 
+        DaoSession daoSession = ((MyApplication) getApplication()).getDaoSession();
+        ConfigurationsDao configurationsDao = daoSession.getConfigurationsDao();
+
+        Configurations currentConfiguration =
+          configurationsDao.queryBuilder().where(ConfigurationsDao.Properties.Name.eq(confName)).unique();
+
+        List<Services> servicesList = currentConfiguration.getArrivingServicesList();
+        Tuple<List<Services>, List<Services>> tuple = extractServices(servicesList);
+
+        // Activate the internal services, located in the first position of the tuple.
+        if (!tuple.first.isEmpty()) {
+            activateInternalServices(tuple.first);
+        }
+
+        // If there aren't external services to show, make a toast and go to the previous activity.
+        if (tuple.second.isEmpty()) {
+            Toast.makeText(this, "No external services to show, selected internal services are activated.", Toast.LENGTH_SHORT).show();
+            finish();
+        }
 
         // Instantiate a ViewPager and a PagerAdapter.
         mPager = (ViewPager) findViewById(R.id.pager);
-        mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager(), servicesList);
+        mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager(), tuple.second);
         mPager.setAdapter(mPagerAdapter);
         mPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -114,28 +118,6 @@ public class ScreenSlideActivity extends FragmentActivity {
         });
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-//        switch (item.getItemId()) {
-//            case android.R.id.home:
-//                // Navigate "up" the demo structure to the launchpad activity.
-//                // See http://developer.android.com/design/patterns/navigation.html for more.
-//                NavUtils.navigateUpTo(this, new Intent(this, MainActivity.class));
-//                return true;
-//
-//        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
     /**
      * The method onActivityResult is called after the
      * @param requestCode
@@ -155,7 +137,51 @@ public class ScreenSlideActivity extends FragmentActivity {
             mPagerAdapter.notifyDataSetChanged();
         }
         else Log.d("ScreenSlideActivity", "fragment is null");
-     }
+    }
+
+    private void activateInternalServices(List<Services> servicesList) {
+        for (Services service : servicesList) {
+            switch (service.getServiceType()) {
+                case WIFI:
+
+                    break;
+
+                case BLUETOOTH:
+
+                    break;
+
+                case LOCATION:
+
+                    break;
+
+                default:
+                    break;
+            }
+        }
+    }
+
+    /**
+     *
+     * @param servicesList
+     * @return
+     */
+    private Tuple<List<Services>, List<Services>> extractServices(List<Services> servicesList) {
+        List<Services> internalList = new ArrayList<>();
+        List<Services> externalList = new ArrayList<>();
+
+        for (Services service : servicesList) {
+            constants.SERVICES_LIST servType = service.getServiceType();
+            if (servType == WIFI || servType == BLUETOOTH || servType == LOCATION) {
+                internalList.add(service);
+            }
+
+            if (servType == TWITTER || servType == EMAIL || servType == SPOTIFY) {
+                externalList.add(service);
+            }
+        }
+
+        return new Tuple<>(internalList, externalList);
+    }
 
 
     /**
@@ -201,6 +227,4 @@ public class ScreenSlideActivity extends FragmentActivity {
             return FragmentPagerAdapter.POSITION_UNCHANGED;
         }
     }
-
-
 }

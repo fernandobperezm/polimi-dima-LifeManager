@@ -1,29 +1,16 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="fernandoperez.lifemanager.activities.MainActivity">
+    tools:context="fernandoperez.lifemanager.activities.ConfigurationListActivity">
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/action_backup"
         android:orderInCategory="100"
-        android:title="@string/action_settings"
+        android:title="@string/action_backup"
         app:showAsAction="never" />
 
     <item
-        android:id="@+id/action_current_settings"
+        android:id="@+id/action_aboutus"
         android:orderInCategory="100"
-        android:title="CurrentSettings"
+        android:title="@string/action_aboutus"
         app:showAsAction="never" />
-
-    <item
-        android:id="@+id/action_create_config"
-        android:orderInCategory="100"
-        android:title="CreateConfig"
-        app:showAsAction="never" />
-
-    <item
-        android:id="@+id/action_create_services"
-        android:orderInCategory="100"
-        android:title="CreateServices"
-        app:showAsAction="never" />
-
 </menu>

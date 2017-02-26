@@ -88,11 +88,11 @@ public class XMLHelper {
                 Triplet<Configurations, List<String>, List<String>> triplet = iterator.next();
                 Configurations configurations = triplet.first;
                 List<String> arrivingServices = triplet.second;
-                List<String> leavingServices = triplet.third;
+//                List<String> leavingServices = triplet.third;
 
                 DBHelper.insertConfiguration(context,configurationsDao, configurations);
                 DBHelper.insertArrivingServices(context, configurationsDao, servicesDao, arrivingDao, configurations.getName(), arrivingServices);
-                DBHelper.insertLeavingServices(context, configurationsDao, servicesDao, leavingDao, configurations.getName(), leavingServices);
+//                DBHelper.insertLeavingServices(context, configurationsDao, servicesDao, leavingDao, configurations.getName(), leavingServices);
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
