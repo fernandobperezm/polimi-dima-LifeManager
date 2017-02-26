@@ -106,12 +106,12 @@ public class DBHelper {
           .unique();
 
         if (configurationForServices == null) {
-            Toast.makeText(context, "No Configuration found",Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "No configuration with that name found.",Toast.LENGTH_SHORT).show();
             return null;
         }
 
         if (servicesToAdd.size() == 0) {
-            Toast.makeText(context, "No services to add at arriving.",Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "You need to add at least one service.",Toast.LENGTH_SHORT).show();
             return null;
         }
 
@@ -124,7 +124,7 @@ public class DBHelper {
             .list();
 
         if (arrivingList == null) {
-            Toast.makeText(context, "No services to add at arriving.",Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "You need to add at least one service.",Toast.LENGTH_SHORT).show();
             return null;
         }
 
@@ -265,6 +265,46 @@ public class DBHelper {
                     conditionsArray[1],
                     Arrays.copyOfRange(conditionsArray, 2,conditionsArray.length));
         }
+    }
+
+    /**
+     *
+     * @param context
+     * @param daoSession
+     * @param confName
+     * @param servicesToAdd
+     */
+    public static Configurations saveNewConfiguration(Context context, DaoSession daoSession, String confName, List<String> servicesToAdd) {
+        // Define local variables.
+        ConfigurationsDao configurationsDao = daoSession.getConfigurationsDao();
+        ServicesDao servicesDao = daoSession.getServicesDao();
+        ArrivingConfWithServDao arrivingDao = daoSession.getArrivingConfWithServDao();
+
+        // Check if a configuration like that exists.
+        Configurations configurations =
+          configurationsDao.queryBuilder().where(ConfigurationsDao.Properties.Name.eq(confName)).unique();
+
+        // Create one if it doesn't exist.
+        if (configurations == null) {
+            Configurations configuration = new Configurations(null, confName);
+            insertConfiguration(context, configurationsDao, configuration);
+        }
+
+        // Add the services to it.
+        Configurations config = DBHelper.insertArrivingServices(
+          context,
+          configurationsDao,
+          servicesDao,
+          arrivingDao,
+          confName,
+          servicesToAdd
+        );
+
+        if (config == null || configurations != config) {
+            return null;
+        }
+
+        return configurations;
     }
 
 }
