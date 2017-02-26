@@ -27,6 +27,7 @@ import fernandoperez.lifemanager.models.DaoSession;
 import fernandoperez.lifemanager.models.LeavingConfWithServDao;
 import fernandoperez.lifemanager.models.Services;
 import fernandoperez.lifemanager.models.ServicesDao;
+import fernandoperez.lifemanager.utils.constants;
 
 public class AddConfigurationActivity extends AppCompatActivity {
 
@@ -193,10 +194,7 @@ public class AddConfigurationActivity extends AppCompatActivity {
                         wi=false;
                     }
                 }
-
-
             }
-
         });
 
         imageButtonGPS.setOnClickListener(new View.OnClickListener() {
@@ -249,7 +247,7 @@ public class AddConfigurationActivity extends AppCompatActivity {
         });
 
         Intent intent = getIntent();
-        confName = intent.getStringExtra("CONF_NAME");
+        confName = intent.getStringExtra(constants.CONFIGURATION_NAME);
 
         if (!confName.isEmpty()) {
             loadServices();

@@ -24,6 +24,7 @@ import fernandoperez.lifemanager.R;
 import fernandoperez.lifemanager.models.Configurations;
 import fernandoperez.lifemanager.models.ConfigurationsDao;
 import fernandoperez.lifemanager.models.DaoSession;
+import fernandoperez.lifemanager.utils.constants;
 
 public class ConfigurationListActivity extends AppCompatActivity {
 
@@ -66,7 +67,7 @@ public class ConfigurationListActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent (getApplicationContext(), AddConfigurationActivity.class);
-                intent.putExtra("CONF_NAME", "");
+                intent.putExtra(constants.CONFIGURATION_NAME, "");
                 startActivity(intent);
             }
         });
@@ -107,7 +108,7 @@ public class ConfigurationListActivity extends AppCompatActivity {
                     public void onClick(View v) {
                         Toast.makeText(getContext(),"EDIT PRESSED at position "+ position, Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent (getApplicationContext(), AddConfigurationActivity.class);
-                        intent.putExtra("CONF_NAME",viewHolder.nombre.getText().toString());
+                        intent.putExtra(constants.CONFIGURATION_NAME,viewHolder.nombre.getText().toString());
                         startActivity(intent);
                     }
                 });
@@ -122,8 +123,6 @@ public class ConfigurationListActivity extends AppCompatActivity {
                                 .where(ConfigurationsDao.Properties.Name.eq(viewHolder.nombre.getText().toString()))
                                 .unique()
                         );
-
-
                     }
                 });
 
@@ -131,6 +130,9 @@ public class ConfigurationListActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         Toast.makeText(getContext(),"SW PRESSED", Toast.LENGTH_LONG).show();
+                        Intent intent = new Intent (getApplicationContext(), ScreenSlideActivity.class);
+                        intent.putExtra(constants.CONFIGURATION_NAME, viewHolder.nombre.getText().toString());
+                        startActivity(intent);
                     }
                 });
 
