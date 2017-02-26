@@ -48,16 +48,6 @@
         </activity>
 
         <activity
-            android:name=".activities.SettingsActivity"
-            android:label="@string/bar_title_settings"
-            android:parentActivityName=".activities.ConfigurationListActivity">
-
-            <!-- Parent activity meta-data to support 4.0 and lower -->
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.ConfigurationListActivity" />
-        </activity>
-        <activity
             android:name=".activities.AboutUsActivity"
             android:label="@string/title_activity_about_us"
             android:parentActivityName=".activities.ConfigurationListActivity">
