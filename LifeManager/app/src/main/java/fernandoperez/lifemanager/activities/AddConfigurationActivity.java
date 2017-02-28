@@ -2,6 +2,7 @@ package fernandoperez.lifemanager.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -51,6 +52,7 @@ public class AddConfigurationActivity extends AppCompatActivity {
     private ActionBar mActionBar;
     private GridLayout mGridLayout;
     private float mDensity;
+    private int mOrientation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +61,7 @@ public class AddConfigurationActivity extends AppCompatActivity {
 
         mContext = this;
 
-        // Database managament.
+        // Database management.
         daoSession = ((MyApplication) getApplication()).getDaoSession();
         configurationsDao = daoSession.getConfigurationsDao();
 
@@ -68,12 +70,17 @@ public class AddConfigurationActivity extends AppCompatActivity {
         Intent intent = getIntent();
         confName = intent.getStringExtra(constants.CONFIGURATION_NAME);
 
-        mGridLayout = (GridLayout) findViewById(R.id.gridlayout_addconfig);
-        DisplayMetrics dm = getResources().getDisplayMetrics();
-        if (dm.densityDpi == DISPLAY_LOW){
-            mGridLayout.setRowCount(3);
-            mGridLayout.setColumnCount(2);
+        int rowCount = 3;
+        int columnCount = 2;
+        mOrientation = mContext.getResources().getConfiguration().orientation;
+        if (mOrientation == Configuration.ORIENTATION_LANDSCAPE) {
+            rowCount -= 1;
+            columnCount += 1;
         }
+
+        mGridLayout = (GridLayout) findViewById(R.id.gridlayout_addconfig);
+        mGridLayout.setRowCount(rowCount);
+        mGridLayout.setColumnCount(columnCount);
 
         try {
             mActionBar =  getSupportActionBar();

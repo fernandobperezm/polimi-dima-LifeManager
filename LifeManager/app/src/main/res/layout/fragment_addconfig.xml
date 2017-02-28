@@ -76,7 +76,7 @@
                 app:srcCompat="@drawable/blg"
                 android:background="@drawable/wrapper"
                 android:id="@+id/imB4"
-                android:padding="10dp"/>
+                android:layout_margin="10dp"/>
 
             <ImageButton
                 android:layout_width="105dp"
@@ -84,7 +84,7 @@
                 app:srcCompat="@drawable/wifig"
                 android:background="@drawable/wrapper"
                 android:id="@+id/imB5"
-                android:padding="10dp"/>
+                android:layout_margin="10dp"/>
 
             <ImageButton
                 android:layout_width="105dp"
@@ -92,7 +92,7 @@
                 app:srcCompat="@drawable/gpsg"
                 android:background="@drawable/wrapper"
                 android:id="@+id/imB6"
-                android:padding="10dp"/>
+                android:layout_margin="10dp"/>
 
         </GridLayout>
 
