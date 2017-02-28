@@ -1,5 +1,7 @@
 package fernandoperez.lifemanager.utils;
 
+import android.util.DisplayMetrics;
+
 /**
  * Created by fernandoperez on 1/26/17.
  */
@@ -54,6 +56,15 @@ public abstract class constants {
 
     // Gmail API.
     public final static long MAX_EMAILS_FETCH = 20;
+
+    // DISPLAY DENSITIES>
+    public final static int DISPLAY_LOW = DisplayMetrics.DENSITY_LOW;
+    public final static int DISPLAY_MED = DisplayMetrics.DENSITY_MEDIUM;
+    public final static int DISPLAY_HIGH = DisplayMetrics.DENSITY_HIGH;
+    public final static int DISPLAY_XHIGH = DisplayMetrics.DENSITY_XHIGH;
+
+
+
 
 }
 

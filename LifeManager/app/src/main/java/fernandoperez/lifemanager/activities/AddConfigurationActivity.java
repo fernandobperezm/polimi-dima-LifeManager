@@ -6,10 +6,12 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
+import android.widget.GridLayout;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -24,6 +26,8 @@ import fernandoperez.lifemanager.models.ConfigurationsDao;
 import fernandoperez.lifemanager.models.DaoSession;
 import fernandoperez.lifemanager.models.Services;
 import fernandoperez.lifemanager.utils.constants;
+
+import static fernandoperez.lifemanager.utils.constants.DISPLAY_LOW;
 
 public class AddConfigurationActivity extends AppCompatActivity {
 
@@ -45,6 +49,8 @@ public class AddConfigurationActivity extends AppCompatActivity {
 
     private Context mContext;
     private ActionBar mActionBar;
+    private GridLayout mGridLayout;
+    private float mDensity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +63,104 @@ public class AddConfigurationActivity extends AppCompatActivity {
         daoSession = ((MyApplication) getApplication()).getDaoSession();
         configurationsDao = daoSession.getConfigurationsDao();
 
+        loadButtons();
+
+        Intent intent = getIntent();
+        confName = intent.getStringExtra(constants.CONFIGURATION_NAME);
+
+        mGridLayout = (GridLayout) findViewById(R.id.gridlayout_addconfig);
+        DisplayMetrics dm = getResources().getDisplayMetrics();
+        if (dm.densityDpi == DISPLAY_LOW){
+            mGridLayout.setRowCount(3);
+            mGridLayout.setColumnCount(2);
+        }
+
+        try {
+            mActionBar =  getSupportActionBar();
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+
+        if (confName != null && !confName.isEmpty()) {
+            if (mActionBar != null){
+                mActionBar.setTitle("Editing: " + confName);
+            }
+            loadServices();
+        }
+    }
+
+    /**
+     *
+     * @param menu
+     * @return
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    /**
+     *
+     * @param item
+     * @return
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        Intent intent;
+        switch (id) {
+            case R.id.action_backup:
+                intent = new Intent(this, BackUpActivity.class);
+                startActivity(intent);
+                return true;
+
+            case R.id.action_aboutus:
+                intent = new Intent(this, AboutUsActivity.class);
+                startActivity(intent);
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    /**
+     *
+     */
+    private void loadServices() {
+        List<Services> services;
+        Configurations configuration = configurationsDao.queryBuilder()
+          .where(ConfigurationsDao.Properties.Name.eq(confName))
+          .unique();
+
+        if (configuration == null) {
+            return;
+        }
+
+        configname.setText(confName);
+
+        services = configuration.getArrivingServicesList();
+        for(Iterator<Services> iterator = services.iterator(); iterator.hasNext();){
+            Services service = iterator.next();
+            if(service.getName().equals("Twitter")) imageButtonTwitter.performClick();
+            if(service.getName().equals("Spotify")) imageButtonSpotify.performClick();
+            if(service.getName().equals("Gmail")) imageButtonGmail.performClick();
+            if(service.getName().equals("Bluetooth")) imageButtonBluetooth.performClick();
+            if(service.getName().equals("Wi-Fi"))imageButtonWifi.performClick();
+            if(service.getName().equals("GPS")) imageButtonGPS.performClick();
+        }
+    }
+
+    /**
+     *
+     */
+    private void loadButtons() {
         //Buttons Declaration
         imageButtonTwitter = (ImageButton) findViewById(R.id.imB1);
         imageButtonSpotify = (ImageButton) findViewById(R.id.imB2);
@@ -201,80 +305,10 @@ public class AddConfigurationActivity extends AppCompatActivity {
                 Configurations saved = DBHelper.saveNewConfiguration(mContext, daoSession, confName, servicesToAdd);
                 if (saved != null) {
                     Toast.makeText(mContext, "Configuration with services saved successfully.", Toast.LENGTH_SHORT).show();
+                    finish();
                 }
             }
         });
-
-        Intent intent = getIntent();
-        confName = intent.getStringExtra(constants.CONFIGURATION_NAME);
-
-        try {
-            mActionBar =  getSupportActionBar();
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-        }
-
-        if (confName != null && !confName.isEmpty()) {
-            if (mActionBar != null){
-                mActionBar.setTitle("Editing: " + confName);
-            }
-            loadServices();
-        }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        Intent intent;
-        switch (id) {
-            case R.id.action_backup:
-                intent = new Intent(this, BackUpActivity.class);
-                startActivity(intent);
-                return true;
-
-            case R.id.action_aboutus:
-                intent = new Intent(this, AboutUsActivity.class);
-                startActivity(intent);
-                return true;
-
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    private void loadServices() {
-        List<Services> services;
-        Configurations configuration = configurationsDao.queryBuilder()
-          .where(ConfigurationsDao.Properties.Name.eq(confName))
-          .unique();
-
-        if (configuration == null) {
-            return;
-        }
-
-        configname.setText(confName);
-
-        services = configuration.getArrivingServicesList();
-        for(Iterator<Services> iterator = services.iterator(); iterator.hasNext();){
-            Services service = iterator.next();
-            if(service.getName().equals("Twitter")) imageButtonTwitter.performClick();
-            if(service.getName().equals("Spotify")) imageButtonSpotify.performClick();
-            if(service.getName().equals("Gmail")) imageButtonGmail.performClick();
-            if(service.getName().equals("Bluetooth")) imageButtonBluetooth.performClick();
-            if(service.getName().equals("Wi-Fi"))imageButtonWifi.performClick();
-            if(service.getName().equals("GPS")) imageButtonGPS.performClick();
-        }
     }
 
 
