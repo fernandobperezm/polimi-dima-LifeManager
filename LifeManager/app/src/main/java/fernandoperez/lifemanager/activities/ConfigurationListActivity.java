@@ -19,6 +19,8 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.spotify.sdk.android.player.Spotify;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,6 +56,11 @@ public class ConfigurationListActivity extends AppCompatActivity {
         cargaDatos();
         adapter= new MyListAdapter(this, R.layout.row_configurationlist,data);
         lv.setAdapter(adapter);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 
     @Override

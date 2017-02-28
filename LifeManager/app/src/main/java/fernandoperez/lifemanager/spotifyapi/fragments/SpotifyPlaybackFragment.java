@@ -23,6 +23,7 @@ import com.spotify.sdk.android.player.Config;
 import com.spotify.sdk.android.player.ConnectionStateCallback;
 import com.spotify.sdk.android.player.Error;
 import com.spotify.sdk.android.player.Metadata;
+import com.spotify.sdk.android.player.PlaybackState;
 import com.spotify.sdk.android.player.Player;
 import com.spotify.sdk.android.player.PlayerEvent;
 import com.spotify.sdk.android.player.Spotify;
@@ -56,12 +57,13 @@ public class SpotifyPlaybackFragment extends Fragment implements
     // Request code that will be used to verify if the result comes from correct activity
     // Can be any integer
     private static final int REQUEST_CODE = 1337;
+    private static final String SPOTIFY_PLAYER = "SPOTIFY_PLAYER";
 
     private Player mPlayer;
 
     private List<PlaylistSimple> userPlaylists;
     private String selectedPlaylistUri;
-    private int selectedPlaylistIndex;
+    private String selectedPlaylistName;
 
     private RecyclerView mRecyclerView;
     private PlaylistCardAdapter mAdapter;
@@ -80,6 +82,9 @@ public class SpotifyPlaybackFragment extends Fragment implements
     private FloatingActionButton vFabNext;
     private FloatingActionButton vFabPrevious;
 
+    private String mAccessToken;
+    private Bundle mSavedInstanceState;
+
     public static SpotifyPlaybackFragment create(boolean firstService) {
         SpotifyPlaybackFragment fragment = new SpotifyPlaybackFragment();
         isFirstService = firstService;
@@ -91,6 +96,23 @@ public class SpotifyPlaybackFragment extends Fragment implements
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mSavedInstanceState = savedInstanceState;
+    }
+
+    // invoked when the activity may be temporarily destroyed, save the instance state here
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        if (mPlayer != null) {
+            Metadata metadata = mPlayer.getMetadata();
+            PlaybackState playbackState = mPlayer.getPlaybackState();
+            outState.putString("PLAYLIST_URI", metadata.contextUri);
+            outState.putString("PLAYLIST_NAME", selectedPlaylistName);
+            outState.putLong("TRACK_INDEX", metadata.currentTrack.indexInContext);
+            outState.putLong("TRACK_MS", playbackState.positionMs);
+        }
+
+        // call superclass to save any view hierarchy
+        super.onSaveInstanceState(outState);
     }
 
     /**
@@ -106,8 +128,6 @@ public class SpotifyPlaybackFragment extends Fragment implements
         // Inflate the layout containing a title and body text.
         ViewGroup rootView = (ViewGroup) inflater
                 .inflate(R.layout.fragment_spotify_main_playback, container, false);
-
-        selectedPlaylistIndex = constants.SPOTIFY_DEFAULT_INDEX_PLAYLIST;
 
         mPlayingSong = (TextView) rootView.findViewById(R.id.textview_spotify_song);
         mPlayingPlaylist = (TextView) rootView.findViewById(R.id.textview_spotify_playlist);
@@ -137,9 +157,10 @@ public class SpotifyPlaybackFragment extends Fragment implements
             AuthenticationResponse response = AuthenticationClient.getResponse(resultCode, intent);
             if (response.getType() == AuthenticationResponse.Type.TOKEN) {
 
-                final String accessToken = response.getAccessToken();
+//                final String accessToken = response.getAccessToken();
+                mAccessToken = response.getAccessToken();
 
-                Config playerConfig = new Config(getContext(), response.getAccessToken(), CLIENT_ID);
+                Config playerConfig = new Config(getContext(), mAccessToken, CLIENT_ID);
                 Spotify.getPlayer(playerConfig, this, new SpotifyPlayer.InitializationObserver() {
                     @Override
                     public void onInitialized(SpotifyPlayer spotifyPlayer) {
@@ -147,8 +168,9 @@ public class SpotifyPlaybackFragment extends Fragment implements
                         mPlayer.addConnectionStateCallback(SpotifyPlaybackFragment.this);
                         mPlayer.addNotificationCallback(SpotifyPlaybackFragment.this);
 
-                        SpotifyService spotifyService = setWebApiEndpoint(accessToken);
+                        SpotifyService spotifyService = setWebApiEndpoint(mAccessToken);
                         spotifyService.getMyPlaylists(new SimplePlaylistCallback());
+
                     }
 
                     @Override
@@ -156,8 +178,6 @@ public class SpotifyPlaybackFragment extends Fragment implements
                         Log.e("SpotifyPlaybackFragment", "Could not initialize player: " + throwable.getMessage());
                     }
                 });
-
-
             }
         }
     }
@@ -166,6 +186,7 @@ public class SpotifyPlaybackFragment extends Fragment implements
      *
      */
     public void fetchData() {
+
         AuthenticationRequest.Builder builder = new AuthenticationRequest.Builder(CLIENT_ID,
           AuthenticationResponse.Type.TOKEN,
           REDIRECT_URI);
@@ -192,9 +213,9 @@ public class SpotifyPlaybackFragment extends Fragment implements
 
                 Playlist playlist = mAdapter.get(position);
                 if (playerLoggedIn) {
-                    selectedPlaylistIndex = position;
+                    selectedPlaylistName = playlist.getName();
                     selectedPlaylistUri = playlist.getUri();
-                    mPlayingPlaylist.setText(playlist.getName());
+                    mPlayingPlaylist.setText(selectedPlaylistName);
                     mPlayer.playUri(null, selectedPlaylistUri, 0, 0);
                 }
             }
@@ -259,8 +280,6 @@ public class SpotifyPlaybackFragment extends Fragment implements
         });
 
     }
-
-
 
     /**
      *
@@ -331,6 +350,14 @@ public class SpotifyPlaybackFragment extends Fragment implements
         Log.d("SpotifyPlaybackFragment", "User logged in");
 
         playerLoggedIn = true;
+        if (mSavedInstanceState != null) {
+            selectedPlaylistUri = mSavedInstanceState.getString("PLAYLIST_URI");
+            selectedPlaylistName = mSavedInstanceState.getString("PLAYLIST_NAME");
+            long index = mSavedInstanceState.getLong("TRACK_INDEX");
+            long ms = mSavedInstanceState.getLong("TRACK_MS");
+            mPlayingPlaylist.setText(selectedPlaylistName);
+            mPlayer.playUri(null, selectedPlaylistUri,(int) index, (int) ms);
+        }
     }
 
     /**
