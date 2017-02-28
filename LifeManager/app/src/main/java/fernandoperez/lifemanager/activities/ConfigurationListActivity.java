@@ -17,15 +17,11 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import com.spotify.sdk.android.player.Spotify;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import fernandoperez.lifemanager.R;
-import fernandoperez.lifemanager.helpers.DBHelper;
 import fernandoperez.lifemanager.models.Configurations;
 import fernandoperez.lifemanager.models.ConfigurationsDao;
 import fernandoperez.lifemanager.models.DaoSession;
@@ -39,7 +35,7 @@ public class ConfigurationListActivity extends AppCompatActivity {
     private DaoSession daoSession;
     private ConfigurationsDao configurationsDao;
 
-    private void cargaDatos(){
+    private void loadData(){
         data.clear();
         List<Configurations> configurationsList = configurationsDao.loadAll();
         for (Configurations configurations : configurationsList) {
@@ -53,14 +49,9 @@ public class ConfigurationListActivity extends AppCompatActivity {
         super.onResume();
         ListView lv = (ListView) findViewById(R.id.listview);
 //        setContentView(R.layout.activity_configuration_list);
-        cargaDatos();
+        loadData();
         adapter= new MyListAdapter(this, R.layout.row_configurationlist,data);
         lv.setAdapter(adapter);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
     }
 
     @Override
@@ -85,7 +76,7 @@ public class ConfigurationListActivity extends AppCompatActivity {
         daoSession = ((MyApplication) getApplication()).getDaoSession();
         configurationsDao = daoSession.getConfigurationsDao();
 
-        cargaDatos();
+        loadData();
 
         adapter = new MyListAdapter(this, R.layout.row_configurationlist,data);
         lv.setAdapter(adapter);

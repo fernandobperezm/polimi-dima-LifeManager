@@ -86,6 +86,9 @@ public class ScreenSlideActivity extends FragmentActivity {
         List<Services> servicesList = currentConfiguration.getArrivingServicesList();
         Tuple<List<Services>, List<Services>> tuple = extractServices(servicesList);
 
+        // Deactivate all the internal services.
+        deactivateInternalServices();
+
         // Activate the internal services, located in the first position of the tuple.
         if (!tuple.first.isEmpty()) {
             activateInternalServices(tuple.first);
@@ -152,6 +155,10 @@ public class ScreenSlideActivity extends FragmentActivity {
         else Log.d("ScreenSlideActivity", "fragment is null");
     }
 
+    /**
+     *
+     * @param servicesList
+     */
     private void activateInternalServices(List<Services> servicesList) {
         for (Services service : servicesList) {
             switch (service.getServiceType()) {
@@ -178,6 +185,19 @@ public class ScreenSlideActivity extends FragmentActivity {
                 default:
                     break;
             }
+        }
+    }
+
+    /**
+     *
+     */
+    private void deactivateInternalServices() {
+        if (wifiManager.isWifiEnabled()) {
+            wifiManager.setWifiEnabled(false);
+        }
+
+        if (mBluetoothAdapter != null && mBluetoothAdapter.isEnabled()) {
+            mBluetoothAdapter.disable();
         }
     }
 

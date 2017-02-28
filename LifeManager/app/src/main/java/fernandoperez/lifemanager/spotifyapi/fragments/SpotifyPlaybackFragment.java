@@ -106,10 +106,16 @@ public class SpotifyPlaybackFragment extends Fragment implements
         if (mPlayer != null) {
             Metadata metadata = mPlayer.getMetadata();
             PlaybackState playbackState = mPlayer.getPlaybackState();
-            outState.putString("PLAYLIST_URI", metadata.contextUri);
+            if (metadata != null) {
+                outState.putString("PLAYLIST_URI", metadata.contextUri);
+                if (metadata.currentTrack != null) {
+                    outState.putLong("TRACK_INDEX", metadata.currentTrack.indexInContext);
+                }
+            }
+            if (playbackState != null) {
+                outState.putLong("TRACK_MS", playbackState.positionMs);
+            }
             outState.putString("PLAYLIST_NAME", selectedPlaylistName);
-            outState.putLong("TRACK_INDEX", metadata.currentTrack.indexInContext);
-            outState.putLong("TRACK_MS", playbackState.positionMs);
         }
 
         // call superclass to save any view hierarchy
