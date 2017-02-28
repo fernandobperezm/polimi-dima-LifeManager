@@ -141,7 +141,6 @@ public class ConfigurationListActivity extends AppCompatActivity {
                 viewHolder.edit.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Toast.makeText(getContext(),"EDIT PRESSED at position "+ position, Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent (getApplicationContext(), AddConfigurationActivity.class);
                         intent.putExtra(constants.CONFIGURATION_NAME,viewHolder.nombre.getText().toString());
                         startActivity(intent);
@@ -151,7 +150,6 @@ public class ConfigurationListActivity extends AppCompatActivity {
                 viewHolder.delete.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Toast.makeText(getContext(),"DELETE PRESSED at position "+ position, Toast.LENGTH_SHORT).show();
                         adapter.remove(viewHolder.nombre.getText().toString());
                         configurationsDao.delete(
                                 configurationsDao.queryBuilder()
@@ -164,7 +162,6 @@ public class ConfigurationListActivity extends AppCompatActivity {
                 viewHolder.sw.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Toast.makeText(getContext(),"SW PRESSED", Toast.LENGTH_LONG).show();
                         Intent intent = new Intent (getApplicationContext(), ScreenSlideActivity.class);
                         intent.putExtra(constants.CONFIGURATION_NAME, viewHolder.nombre.getText().toString());
                         startActivity(intent);

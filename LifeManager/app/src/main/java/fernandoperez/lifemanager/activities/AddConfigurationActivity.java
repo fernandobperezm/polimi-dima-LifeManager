@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.ActionBar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -43,11 +44,12 @@ public class AddConfigurationActivity extends AppCompatActivity {
     private ConfigurationsDao configurationsDao;
 
     private Context mContext;
+    private ActionBar mActionBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_addconfig);
 
         mContext = this;
 
@@ -206,7 +208,16 @@ public class AddConfigurationActivity extends AppCompatActivity {
         Intent intent = getIntent();
         confName = intent.getStringExtra(constants.CONFIGURATION_NAME);
 
+        try {
+            mActionBar =  getSupportActionBar();
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+
         if (confName != null && !confName.isEmpty()) {
+            if (mActionBar != null){
+                mActionBar.setTitle("Editing: " + confName);
+            }
             loadServices();
         }
     }

@@ -99,11 +99,9 @@ public class BackUpActivity extends AppCompatActivity  {
                 if (isChecked) {
                     localBackupLayout.setVisibility(View.VISIBLE);
                     isLocalBackupON = true;
-                    System.out.println("LOCAL ON");
                 } else {
                     localBackupLayout.setVisibility(View.GONE);
                     isLocalBackupON = false;
-                    System.out.println("LOCAL OFF");
                 }
             }
         });
