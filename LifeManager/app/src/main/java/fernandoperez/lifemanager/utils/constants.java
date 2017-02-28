@@ -1,5 +1,7 @@
 package fernandoperez.lifemanager.utils;
 
+import android.content.res.Configuration;
+import android.support.v7.widget.LinearLayoutManager;
 import android.util.DisplayMetrics;
 
 /**
@@ -63,8 +65,9 @@ public abstract class constants {
     public final static int DISPLAY_HIGH = DisplayMetrics.DENSITY_HIGH;
     public final static int DISPLAY_XHIGH = DisplayMetrics.DENSITY_XHIGH;
 
-
-
+    // Orientation
+    public final static int VERTICAL = LinearLayoutManager.VERTICAL;
+    public final static int HORIZONTAL = LinearLayoutManager.HORIZONTAL;
 
 }
 

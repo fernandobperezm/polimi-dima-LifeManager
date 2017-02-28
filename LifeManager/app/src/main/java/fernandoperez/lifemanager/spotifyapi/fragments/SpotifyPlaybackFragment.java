@@ -1,12 +1,15 @@
 package fernandoperez.lifemanager.spotifyapi.fragments;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -71,8 +74,7 @@ public class SpotifyPlaybackFragment extends Fragment implements
     private boolean isPlayingSong = false;
 
     private static boolean isFirstService;
-
-    private static int mOrientation;
+    private int mOrientation;
 
     private FloatingActionButton vFabPlay;
     private FloatingActionButton vFabNext;
@@ -184,20 +186,6 @@ public class SpotifyPlaybackFragment extends Fragment implements
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
         mRecyclerView.setHasFixedSize(true);
-
-        // use a grid layout manager
-        int numberOfColumns = 2;
-
-        //Check your orientation in your OnCreate
-        mOrientation = getContext().getResources().getConfiguration().orientation;
-        if(mOrientation == getContext().getResources().getConfiguration()
-          .ORIENTATION_LANDSCAPE) {
-            numberOfColumns = 3;
-        }
-
-        mLayoutManager = new GridLayoutManager(getContext(), numberOfColumns);
-        mRecyclerView.setLayoutManager(mLayoutManager);
-
         mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), new RecyclerItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
@@ -211,6 +199,18 @@ public class SpotifyPlaybackFragment extends Fragment implements
                 }
             }
         }));
+
+        // use a grid layout manager
+        int numberOfColumns = 2;
+
+        //Check your orientation in your OnCreate
+        mOrientation = getContext().getResources().getConfiguration().orientation;
+        if(mOrientation == Configuration.ORIENTATION_LANDSCAPE) {
+            numberOfColumns += 1;
+        }
+
+        mLayoutManager = new GridLayoutManager(getContext(), numberOfColumns, LinearLayoutManager.VERTICAL, false);
+        mRecyclerView.setLayoutManager(mLayoutManager);
     }
 
     /**

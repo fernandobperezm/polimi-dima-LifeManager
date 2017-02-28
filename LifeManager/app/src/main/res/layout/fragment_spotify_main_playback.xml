@@ -122,11 +122,10 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyclerview_spotify_playlists"
             android:layout_below="@id/relativelayout_spotify_currentplaylist"
-            android:layout_margin="5dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-
         </android.support.v7.widget.RecyclerView>
+
     </RelativeLayout>
 </android.support.v4.widget.NestedScrollView>
 
