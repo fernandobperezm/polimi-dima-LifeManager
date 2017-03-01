@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
-import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,8 +26,6 @@ import fernandoperez.lifemanager.models.ConfigurationsDao;
 import fernandoperez.lifemanager.models.DaoSession;
 import fernandoperez.lifemanager.models.Services;
 import fernandoperez.lifemanager.utils.constants;
-
-import static fernandoperez.lifemanager.utils.constants.DISPLAY_LOW;
 
 public class AddConfigurationActivity extends AppCompatActivity {
 
@@ -104,7 +101,7 @@ public class AddConfigurationActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_addconfig, menu);
         return true;
     }
 

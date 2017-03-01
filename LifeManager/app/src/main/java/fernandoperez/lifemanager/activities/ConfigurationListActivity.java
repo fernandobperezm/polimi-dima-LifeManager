@@ -31,6 +31,7 @@ public class ConfigurationListActivity extends AppCompatActivity {
 
     private ArrayList<String> data = new ArrayList<>();
     ArrayAdapter<String> adapter ;
+    FloatingActionButton mFAB;
 
     private DaoSession daoSession;
     private ConfigurationsDao configurationsDao;
@@ -61,10 +62,10 @@ public class ConfigurationListActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_activity_configurationlist);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton adds = (FloatingActionButton) findViewById(R.id.fab_activity_configurationlist);
+        mFAB = (FloatingActionButton) findViewById(R.id.fab_activity_configurationlist);
         ListView lv = (ListView) findViewById(R.id.listview);
 
-        adds.setOnClickListener(new View.OnClickListener() {
+        mFAB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent (getApplicationContext(), AddConfigurationActivity.class);
@@ -80,13 +81,12 @@ public class ConfigurationListActivity extends AppCompatActivity {
 
         adapter = new MyListAdapter(this, R.layout.row_configurationlist,data);
         lv.setAdapter(adapter);
-
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_configlist, menu);
         return true;
     }
 
@@ -99,6 +99,12 @@ public class ConfigurationListActivity extends AppCompatActivity {
 
         Intent intent;
         switch (id) {
+            case R.id.action_addconfig:
+                intent = new Intent (getApplicationContext(), AddConfigurationActivity.class);
+                intent.putExtra(constants.CONFIGURATION_NAME, "");
+                startActivity(intent);
+                return true;
+
             case R.id.action_backup:
                 intent = new Intent(this, BackUpActivity.class);
                 startActivity(intent);

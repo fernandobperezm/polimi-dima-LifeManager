@@ -48,7 +48,7 @@ public class DBHelper {
     public static void insertConfiguration(Context context, ConfigurationsDao configurationsDao, Configurations configuration) {
         try {
             configurationsDao.insert(configuration);
-            Toast.makeText(context, "Successfully added configuration: " + configuration.toString(), Toast.LENGTH_SHORT).show();
+//            Toast.makeText(context, "Successfully added configuration: " + configuration.toString(), Toast.LENGTH_SHORT).show();
         } catch (SQLException exception) {
             Toast.makeText(context, "Configuration already exists", Toast.LENGTH_SHORT).show();
         }
@@ -286,8 +286,8 @@ public class DBHelper {
 
         // Create one if it doesn't exist.
         if (configurations == null) {
-            Configurations configuration = new Configurations(null, confName);
-            insertConfiguration(context, configurationsDao, configuration);
+            configurations = new Configurations(null, confName);
+            insertConfiguration(context, configurationsDao, configurations);
         }
 
         // Add the services to it.
