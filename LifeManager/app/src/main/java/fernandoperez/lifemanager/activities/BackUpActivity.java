@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Xml;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.RelativeLayout;
@@ -99,11 +101,9 @@ public class BackUpActivity extends AppCompatActivity  {
                 if (isChecked) {
                     localBackupLayout.setVisibility(View.VISIBLE);
                     isLocalBackupON = true;
-                    System.out.println("LOCAL ON");
                 } else {
                     localBackupLayout.setVisibility(View.GONE);
                     isLocalBackupON = false;
-                    System.out.println("LOCAL OFF");
                 }
             }
         });
@@ -154,6 +154,47 @@ public class BackUpActivity extends AppCompatActivity  {
                 // TODO: Deactivate the button.
                 System.out.println("NO CREATED.");
             }
+        }
+    }
+
+    /**
+     *
+     * @param menu
+     * @return
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_application, menu);
+        return true;
+    }
+
+    /**
+     *
+     * @param item
+     * @return
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        Intent intent;
+        switch (id) {
+            case R.id.action_backup:
+                intent = new Intent(this, BackUpActivity.class);
+                startActivity(intent);
+                return true;
+
+            case R.id.action_aboutus:
+                intent = new Intent(this, AboutUsActivity.class);
+                startActivity(intent);
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 }

@@ -1,7 +1,6 @@
 package fernandoperez.lifemanager.adapters;
 
 import android.content.Context;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,13 +28,13 @@ public class PlaylistCardAdapter extends RecyclerView.Adapter<PlaylistCardAdapte
     // you provide access to all the views for a data item in a view holder
     public static class PlaylistViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
-        private TextView vName;
-        private ImageView vImage;
+        protected TextView vName;
+        protected ImageView vImage;
 
-        public PlaylistViewHolder(View playlistRow) {
-            super(playlistRow);
-            vName = (TextView) playlistRow.findViewById(R.id.textview_row_spotify_playlistname);
-            vImage = (ImageView) playlistRow.findViewById(R.id.imageview_row_spotify_image);
+        public PlaylistViewHolder(View playlistCard) {
+            super(playlistCard);
+            vName = (TextView) playlistCard.findViewById(R.id.textview_row_spotify_playlistname);
+            vImage = (ImageView) playlistCard.findViewById(R.id.imageview_row_spotify_image);
         }
     }
 
@@ -46,16 +45,15 @@ public class PlaylistCardAdapter extends RecyclerView.Adapter<PlaylistCardAdapte
 
     // Create new views (invoked by the layout manager)
     @Override
-    public PlaylistCardAdapter.PlaylistViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public PlaylistViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (mContext == null) {
             mContext = parent.getContext();
         }
 
         // create a new view
-        CardView view = (CardView) LayoutInflater.from(mContext)
-          .inflate(R.layout.row_playlist, parent, false);
+        View card = LayoutInflater.from(mContext).inflate(R.layout.card_playlist, parent, false);
 
-        return new PlaylistViewHolder(view);
+        return new PlaylistViewHolder(card);
     }
 
     // Replace the contents of a view (invoked by the layout manager)

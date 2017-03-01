@@ -36,6 +36,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_margin="5dp"
+                app:backgroundTint="@color/spotify_buttons_color"
                 app:fabSize="normal"
                 app:srcCompat="@drawable/ic_action_playback_play"/>
 
@@ -46,6 +47,7 @@
                 android:layout_margin="5dp"
                 android:layout_toStartOf="@id/fab_spotify_playpause"
                 android:layout_toLeftOf="@id/fab_spotify_playpause"
+                app:backgroundTint="@color/spotify_buttons_color"
                 app:fabSize="normal"
                 app:srcCompat="@drawable/ic_action_playback_prev"/>
 
@@ -56,6 +58,7 @@
                 android:layout_toEndOf="@id/fab_spotify_playpause"
                 android:layout_toRightOf="@id/fab_spotify_playpause"
                 android:layout_margin="5dp"
+                app:backgroundTint="@color/spotify_buttons_color"
                 app:fabSize="normal"
                 app:srcCompat="@drawable/ic_action_playback_next"/>
 
@@ -122,11 +125,10 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyclerview_spotify_playlists"
             android:layout_below="@id/relativelayout_spotify_currentplaylist"
-            android:layout_margin="5dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-
         </android.support.v7.widget.RecyclerView>
+
     </RelativeLayout>
 </android.support.v4.widget.NestedScrollView>
 

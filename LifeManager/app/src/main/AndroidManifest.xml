@@ -16,10 +16,6 @@
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
 
-    <meta-data
-        android:name="com.facebook.sdk.ApplicationId"
-        android:value="@string/app_id" />
-
     <application
         android:name="fernandoperez.lifemanager.activities.MyApplication"
         android:allowBackup="true"
@@ -40,6 +36,7 @@
 
         <activity
             android:name=".activities.AddConfigurationActivity"
+            android:label="@string/title_activity_add_configuration"
             android:parentActivityName=".activities.ConfigurationListActivity">
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data

@@ -37,7 +37,7 @@ public class TwitterMainFragment extends ListFragment {
     public TwitterMainFragment() {
     }
 
-    public static TwitterMainFragment create() {
+    public static TwitterMainFragment create( ) {
         return new TwitterMainFragment();
     }
 

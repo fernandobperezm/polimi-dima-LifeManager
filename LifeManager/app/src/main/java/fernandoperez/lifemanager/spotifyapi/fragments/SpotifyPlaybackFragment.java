@@ -1,14 +1,18 @@
 package fernandoperez.lifemanager.spotifyapi.fragments;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -20,6 +24,7 @@ import com.spotify.sdk.android.player.Config;
 import com.spotify.sdk.android.player.ConnectionStateCallback;
 import com.spotify.sdk.android.player.Error;
 import com.spotify.sdk.android.player.Metadata;
+import com.spotify.sdk.android.player.PlaybackState;
 import com.spotify.sdk.android.player.Player;
 import com.spotify.sdk.android.player.PlayerEvent;
 import com.spotify.sdk.android.player.Spotify;
@@ -53,12 +58,13 @@ public class SpotifyPlaybackFragment extends Fragment implements
     // Request code that will be used to verify if the result comes from correct activity
     // Can be any integer
     private static final int REQUEST_CODE = 1337;
+    private static final String SPOTIFY_PLAYER = "SPOTIFY_PLAYER";
 
     private Player mPlayer;
 
     private List<PlaylistSimple> userPlaylists;
     private String selectedPlaylistUri;
-    private int selectedPlaylistIndex;
+    private String selectedPlaylistName;
 
     private RecyclerView mRecyclerView;
     private PlaylistCardAdapter mAdapter;
@@ -70,14 +76,19 @@ public class SpotifyPlaybackFragment extends Fragment implements
     private boolean playerLoggedIn = false;
     private boolean isPlayingSong = false;
 
-    private static int mOrientation;
+    private static boolean isFirstService;
+    private int mOrientation;
 
     private FloatingActionButton vFabPlay;
     private FloatingActionButton vFabNext;
     private FloatingActionButton vFabPrevious;
 
-    public static SpotifyPlaybackFragment create() {
+    private String mAccessToken;
+    private Bundle mSavedInstanceState;
+
+    public static SpotifyPlaybackFragment create(boolean firstService) {
         SpotifyPlaybackFragment fragment = new SpotifyPlaybackFragment();
+        isFirstService = firstService;
         return fragment;
     }
 
@@ -86,6 +97,29 @@ public class SpotifyPlaybackFragment extends Fragment implements
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mSavedInstanceState = savedInstanceState;
+    }
+
+    // invoked when the activity may be temporarily destroyed, save the instance state here
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        if (mPlayer != null) {
+            Metadata metadata = mPlayer.getMetadata();
+            PlaybackState playbackState = mPlayer.getPlaybackState();
+            if (metadata != null) {
+                outState.putString("PLAYLIST_URI", metadata.contextUri);
+                if (metadata.currentTrack != null) {
+                    outState.putLong("TRACK_INDEX", metadata.currentTrack.indexInContext);
+                }
+            }
+            if (playbackState != null) {
+                outState.putLong("TRACK_MS", playbackState.positionMs);
+            }
+            outState.putString("PLAYLIST_NAME", selectedPlaylistName);
+        }
+
+        // call superclass to save any view hierarchy
+        super.onSaveInstanceState(outState);
     }
 
     /**
@@ -102,13 +136,15 @@ public class SpotifyPlaybackFragment extends Fragment implements
         ViewGroup rootView = (ViewGroup) inflater
                 .inflate(R.layout.fragment_spotify_main_playback, container, false);
 
-        selectedPlaylistIndex = constants.SPOTIFY_DEFAULT_INDEX_PLAYLIST;
-
         mPlayingSong = (TextView) rootView.findViewById(R.id.textview_spotify_song);
         mPlayingPlaylist = (TextView) rootView.findViewById(R.id.textview_spotify_playlist);
 
         configureButtons(rootView);
         setRecyclerView(rootView);
+
+        if (isFirstService) {
+            fetchData();
+        }
 
         return rootView;
     }
@@ -128,9 +164,10 @@ public class SpotifyPlaybackFragment extends Fragment implements
             AuthenticationResponse response = AuthenticationClient.getResponse(resultCode, intent);
             if (response.getType() == AuthenticationResponse.Type.TOKEN) {
 
-                final String accessToken = response.getAccessToken();
+//                final String accessToken = response.getAccessToken();
+                mAccessToken = response.getAccessToken();
 
-                Config playerConfig = new Config(getContext(), response.getAccessToken(), CLIENT_ID);
+                Config playerConfig = new Config(getContext(), mAccessToken, CLIENT_ID);
                 Spotify.getPlayer(playerConfig, this, new SpotifyPlayer.InitializationObserver() {
                     @Override
                     public void onInitialized(SpotifyPlayer spotifyPlayer) {
@@ -138,8 +175,9 @@ public class SpotifyPlaybackFragment extends Fragment implements
                         mPlayer.addConnectionStateCallback(SpotifyPlaybackFragment.this);
                         mPlayer.addNotificationCallback(SpotifyPlaybackFragment.this);
 
-                        SpotifyService spotifyService = setWebApiEndpoint(accessToken);
+                        SpotifyService spotifyService = setWebApiEndpoint(mAccessToken);
                         spotifyService.getMyPlaylists(new SimplePlaylistCallback());
+
                     }
 
                     @Override
@@ -147,8 +185,6 @@ public class SpotifyPlaybackFragment extends Fragment implements
                         Log.e("SpotifyPlaybackFragment", "Could not initialize player: " + throwable.getMessage());
                     }
                 });
-
-
             }
         }
     }
@@ -157,6 +193,7 @@ public class SpotifyPlaybackFragment extends Fragment implements
      *
      */
     public void fetchData() {
+
         AuthenticationRequest.Builder builder = new AuthenticationRequest.Builder(CLIENT_ID,
           AuthenticationResponse.Type.TOKEN,
           REDIRECT_URI);
@@ -177,33 +214,31 @@ public class SpotifyPlaybackFragment extends Fragment implements
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
         mRecyclerView.setHasFixedSize(true);
-
-        // use a grid layout manager
-        int numberOfColumns = 2;
-
-        //Check your orientation in your OnCreate
-        mOrientation = getContext().getResources().getConfiguration().orientation;
-        if(mOrientation == getContext().getResources().getConfiguration()
-          .ORIENTATION_LANDSCAPE) {
-            numberOfColumns = 3;
-        }
-
-        mLayoutManager = new GridLayoutManager(getContext(), numberOfColumns);
-        mRecyclerView.setLayoutManager(mLayoutManager);
-
         mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), new RecyclerItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
 
                 Playlist playlist = mAdapter.get(position);
                 if (playerLoggedIn) {
-                    selectedPlaylistIndex = position;
+                    selectedPlaylistName = playlist.getName();
                     selectedPlaylistUri = playlist.getUri();
-                    mPlayingPlaylist.setText(playlist.getName());
+                    mPlayingPlaylist.setText(selectedPlaylistName);
                     mPlayer.playUri(null, selectedPlaylistUri, 0, 0);
                 }
             }
         }));
+
+        // use a grid layout manager
+        int numberOfColumns = 2;
+
+        //Check your orientation in your OnCreate
+        mOrientation = getContext().getResources().getConfiguration().orientation;
+        if(mOrientation == Configuration.ORIENTATION_LANDSCAPE) {
+            numberOfColumns += 1;
+        }
+
+        mLayoutManager = new GridLayoutManager(getContext(), numberOfColumns, LinearLayoutManager.VERTICAL, false);
+        mRecyclerView.setLayoutManager(mLayoutManager);
     }
 
     /**
@@ -252,8 +287,6 @@ public class SpotifyPlaybackFragment extends Fragment implements
         });
 
     }
-
-
 
     /**
      *
@@ -324,6 +357,14 @@ public class SpotifyPlaybackFragment extends Fragment implements
         Log.d("SpotifyPlaybackFragment", "User logged in");
 
         playerLoggedIn = true;
+        if (mSavedInstanceState != null) {
+            selectedPlaylistUri = mSavedInstanceState.getString("PLAYLIST_URI");
+            selectedPlaylistName = mSavedInstanceState.getString("PLAYLIST_NAME");
+            long index = mSavedInstanceState.getLong("TRACK_INDEX");
+            long ms = mSavedInstanceState.getLong("TRACK_MS");
+            mPlayingPlaylist.setText(selectedPlaylistName);
+            mPlayer.playUri(null, selectedPlaylistUri,(int) index, (int) ms);
+        }
     }
 
     /**

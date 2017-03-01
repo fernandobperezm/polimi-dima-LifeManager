@@ -37,8 +37,6 @@ import com.google.api.services.gmail.model.ListMessagesResponse;
 import com.google.api.services.gmail.model.Message;
 import com.google.api.services.gmail.model.MessagePartHeader;
 
-import org.w3c.dom.Text;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -49,7 +47,6 @@ import fernandoperez.lifemanager.R;
 import fernandoperez.lifemanager.adapters.EmailAdapter;
 import fernandoperez.lifemanager.googleapi.interfaces.OnBackgroundTaskListener;
 import fernandoperez.lifemanager.models.Email;
-import fernandoperez.lifemanager.models.Playlist;
 import fernandoperez.lifemanager.utils.RecyclerItemClickListener;
 import fernandoperez.lifemanager.utils.constants;
 import pub.devrel.easypermissions.AfterPermissionGranted;
@@ -59,6 +56,7 @@ public class GmailFragment extends Fragment
         implements EasyPermissions.PermissionCallbacks, OnBackgroundTaskListener {
     GoogleAccountCredential mCredential;
     ProgressDialog mProgress;
+    private static boolean isFirstService;
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
@@ -72,8 +70,9 @@ public class GmailFragment extends Fragment
     private static final String PREF_ACCOUNT_NAME = "accountName";
     private static final String[] SCOPES = {GmailScopes.MAIL_GOOGLE_COM, GmailScopes.GMAIL_SEND, GmailScopes.GMAIL_MODIFY};
 
-    public static GmailFragment create() {
+    public static GmailFragment create(boolean firstService) {
         GmailFragment fragment = new GmailFragment();
+        isFirstService = firstService;
         return fragment;
     }
 
@@ -125,6 +124,10 @@ public class GmailFragment extends Fragment
                 // https://developer.android.com/training/basics/fragments/communicating.html
             }
         }));
+
+        if (isFirstService) {
+            fetchData();
+        }
 
         return rootView;
     }

@@ -17,13 +17,11 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import fernandoperez.lifemanager.R;
-import fernandoperez.lifemanager.helpers.DBHelper;
 import fernandoperez.lifemanager.models.Configurations;
 import fernandoperez.lifemanager.models.ConfigurationsDao;
 import fernandoperez.lifemanager.models.DaoSession;
@@ -33,11 +31,12 @@ public class ConfigurationListActivity extends AppCompatActivity {
 
     private ArrayList<String> data = new ArrayList<>();
     ArrayAdapter<String> adapter ;
+    FloatingActionButton mFAB;
 
     private DaoSession daoSession;
     private ConfigurationsDao configurationsDao;
 
-    private void cargaDatos(){
+    private void loadData(){
         data.clear();
         List<Configurations> configurationsList = configurationsDao.loadAll();
         for (Configurations configurations : configurationsList) {
@@ -50,8 +49,7 @@ public class ConfigurationListActivity extends AppCompatActivity {
     {
         super.onResume();
         ListView lv = (ListView) findViewById(R.id.listview);
-//        setContentView(R.layout.activity_configuration_list);
-        cargaDatos();
+        loadData();
         adapter= new MyListAdapter(this, R.layout.row_configurationlist,data);
         lv.setAdapter(adapter);
     }
@@ -62,33 +60,25 @@ public class ConfigurationListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_configuration_list);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_activity_configurationlist);
         setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(R.string.title_activity_configuration_list);
+        }
 
-        FloatingActionButton adds = (FloatingActionButton) findViewById(R.id.fab_activity_configurationlist);
         ListView lv = (ListView) findViewById(R.id.listview);
-
-        adds.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent (getApplicationContext(), AddConfigurationActivity.class);
-                intent.putExtra(constants.CONFIGURATION_NAME, "");
-                startActivity(intent);
-            }
-        });
 
         daoSession = ((MyApplication) getApplication()).getDaoSession();
         configurationsDao = daoSession.getConfigurationsDao();
 
-        cargaDatos();
+        loadData();
 
         adapter = new MyListAdapter(this, R.layout.row_configurationlist,data);
         lv.setAdapter(adapter);
-
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_configlist, menu);
         return true;
     }
 
@@ -101,6 +91,12 @@ public class ConfigurationListActivity extends AppCompatActivity {
 
         Intent intent;
         switch (id) {
+            case R.id.action_addconfig:
+                intent = new Intent (getApplicationContext(), AddConfigurationActivity.class);
+                intent.putExtra(constants.CONFIGURATION_NAME, "");
+                startActivity(intent);
+                return true;
+
             case R.id.action_backup:
                 intent = new Intent(this, BackUpActivity.class);
                 startActivity(intent);
@@ -141,7 +137,6 @@ public class ConfigurationListActivity extends AppCompatActivity {
                 viewHolder.edit.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Toast.makeText(getContext(),"EDIT PRESSED at position "+ position, Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent (getApplicationContext(), AddConfigurationActivity.class);
                         intent.putExtra(constants.CONFIGURATION_NAME,viewHolder.nombre.getText().toString());
                         startActivity(intent);
@@ -151,7 +146,6 @@ public class ConfigurationListActivity extends AppCompatActivity {
                 viewHolder.delete.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Toast.makeText(getContext(),"DELETE PRESSED at position "+ position, Toast.LENGTH_SHORT).show();
                         adapter.remove(viewHolder.nombre.getText().toString());
                         configurationsDao.delete(
                                 configurationsDao.queryBuilder()
@@ -164,7 +158,6 @@ public class ConfigurationListActivity extends AppCompatActivity {
                 viewHolder.sw.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Toast.makeText(getContext(),"SW PRESSED", Toast.LENGTH_LONG).show();
                         Intent intent = new Intent (getApplicationContext(), ScreenSlideActivity.class);
                         intent.putExtra(constants.CONFIGURATION_NAME, viewHolder.nombre.getText().toString());
                         startActivity(intent);

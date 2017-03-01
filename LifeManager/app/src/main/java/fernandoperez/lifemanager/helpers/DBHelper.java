@@ -48,7 +48,7 @@ public class DBHelper {
     public static void insertConfiguration(Context context, ConfigurationsDao configurationsDao, Configurations configuration) {
         try {
             configurationsDao.insert(configuration);
-            Toast.makeText(context, "Successfully added configuration: " + configuration.toString(), Toast.LENGTH_SHORT).show();
+//            Toast.makeText(context, "Successfully added configuration: " + configuration.toString(), Toast.LENGTH_SHORT).show();
         } catch (SQLException exception) {
             Toast.makeText(context, "Configuration already exists", Toast.LENGTH_SHORT).show();
         }
@@ -60,7 +60,6 @@ public class DBHelper {
      * @param servicesDao an instance of ServicesDao.
      */
     public static void insertServices(ServicesDao servicesDao) {
-        //TODO: Better handle of this error.
         Services spotify = new Services(null, "Spotify", constants.SERVICES_LIST.SPOTIFY );
         Services twitter = new Services(null, "Twitter", constants.SERVICES_LIST.TWITTER );
         Services gmail = new Services(null, "Gmail", constants.SERVICES_LIST.EMAIL );
@@ -135,7 +134,9 @@ public class DBHelper {
             .list();
 
         try {
-            arrivingDao.deleteInTx(arrivingConfWithServList);
+            for (ArrivingConfWithServ arrivingConfWithServ : arrivingConfWithServList) {
+                arrivingDao.delete(arrivingConfWithServ);
+            }
         } catch (SQLException exception) {
             exception.printStackTrace();
             return null;
@@ -233,6 +234,8 @@ public class DBHelper {
             return null;
         }
 
+
+
         return configurationForServices;
     }
 
@@ -286,9 +289,12 @@ public class DBHelper {
 
         // Create one if it doesn't exist.
         if (configurations == null) {
-            Configurations configuration = new Configurations(null, confName);
-            insertConfiguration(context, configurationsDao, configuration);
+            configurations = new Configurations(null, confName);
+            insertConfiguration(context, configurationsDao, configurations);
         }
+
+        // To update database.
+        configurations.resetArrivingServicesList();
 
         // Add the services to it.
         Configurations config = DBHelper.insertArrivingServices(
