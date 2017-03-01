@@ -60,7 +60,6 @@ public class DBHelper {
      * @param servicesDao an instance of ServicesDao.
      */
     public static void insertServices(ServicesDao servicesDao) {
-        //TODO: Better handle of this error.
         Services spotify = new Services(null, "Spotify", constants.SERVICES_LIST.SPOTIFY );
         Services twitter = new Services(null, "Twitter", constants.SERVICES_LIST.TWITTER );
         Services gmail = new Services(null, "Gmail", constants.SERVICES_LIST.EMAIL );
@@ -135,7 +134,9 @@ public class DBHelper {
             .list();
 
         try {
-            arrivingDao.deleteInTx(arrivingConfWithServList);
+            for (ArrivingConfWithServ arrivingConfWithServ : arrivingConfWithServList) {
+                arrivingDao.delete(arrivingConfWithServ);
+            }
         } catch (SQLException exception) {
             exception.printStackTrace();
             return null;
@@ -233,6 +234,8 @@ public class DBHelper {
             return null;
         }
 
+
+
         return configurationForServices;
     }
 
@@ -289,6 +292,9 @@ public class DBHelper {
             configurations = new Configurations(null, confName);
             insertConfiguration(context, configurationsDao, configurations);
         }
+
+        // To update database.
+        configurations.resetArrivingServicesList();
 
         // Add the services to it.
         Configurations config = DBHelper.insertArrivingServices(

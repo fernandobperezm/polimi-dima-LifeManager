@@ -13,6 +13,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import fernandoperez.lifemanager.R;
@@ -60,7 +61,7 @@ public class ScreenSlideActivity extends FragmentActivity {
      */
     WifiManager wifiManager;
     BluetoothAdapter mBluetoothAdapter;
-    private final static int REQUEST_ENABLE_BT = 1;
+
 
     /**
      *
@@ -91,6 +92,7 @@ public class ScreenSlideActivity extends FragmentActivity {
 
         // Activate the internal services, located in the first position of the tuple.
         if (!tuple.first.isEmpty()) {
+            Collections.sort(tuple.first);
             activateInternalServices(tuple.first);
         }
 
@@ -145,6 +147,10 @@ public class ScreenSlideActivity extends FragmentActivity {
         super.onActivityResult(requestCode, resultCode, data);
         // Pass the activity result to the fragment, which will then pass the result to the login
         // button.
+        if (requestCode == constants.REQUEST_ENABLE_BT) {
+            return;
+        }
+
         int fragmentPosition = mPager.getCurrentItem();
         Fragment currentFragment = getSupportFragmentManager().getFragments().get(fragmentPosition);
 
@@ -171,7 +177,7 @@ public class ScreenSlideActivity extends FragmentActivity {
                 case BLUETOOTH:
                     if (mBluetoothAdapter != null && !mBluetoothAdapter.isEnabled()) {
                         Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                        startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+                        startActivityForResult(enableBtIntent, constants.REQUEST_ENABLE_BT);
 //                        mBluetoothAdapter.enable();
                     }
                     break;

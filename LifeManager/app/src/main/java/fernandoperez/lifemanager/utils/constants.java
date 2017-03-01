@@ -11,6 +11,7 @@ import android.util.DisplayMetrics;
 public abstract class constants {
     // INTENT CODES.
     public final static int TWITTER_MAX_HOME_TIMELINE_TWEETS = 50;
+    public final static int REQUEST_ENABLE_BT = 69;
 
     public final static String CONFIGURATION_NAME = "CONFIGURATION_NAME";
     public final static String CONFIGURATION_CURRENT_TYPE = "CONFIGURATION_TYPE";
@@ -31,7 +32,7 @@ public abstract class constants {
 
     // Enumerable.
     public enum SERVICES_LIST {
-        TWITTER(0), SPOTIFY(1), EMAIL(2), LOCATION(3), WIFI(4), BLUETOOTH(5);
+        TWITTER(0), SPOTIFY(1), EMAIL(2), WIFI(3), LOCATION(4), BLUETOOTH(5);
 
         public final int id;
 

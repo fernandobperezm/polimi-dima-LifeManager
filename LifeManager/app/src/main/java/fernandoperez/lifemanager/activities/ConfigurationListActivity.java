@@ -62,17 +62,7 @@ public class ConfigurationListActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_activity_configurationlist);
         setSupportActionBar(toolbar);
 
-//        mFAB = (FloatingActionButton) findViewById(R.id.fab_activity_configurationlist);
         ListView lv = (ListView) findViewById(R.id.listview);
-
-//        mFAB.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent (getApplicationContext(), AddConfigurationActivity.class);
-//                intent.putExtra(constants.CONFIGURATION_NAME, "");
-//                startActivity(intent);
-//            }
-//        });
 
         daoSession = ((MyApplication) getApplication()).getDaoSession();
         configurationsDao = daoSession.getConfigurationsDao();
