@@ -24,11 +24,6 @@ public abstract class constants {
     public final static int CREATE_GOOGLEDRIVE_BACKUP_FOLDER_RESULT_OK = 1001;
     public final static int CREATE_GOOGLEDRIVE_BACKUP_FOLDER_RESULT_ALREADY_CREATED = 1002;
 
-    // Names.
-    public final static String GOOGLE_DRIVE_FOLDER_NAME = "GOOGLE_DRIVE_FOLDER_NAME";
-
-    // DEFAULT VALUES.
-    public final static int SPOTIFY_DEFAULT_INDEX_PLAYLIST = 0;
 
     // Enumerable.
     public enum SERVICES_LIST {
@@ -51,24 +46,8 @@ public abstract class constants {
         }
     }
 
-    //
-    public final static int MAX_SERVICES = 3;
-    public final static int INTERNAL_SERVICES_SUBLIST = 0;
-    public final static int EXTERNAL_SERVICES_SUBLIST = 1;
-
-
     // Gmail API.
     public final static long MAX_EMAILS_FETCH = 20;
-
-    // DISPLAY DENSITIES>
-    public final static int DISPLAY_LOW = DisplayMetrics.DENSITY_LOW;
-    public final static int DISPLAY_MED = DisplayMetrics.DENSITY_MEDIUM;
-    public final static int DISPLAY_HIGH = DisplayMetrics.DENSITY_HIGH;
-    public final static int DISPLAY_XHIGH = DisplayMetrics.DENSITY_XHIGH;
-
-    // Orientation
-    public final static int VERTICAL = LinearLayoutManager.VERTICAL;
-    public final static int HORIZONTAL = LinearLayoutManager.HORIZONTAL;
 
 }
 

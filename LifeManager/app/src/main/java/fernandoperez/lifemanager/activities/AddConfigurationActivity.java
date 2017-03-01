@@ -149,6 +149,7 @@ public class AddConfigurationActivity extends AppCompatActivity {
 
         configname.setText(confName);
 
+        configuration.resetArrivingServicesList();
         services = configuration.getArrivingServicesList();
         for(Iterator<Services> iterator = services.iterator(); iterator.hasNext();){
             Services service = iterator.next();

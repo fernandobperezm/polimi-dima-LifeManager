@@ -49,7 +49,6 @@ public class ConfigurationListActivity extends AppCompatActivity {
     {
         super.onResume();
         ListView lv = (ListView) findViewById(R.id.listview);
-//        setContentView(R.layout.activity_configuration_list);
         loadData();
         adapter= new MyListAdapter(this, R.layout.row_configurationlist,data);
         lv.setAdapter(adapter);
@@ -61,6 +60,9 @@ public class ConfigurationListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_configuration_list);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_activity_configurationlist);
         setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(R.string.title_activity_configuration_list);
+        }
 
         ListView lv = (ListView) findViewById(R.id.listview);
 

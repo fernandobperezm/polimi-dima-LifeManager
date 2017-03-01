@@ -84,6 +84,7 @@ public class ScreenSlideActivity extends FragmentActivity {
         Configurations currentConfiguration =
           configurationsDao.queryBuilder().where(ConfigurationsDao.Properties.Name.eq(confName)).unique();
 
+        currentConfiguration.resetArrivingServicesList();
         List<Services> servicesList = currentConfiguration.getArrivingServicesList();
         Tuple<List<Services>, List<Services>> tuple = extractServices(servicesList);
 
