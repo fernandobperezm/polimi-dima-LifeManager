@@ -11,11 +11,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +38,7 @@ public class ConfigurationListActivity extends AppCompatActivity {
     private ConfigurationsDao configurationsDao;
 
     private int selectedConfigurationPosition = -1;
+    private boolean userChecked = true;
 
     private void loadData(){
         data.clear();
@@ -51,6 +56,19 @@ public class ConfigurationListActivity extends AppCompatActivity {
         loadData();
         adapter= new MyListAdapter(this, R.layout.row_configurationlist, data);
         lv.setAdapter(adapter);
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Switch sw = (Switch) view.findViewById(R.id.sw);
+                TextView tv = (TextView) view.findViewById(R.id.list_text);
+                if (userChecked && sw.isChecked()) {
+                    Intent intent = new Intent (getApplicationContext(), ScreenSlideActivity.class);
+                    intent.putExtra(constants.CONFIGURATION_NAME, tv.getText().toString());
+                    startActivity(intent);
+                }
+            }
+
+        });
     }
 
     @Override
@@ -156,7 +174,9 @@ public class ConfigurationListActivity extends AppCompatActivity {
 
                 if (selectedConfigurationPosition == position) {
                     turnOffAllSwitches();
+                    userChecked = false;
                     viewHolder.sw.setChecked(true);
+                    userChecked = true;
                 }
 
                 viewHolder.edit.setOnClickListener(new View.OnClickListener() {
@@ -182,13 +202,16 @@ public class ConfigurationListActivity extends AppCompatActivity {
                     }
                 });
 
-                viewHolder.sw.setOnClickListener(new View.OnClickListener() {
+                viewHolder.sw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
-                    public void onClick(View v) {
-                        selectedConfigurationPosition = position;
-                        Intent intent = new Intent (getApplicationContext(), ScreenSlideActivity.class);
-                        intent.putExtra(constants.CONFIGURATION_NAME, viewHolder.nombre.getText().toString());
-                        startActivity(intent);
+                    public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                        if (isChecked && userChecked){
+                            selectedConfigurationPosition = position;
+                            Intent intent = new Intent (getApplicationContext(), ScreenSlideActivity.class);
+                            intent.putExtra(constants.CONFIGURATION_NAME, viewHolder.nombre.getText().toString());
+                            startActivity(intent);
+
+                        }
                     }
                 });
 
@@ -202,7 +225,9 @@ public class ConfigurationListActivity extends AppCompatActivity {
 
                 if (selectedConfigurationPosition == position) {
                     turnOffAllSwitches();
+                    userChecked = false;
                     mainViewholder.sw.setChecked(true);
+                    userChecked = true;
                 }
             }
 

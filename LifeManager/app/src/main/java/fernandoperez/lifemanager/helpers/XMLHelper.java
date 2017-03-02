@@ -94,12 +94,16 @@ public class XMLHelper {
                 DBHelper.insertArrivingServices(context, configurationsDao, servicesDao, arrivingDao, configurations.getName(), arrivingServices);
 //                DBHelper.insertLeavingServices(context, configurationsDao, servicesDao, leavingDao, configurations.getName(), leavingServices);
             }
+
+            Toast.makeText(context, "Configurations loaded successfully",Toast.LENGTH_SHORT).show();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             Toast.makeText(context, "No previous backup exist.",Toast.LENGTH_SHORT).show();
         } catch (IOException | XmlPullParserException e) {
             e.printStackTrace();
         }
+
+
 
 
     }

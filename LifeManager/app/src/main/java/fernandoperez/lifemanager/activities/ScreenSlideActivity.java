@@ -170,7 +170,7 @@ public class ScreenSlideActivity extends FragmentActivity {
         for (Services service : servicesList) {
             switch (service.getServiceType()) {
                 case WIFI:
-                    if (!wifiManager.isWifiEnabled()) {
+                    if (wifiManager != null) {
                         wifiManager.setWifiEnabled(true);
                     }
                     break;

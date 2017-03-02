@@ -31,9 +31,6 @@ import fernandoperez.lifemanager.utils.constants;
 
 public class DBHelper {
 
-    public static void saveList(Configurations configuration, List<Services> servicesList, constants.CONFIGURATION_TYPES configurationType) {
-    }
-
     public static List<Configurations> getAllConfigurations(ConfigurationsDao configurationsDao) {
         return configurationsDao.loadAll();
     }

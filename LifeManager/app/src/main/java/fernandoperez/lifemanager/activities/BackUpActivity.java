@@ -1,5 +1,6 @@
 package fernandoperez.lifemanager.activities;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,6 +12,9 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
+
+import com.spotify.sdk.android.player.Metadata;
+import com.spotify.sdk.android.player.PlaybackState;
 
 import org.xmlpull.v1.XmlSerializer;
 
@@ -50,6 +54,7 @@ public class BackUpActivity extends AppCompatActivity  {
     private DaoSession daoSession;
     private ConfigurationsDao configurationsDao;
 
+    private Switch localBackupSwitch;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -62,6 +67,28 @@ public class BackUpActivity extends AppCompatActivity  {
         mContext = getApplicationContext();
         daoSession = ((MyApplication) getApplication()).getDaoSession();
         configurationsDao = daoSession.getConfigurationsDao();
+
+        if (localBackupSwitch != null && savedInstanceState != null) {
+            localBackupSwitch.setChecked(savedInstanceState.getBoolean("LOCAL_BACKUP",false));
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (localBackupSwitch != null) {
+            localBackupSwitch.setChecked(isLocalBackupON);
+        }
+    }
+
+    // invoked when the activity may be temporarily destroyed, save the instance state here
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putBoolean("LOCAL_BACKUP", isLocalBackupON);
+
+        // call superclass to save any view hierarchy
+        super.onSaveInstanceState(outState);
     }
 
     /**
@@ -95,7 +122,7 @@ public class BackUpActivity extends AppCompatActivity  {
 //            }
 //        });
 
-        Switch localBackupSwitch = (Switch) findViewById(R.id.switch_settings_backup_localswitchbackup);
+        localBackupSwitch = (Switch) findViewById(R.id.switch_settings_backup_localswitchbackup);
         localBackupSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
@@ -132,7 +159,11 @@ public class BackUpActivity extends AppCompatActivity  {
      * @param view
      */
     public void loadBackUp(View view) {
+        ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Loading your backed up configurations.");
+        progressDialog.show();
         XMLHelper.readLocalBackup(mContext, daoSession);
+        progressDialog.hide();
     }
 
     /**
