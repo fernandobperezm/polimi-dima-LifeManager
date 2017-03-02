@@ -4,9 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -31,15 +29,11 @@ import fernandoperez.lifemanager.utils.constants;
 public class ConfigurationListActivity extends AppCompatActivity {
 
     private ArrayList<String> data = new ArrayList<>();
-    ArrayAdapter<String> adapter ;
-    FloatingActionButton mFAB;
+    ArrayAdapter<String> adapter;
 
-    private DaoSession daoSession;
     private ConfigurationsDao configurationsDao;
 
     private int selectedConfigurationPosition = -1;
-    private Bundle mSavedInstanceState;
-    private Switch selectedSwitch;
 
     private void loadData(){
         data.clear();
@@ -62,7 +56,6 @@ public class ConfigurationListActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mSavedInstanceState = savedInstanceState;
 
         setContentView(R.layout.activity_configuration_list);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_activity_configurationlist);
@@ -73,7 +66,7 @@ public class ConfigurationListActivity extends AppCompatActivity {
 
         ListView lv = (ListView) findViewById(R.id.listview);
 
-        daoSession = ((MyApplication) getApplication()).getDaoSession();
+        DaoSession daoSession = ((MyApplication) getApplication()).getDaoSession();
         configurationsDao = daoSession.getConfigurationsDao();
 
         loadData();
@@ -81,8 +74,8 @@ public class ConfigurationListActivity extends AppCompatActivity {
         adapter = new MyListAdapter(this, R.layout.row_configurationlist,data);
         lv.setAdapter(adapter);
 
-        if (mSavedInstanceState != null) {
-            selectedConfigurationPosition = mSavedInstanceState.getInt("CONF_POSITION", -1);
+        if (savedInstanceState != null) {
+            selectedConfigurationPosition = savedInstanceState.getInt("CONF_POSITION", -1);
         }
     }
 
@@ -192,7 +185,6 @@ public class ConfigurationListActivity extends AppCompatActivity {
                 viewHolder.sw.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        selectedSwitch = viewHolder.sw;
                         selectedConfigurationPosition = position;
                         Intent intent = new Intent (getApplicationContext(), ScreenSlideActivity.class);
                         intent.putExtra(constants.CONFIGURATION_NAME, viewHolder.nombre.getText().toString());
