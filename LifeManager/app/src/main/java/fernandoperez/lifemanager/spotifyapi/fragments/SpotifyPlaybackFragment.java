@@ -9,10 +9,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -38,7 +36,6 @@ import fernandoperez.lifemanager.R;
 import fernandoperez.lifemanager.adapters.PlaylistCardAdapter;
 import fernandoperez.lifemanager.models.Playlist;
 import fernandoperez.lifemanager.utils.RecyclerItemClickListener;
-import fernandoperez.lifemanager.utils.constants;
 import kaaes.spotify.webapi.android.SpotifyApi;
 import kaaes.spotify.webapi.android.SpotifyService;
 import kaaes.spotify.webapi.android.models.Image;
@@ -58,17 +55,14 @@ public class SpotifyPlaybackFragment extends Fragment implements
     // Request code that will be used to verify if the result comes from correct activity
     // Can be any integer
     private static final int REQUEST_CODE = 1337;
-    private static final String SPOTIFY_PLAYER = "SPOTIFY_PLAYER";
 
     private Player mPlayer;
 
-    private List<PlaylistSimple> userPlaylists;
     private String selectedPlaylistUri;
     private String selectedPlaylistName;
 
     private RecyclerView mRecyclerView;
     private PlaylistCardAdapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
 
     private TextView mPlayingSong;
     private TextView mPlayingPlaylist;
@@ -77,11 +71,8 @@ public class SpotifyPlaybackFragment extends Fragment implements
     private boolean isPlayingSong = false;
 
     private static boolean isFirstService;
-    private int mOrientation;
 
     private FloatingActionButton vFabPlay;
-    private FloatingActionButton vFabNext;
-    private FloatingActionButton vFabPrevious;
 
     private String mAccessToken;
     private Bundle mSavedInstanceState;
@@ -123,11 +114,11 @@ public class SpotifyPlaybackFragment extends Fragment implements
     }
 
     /**
-     *
-     * @param inflater
-     * @param container
-     * @param savedInstanceState
-     * @return
+     * The onCreateView method is created by Android to inflate the View of the fragment.
+     * @param inflater instance of LayoutInflater class.
+     * @param container instance of ViewGroup class, container of the view.
+     * @param savedInstanceState instance of Bundle, if any data needed to be persisted, it'll be there.
+     * @return the inflated view associated with this fragment.
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -150,10 +141,10 @@ public class SpotifyPlaybackFragment extends Fragment implements
     }
 
     /**
-     *
-     * @param requestCode
-     * @param resultCode
-     * @param intent
+     * This method is called another activity returns a result to this fragment.
+     * @param requestCode the code which we made the request to the other activity.
+     * @param resultCode the code which is the result of the request.
+     * @param intent an intent.
      */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
@@ -190,7 +181,8 @@ public class SpotifyPlaybackFragment extends Fragment implements
     }
 
     /**
-     *
+     * The method fetchData is called to login the user into the app and set the player with all
+     * the metadata.
      */
     public void fetchData() {
 
@@ -205,8 +197,9 @@ public class SpotifyPlaybackFragment extends Fragment implements
     }
 
     /**
-     *
-     * @param rootView
+     * The method setRecyclerView is a method called to set the RecyclerView of the fragment,
+     * set it's parameters, item touch listeners, and so on.
+     * @param rootView an instance of ViewGroup, defines the root view of the fragment.
      */
     private void setRecyclerView(ViewGroup rootView) {
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerview_spotify_playlists);
@@ -232,28 +225,27 @@ public class SpotifyPlaybackFragment extends Fragment implements
         int numberOfColumns = 2;
 
         //Check your orientation in your OnCreate
-        mOrientation = getContext().getResources().getConfiguration().orientation;
+        int mOrientation = getContext().getResources().getConfiguration().orientation;
         if(mOrientation == Configuration.ORIENTATION_LANDSCAPE) {
             numberOfColumns += 1;
         }
 
-        mLayoutManager = new GridLayoutManager(getContext(), numberOfColumns, LinearLayoutManager.VERTICAL, false);
+        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getContext(), numberOfColumns, LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(mLayoutManager);
     }
 
     /**
-     *
-     * @param container
+     * The method configureButtons is called to setup the play/pause, previous and next buttons
+     * for the fragment.
+     * @param container an instance of ViewGroup, defines the container where these buttons are.
      */
     private void configureButtons(ViewGroup container) {
         vFabPlay =
           (FloatingActionButton) container.findViewById(R.id.fab_spotify_playpause);
 
-        vFabNext =
-          (FloatingActionButton) container.findViewById(R.id.fab_spotify_nextsong);
+        FloatingActionButton vFabNext = (FloatingActionButton) container.findViewById(R.id.fab_spotify_nextsong);
 
-        vFabPrevious =
-          (FloatingActionButton) container.findViewById(R.id.fab_spotify_previoussong);
+        FloatingActionButton vFabPrevious = (FloatingActionButton) container.findViewById(R.id.fab_spotify_previoussong);
 
         vFabNext.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -289,7 +281,8 @@ public class SpotifyPlaybackFragment extends Fragment implements
     }
 
     /**
-     *
+     * The method onDestroy is called when the fragment is killed by Android, we destroy also the
+     * Spotify player so there are no memory leaks.
      */
     @Override
     public void onDestroy() {
@@ -299,8 +292,8 @@ public class SpotifyPlaybackFragment extends Fragment implements
     }
 
     /**
-     *
-     * @param playerEvent
+     * The method onPlaybackEvent is called when some playback event happens and it's handled here.
+     * @param playerEvent an instance of PlayerEvent, part of Spotify Android SDK.
      */
     @Override
     public void onPlaybackEvent(PlayerEvent playerEvent) {
@@ -439,7 +432,7 @@ public class SpotifyPlaybackFragment extends Fragment implements
             String playlistId;
             List<Playlist> playlistList = new ArrayList<>();
 
-            userPlaylists = playlistSimplePager.items;
+            List<PlaylistSimple> userPlaylists = playlistSimplePager.items;
 
             for (Iterator<PlaylistSimple> iterator = userPlaylists.iterator(); iterator.hasNext(); ){
                 PlaylistSimple playlist = iterator.next();
