@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -36,6 +37,10 @@ public class ConfigurationListActivity extends AppCompatActivity {
     private DaoSession daoSession;
     private ConfigurationsDao configurationsDao;
 
+    private int selectedConfigurationPosition = -1;
+    private Bundle mSavedInstanceState;
+    private Switch selectedSwitch;
+
     private void loadData(){
         data.clear();
         List<Configurations> configurationsList = configurationsDao.loadAll();
@@ -50,13 +55,15 @@ public class ConfigurationListActivity extends AppCompatActivity {
         super.onResume();
         ListView lv = (ListView) findViewById(R.id.listview);
         loadData();
-        adapter= new MyListAdapter(this, R.layout.row_configurationlist,data);
+        adapter= new MyListAdapter(this, R.layout.row_configurationlist, data);
         lv.setAdapter(adapter);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mSavedInstanceState = savedInstanceState;
+
         setContentView(R.layout.activity_configuration_list);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_activity_configurationlist);
         setSupportActionBar(toolbar);
@@ -73,6 +80,19 @@ public class ConfigurationListActivity extends AppCompatActivity {
 
         adapter = new MyListAdapter(this, R.layout.row_configurationlist,data);
         lv.setAdapter(adapter);
+
+        if (mSavedInstanceState != null) {
+            selectedConfigurationPosition = mSavedInstanceState.getInt("CONF_POSITION", -1);
+        }
+    }
+
+    // invoked when the activity may be temporarily destroyed, save the instance state here
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putInt("CONF_POSITION", selectedConfigurationPosition);
+
+        // call superclass to save any view hierarchy
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -115,17 +135,22 @@ public class ConfigurationListActivity extends AppCompatActivity {
 
     private class MyListAdapter extends ArrayAdapter<String> {
         private int layout;
+        private List<Switch> mSwitchList;
+
         private MyListAdapter(Context context, int resource, List<String> objects){
             super(context, resource, objects);
             layout = resource;
+            mSwitchList = new ArrayList<>(objects.size());
         }
+
         @Override
         @NonNull
         public View getView (final int position, View convertView, @NonNull ViewGroup parent){
-            ViewHolder mainViewholder = null;
+            ViewHolder mainViewholder;
             if(convertView == null){
                 LayoutInflater inflater = LayoutInflater.from(getContext());
                 convertView = inflater.inflate(layout, parent, false);
+
                 final ViewHolder viewHolder = new ViewHolder();
                 viewHolder.nombre = (TextView) convertView.findViewById(R.id.list_text);
                 viewHolder.nombre.setText(getItem(position));
@@ -133,6 +158,13 @@ public class ConfigurationListActivity extends AppCompatActivity {
                 viewHolder.edit = (Button) convertView.findViewById(R.id.button_edit);
                 viewHolder.delete = (Button) convertView.findViewById(R.id.button_delete);
                 viewHolder.sw = (Switch) convertView.findViewById(R.id.sw);
+
+                mSwitchList.add(viewHolder.sw);
+
+                if (selectedConfigurationPosition == position) {
+                    turnOffAllSwitches();
+                    viewHolder.sw.setChecked(true);
+                }
 
                 viewHolder.edit.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -146,6 +178,8 @@ public class ConfigurationListActivity extends AppCompatActivity {
                 viewHolder.delete.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        turnOffAllSwitches();
+                        selectedConfigurationPosition = -1;
                         adapter.remove(viewHolder.nombre.getText().toString());
                         configurationsDao.delete(
                                 configurationsDao.queryBuilder()
@@ -158,6 +192,8 @@ public class ConfigurationListActivity extends AppCompatActivity {
                 viewHolder.sw.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        selectedSwitch = viewHolder.sw;
+                        selectedConfigurationPosition = position;
                         Intent intent = new Intent (getApplicationContext(), ScreenSlideActivity.class);
                         intent.putExtra(constants.CONFIGURATION_NAME, viewHolder.nombre.getText().toString());
                         startActivity(intent);
@@ -170,13 +206,25 @@ public class ConfigurationListActivity extends AppCompatActivity {
             else{
                 mainViewholder = (ViewHolder) convertView.getTag();
                 mainViewholder.nombre.setText(getItem(position));
+                mSwitchList.add(mainViewholder.sw);
+
+                if (selectedConfigurationPosition == position) {
+                    turnOffAllSwitches();
+                    mainViewholder.sw.setChecked(true);
+                }
             }
+
             return convertView;
+        }
+
+        private void turnOffAllSwitches() {
+            for (Switch sw : mSwitchList) {
+                sw.setChecked(false);
+            }
         }
     }
 
     public class ViewHolder{
-
         TextView nombre;
         Button edit;
         Button delete;
